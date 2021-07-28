@@ -8,7 +8,7 @@ class Meds_List(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     med_name = db.Column(db.String(50), nullable=False, unique=True)
-    dosage_mg = db.Column(db.Numeric, nullable=False, unique=True)
+    dosage_mg = db.Column(db.Integer, nullable=False, unique=True)
     frequency = db.Column(db.String(100), nullable=False)
     taken = db.Column(db.Boolean, nullable=True)
     med_info = db.Column(db.String(500), nullable=True)
