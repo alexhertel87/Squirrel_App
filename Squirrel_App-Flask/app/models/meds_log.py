@@ -11,4 +11,4 @@ class Meds_Log(db.Model, UserMixin):
     created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now())
     updated_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now(), onupdate=db.func.now())
 
-    meds_logged = relationship('Med_list', back_populates="meds_taken")
+    meds_logged = relationship('Meds_list', back_populates="meds_taken")

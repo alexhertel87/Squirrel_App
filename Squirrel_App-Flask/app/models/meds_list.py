@@ -17,3 +17,15 @@ class Meds_List(db.Model, UserMixin):
 
     user = relationship("User", back_populates="meds_list")
     meds_taken = relationship("Meds_Log", back_populates="meds_logged")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'med_name': self.med_name,
+            'dosage_mg': self.dosage_mg,
+            'frequency': self.frequency,
+            'taken': self.taken,
+            'med_info': self.med_info,
+            'user': self.user.to_dict()
+        }
