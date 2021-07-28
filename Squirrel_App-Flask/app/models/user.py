@@ -1,3 +1,4 @@
+from sqlalchemy.orm import relationship
 from .db import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -10,6 +11,9 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+
+    meds = relationship("Meds_List", back_populates="user")
+    active_tasks = db.relationship("Active_Tasks", back_populates="user")
 
     @property
     def password(self):
