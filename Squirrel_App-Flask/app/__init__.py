@@ -8,6 +8,8 @@ from flask_login import LoginManager
 from .models import db, User, Meds_List, Meds_Log, Active_Tasks, Completed_Tasks
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
+from .api.meds_list_routes import meds_list_routes
+from .api.meds_log_routes import meds_log_routes
 
 from .seeds import seed_commands
 
@@ -31,6 +33,10 @@ app.cli.add_command(seed_commands)
 app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
+app.register_blueprint(meds_list_routes, url_prefix='/api/meds_list')
+app.register_blueprint(meds_log_routes, url_prefix='/api/meds_log')
+# app.register_blueprint(active_tasks_route, url_prefix='/api/active_tasks')
+# app.register_blueprint(completed_tasks_route, url_prefix='/api/completed_tasks')
 db.init_app(app)
 Migrate(app, db, compare_type=True)
 
