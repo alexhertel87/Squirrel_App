@@ -8,8 +8,8 @@ class Completed_Tasks (db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     task_id = db.Column(db.Integer, db.ForeignKey('active_tasks.id'))
     task_name = db.Column(db.String(100), nullable=False, unique=True)
-    completed_at = db.Column(db.DateTime)
-    created_at = db.Column(db.DateTime, nullable=False, default=db.func.now())
-    updated_at = db.Column(db.DateTime, nullable=False, default=db.func.now(), onupdate=db.func.now())
+    completed_at = db.Column(db.DateTime(timezone=True), nullable=True)
+    created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now())
+    updated_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now(), onupdate=db.func.now())
 
     active = relationship("Active_Tasks", back_populates="completed")
