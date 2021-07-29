@@ -1,6 +1,6 @@
-react-app/node_modules
-.venv
-Pipfile
-Pipfile.lock
-.env
+Squirrel_App-Flask/react-app/node_modules
+Squirrel_App-Flask/.venv
+Squirrel_App-Flask/Pipfile
+Squirrel_App-Flask/Pipfile.lock
+Squirrel_App-Flask/.env
 .DS_Store
