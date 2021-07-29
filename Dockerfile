@@ -20,7 +20,6 @@ ENV SQLALCHEMY_ECHO=True
 EXPOSE 8000
 
 WORKDIR /var/www
-COPY backend/. .
 COPY . .
 COPY --from=build-stage /react-app/build/* app/static/
 
