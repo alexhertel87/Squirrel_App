@@ -28,7 +28,9 @@ const delete_med = (med) => ({
 //? -*-*-*-*-*-*-*-*-*-*- Thunks -*-*-*-*-*-*-*-*-*-*-//
 //* **********************************************************/
 
-export const new_med_thunk = (med) => async (dispatch) => {
+// ------------ New Med Thunk ------------//
+
+export const add_new_med = (med) => async (dispatch) => {
     const res = await fetch('/api/active_list/new', {
         method: 'POST',
         headers: {
@@ -42,3 +44,18 @@ export const new_med_thunk = (med) => async (dispatch) => {
         return meds
     }
 }
+
+// ------------ Get Active Meds Thunk ------------//
+
+export const all_active_meds = (user_id) => async (dispatch) => {
+    const res = await fetch(`/api/active_list/${user_id}/all`)
+    if (res.ok) {
+        const all_active = await res.json()
+        dispatch(all_meds(all_active.active_meds))
+        return 'SUCCESS'
+    }
+}
+
+// ------------ Update Active Meds Thunk ------------//
+
+export const update_active_med = (med) => async (dispatch) => {
