@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
 
-    meds_list = relationship("Meds_List", back_populates="user")
+    meds_list = db.relationship("Meds_List", back_populates="user")
     active_tasks = db.relationship("Active_Tasks", back_populates="user")
 
     @property

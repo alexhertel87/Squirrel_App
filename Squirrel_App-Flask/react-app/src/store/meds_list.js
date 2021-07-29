@@ -58,4 +58,17 @@ export const all_active_meds = (user_id) => async (dispatch) => {
 
 // ------------ Update Active Meds Thunk ------------//
 
-export const update_active_med = (med) => async (dispatch) => {
+export const update_active_med = (med_id) => async (dispatch) => {
+    const res = await fetch(`/api/active_list/${med_id}/update`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(med_id),
+    })
+    if (res.ok) {
+        const med = await res.json()
+        dispatch(update_med(med))
+        return med
+    }
+}

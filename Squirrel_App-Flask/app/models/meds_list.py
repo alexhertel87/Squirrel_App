@@ -27,5 +27,6 @@ class Meds_List(db.Model, UserMixin):
             'frequency': self.frequency,
             'taken': self.taken,
             'med_info': self.med_info,
+            'meds_taken': self.meds_taken.to_dict(),
             'user': self.user.to_dict()
         }
