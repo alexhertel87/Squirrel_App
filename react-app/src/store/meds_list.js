@@ -10,8 +10,9 @@ const new_med = (med) => ({
     payload: med
 })
 
-const all_meds = () => ({
+const all_meds = (meds) => ({
     type: 'GET_ACTIVE_MEDS',
+    payload: meds
 })
 
 const update_med = (med) => ({
@@ -28,7 +29,7 @@ const delete_med = (med) => ({
 //? -*-*-*-*-*-*-*-*-*-*- Thunks -*-*-*-*-*-*-*-*-*-*-//
 //* **********************************************************/
 
-// ------------ New Med Thunk ------------//
+// ------------ CREATE New Med Thunk ------------//
 
 export const add_new_med = (med) => async (dispatch) => {
     const res = await fetch('/api/active_list/new', {
@@ -45,7 +46,7 @@ export const add_new_med = (med) => async (dispatch) => {
     }
 }
 
-// ------------ Get Active Meds Thunk ------------//
+// ------------ GET Active Meds Thunk ------------//
 
 export const all_active_meds = (user_id) => async (dispatch) => {
     const res = await fetch(`/api/active_list/${user_id}/all`)
@@ -56,7 +57,7 @@ export const all_active_meds = (user_id) => async (dispatch) => {
     }
 }
 
-// ------------ Update Active Meds Thunk ------------//
+// ------------ UPDATE Active Meds Thunk ------------//
 
 export const update_active_med = (med_id) => async (dispatch) => {
     const res = await fetch(`/api/active_list/${med_id}/update`, {
@@ -73,7 +74,7 @@ export const update_active_med = (med_id) => async (dispatch) => {
     }
 }
 
-// ------------ Delete Active Meds Thunk ------------//
+// ------------ DELETE Active Meds Thunk ------------//
 
 export const delete_active_med = (med_id) => async (dispatch) => {
     const res = await fetch(`/api/active_list/${med_id}/delete`, {
@@ -84,10 +85,10 @@ export const delete_active_med = (med_id) => async (dispatch) => {
 }
 
 // -------------------------------------------//
-
 const initialState = {}
+// -------------------------------------------//
 
-// ------------ Meds List Reducer ------------//
+//* ------------ Meds List Reducer ------------//
 
 const active_meds_reducer = (state = initialState, action) => {
     switch (action.type) {
