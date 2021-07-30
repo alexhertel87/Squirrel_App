@@ -82,3 +82,47 @@ export const delete_active_med = (med_id) => async (dispatch) => {
         dispatch(delete_med(med_id))
         return 'DELETED'
 }
+
+// -------------------------------------------//
+
+const initialState = {}
+
+// ------------ Meds List Reducer ------------//
+
+const active_meds_reducer = (state = initialState, action) => {
+    switch (action.type) {
+        case 'NEW_ACTIVE_MED':{
+            const new_state = {
+                ...state,
+                [action.payload.id]: action.payload,
+            }
+            return new_state;
+        }
+        case 'GET_ACTIVE_MEDS':{
+            const new_state = {
+            }
+            action.payload.forEach((med) => {
+                new_state[med.id] = med
+            })
+            return new_state;
+        }
+        case 'UPDATE_ACTIVE_MED':{
+            const new_state = {
+                ...state,
+                [action.payload.id]: action.payload,
+            }
+            return new_state;
+        }
+        case 'DELETE_ACTIVE_MED':{
+            const new_state = {
+                ...state
+            }
+            delete new_state[action.payload]
+            return new_state;
+        }
+        default:
+            return state;
+    }
+}
+
+export default active_meds_reducer
