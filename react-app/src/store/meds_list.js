@@ -72,3 +72,13 @@ export const update_active_med = (med_id) => async (dispatch) => {
         return med
     }
 }
+
+// ------------ Delete Active Meds Thunk ------------//
+
+export const delete_active_med = (med_id) => async (dispatch) => {
+    const res = await fetch(`/api/active_list/${med_id}/delete`, {
+        method: 'DELETE',
+    })
+        dispatch(delete_med(med_id))
+        return 'DELETED'
+}
