@@ -8,6 +8,8 @@ import LoginFormModal from "./LoginFormModal";
 // import SignUpForm from './SignupFormModal/SignUpForm';
 import logo from '../../assets/squirrel_logo.png';
 import Button from "../Button";
+import styles from './Navbar.module.css';
+
 
 const NavBar = () => {
 
@@ -19,40 +21,43 @@ const NavBar = () => {
   // )
 
   return (
-    <nav className="nav-container">
-      <div className="nav-logo">
-          <Link to="/">
-            <img className="logo-pic" src={logo} alt="squirrel_logo"></img>
-          </Link>
+    <nav className={styles.navContainer}>
+      <div className={styles.nav_leftside}>
+        <div className="nav-logo">
+          <div className={styles.logoDiv}>Squirrel!
+              <Link to="/">
+                <img className="logo-pic" src={logo} alt="squirrel_logo"></img>
+              </Link>
+            </div>
         </div>
-      {/* <div className="nav-rightside">
-        {userRender}
-      </div> */}
-      <ul>
-        <li>
-          <NavLink to='/' exact={true} activeClassName='active'>
-            Home
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to='/login' exact={true} activeClassName='active'>
-            Login
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to='/sign-up' exact={true} activeClassName='active'>
-            Sign Up
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to='/users' exact={true} activeClassName='active'>
-            Users
-          </NavLink>
-        </li>
-        <li>
-          <LogoutButton />
-        </li>
-      </ul>
+      </div>
+      <div className={styles.nav_right}>
+        <ul className={styles.linkDiv}>
+          <li>
+            <NavLink to='/' exact={true} activeClassName='active'>
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to='/login' exact={true} activeClassName='active'>
+              Login
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to='/sign-up' exact={true} activeClassName='active'>
+              Sign Up
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to='/users' exact={true} activeClassName='active'>
+              Users
+            </NavLink>
+          </li>
+          <li>
+            <LogoutButton />
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 }

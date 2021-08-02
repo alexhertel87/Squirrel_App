@@ -32,19 +32,45 @@ const delete_med = (med) => ({
 // ------------ CREATE New Med Thunk ------------//
 
 export const add_new_med = (med) => async (dispatch) => {
+    const { userId, medName, dosageMg, frequency, taken, medInfo } = med
+
     const res = await fetch('/api/active_list/new', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(med),
+        body: JSON.stringify({
+            user_id: userId,
+            med_name: medName,
+            dosage_mg: dosageMg,
+            frequency: frequency,
+            taken: taken,
+            med_info: medInfo
+        }),
     })
+    console.log(res);
     if (res.ok) {
         const meds = await res.json()
         dispatch(new_med(meds))
         return meds
     }
 }
+
+
+// export const add_new_med = (med) => async (dispatch) => {
+//     const res = await fetch('/api/active_list/new', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(med),
+//     })
+//     if (res.ok) {
+//         const meds = await res.json()
+//         dispatch(new_med(meds))
+//         return meds
+//     }
+// }
 
 // ------------ GET Active Meds Thunk ------------//
 
@@ -77,7 +103,7 @@ export const update_active_med = (med_id) => async (dispatch) => {
 // ------------ DELETE Active Meds Thunk ------------//
 
 export const delete_active_med = (med_id) => async (dispatch) => {
-    const res = await fetch(`/api/active_list/${med_id}/delete`, {
+    const res = await fetch(`/api/meds_list/${med_id}/delete`, {
         method: 'DELETE',
     })
         dispatch(delete_med(med_id))

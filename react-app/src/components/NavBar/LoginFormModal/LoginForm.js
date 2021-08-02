@@ -84,7 +84,7 @@ const LoginForm = () => {
                 <Button
                   text={"Demo User Login"}
                   action={demoLogin}
-                  color={"limegreen"}
+                  // color={"limegreen"}
                   width={180} />
               </button>
             </div>

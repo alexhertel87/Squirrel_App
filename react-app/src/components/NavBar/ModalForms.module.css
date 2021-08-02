@@ -3,8 +3,13 @@
   justify-content: center;
   align-items: center;
   padding: 20px 40px;
+  margin-top: 60px;
+  margin-left: 360px;
+  margin-right: 360px;
+  /* width: 60%; */
+  height: 20%;
   border-radius: 15px;
-  background-color: lightslategray;
+  /* background-color: lightslategray; */
   box-shadow: 0px 1px 18px rgba(40, 40, 40, 1);
 
 }
@@ -12,6 +17,7 @@
 .form {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 20px;
 
@@ -40,21 +46,21 @@
   font-size: 24px;
   min-width: 300px;
   max-width: 300px;
-  color: pink;
+  color: black;
   outline: none;
-  background-color: lightslategray;
+  background-color: white;
   padding: 10px;
-  border-bottom:1px solid white;
+  border-bottom:1px solid black;
   transition: border-bottom 0.3s;
 }
 .inputField:focus {
-  border-bottom: 1px solid pink;
+  border-bottom: 1px solid black;
   transition: border-bottom 0.3s;
 
 }
 
 .inputField::placeholder {
-  color: rgb(200, 200, 200);
+  color: white;
   font-size: 24px;
   font-family: 'Dosis', sans-serif;
 }
@@ -63,11 +69,11 @@
 .inputField:-webkit-autofill:hover,
 .inputField:-webkit-autofill:focus,
 .inputField:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px lightslategray inset !important;
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 
 .inputField:-webkit-autofill {
-  -webkit-text-fill-color: white !important;
+  -webkit-text-fill-color: black !important;
 }
 
 .buttonContainer {

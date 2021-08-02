@@ -8,9 +8,10 @@
 }
 
 .logo-pic {
-  transform: translateY(20px);
-  height: auto;
-  width: auto;
+  /* transform: translateY(20px); */
+  height: 60px;
+  margin-top: 10px;
+  /* width: auto; */
   max-width: 135px;
   max-height: 150px;
 
@@ -19,13 +20,22 @@
   padding: 0 20px 0 20px;
 }
 
-.nav-rightside {
+.nav_leftside {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.nav-right {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: 22px;
   height: 35px;
   margin-top: 13px;
+}
+
+.linkDiv {
+  display: flex;
 }
 
 .nav-rightside > button {
