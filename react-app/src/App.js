@@ -8,6 +8,8 @@ import UsersList from './components/UsersList';
 import User from './components/User';
 import { authenticate } from './store/session';
 import SignUpForm from './components/NavBar/SignupFormModal/SignUpForm';
+import MedsListForm from './components/MedsList/MedsListForm';
+import Dashboard from './components/Dashboard/Dashboard';
 
 
 function App() {
@@ -31,6 +33,12 @@ function App() {
       <Switch>
         <Route path='/login' exact={true}>
           <LoginForm />
+        </Route>
+        <Route path='/dashboard/meds/new' exact={true}>
+          <MedsListForm />
+        </Route>
+        <Route path='/dashboard' exact={true}>
+          <Dashboard />
         </Route>
         <Route path='/sign-up' exact={true}>
           <SignUpForm />
