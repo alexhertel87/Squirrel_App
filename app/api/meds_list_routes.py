@@ -26,24 +26,27 @@ def meds_list():
 def new_active_meds():
     form = MedsForm()
     form['csrf_token'].data = request.cookies['csrf_token']
-    if form.validate_on_submit():
-        data = request.get_json()
-        medication = Meds_List(
-        user_id = form.data["user_id"],
-        med_name = form.med_name.data,
-        dosage_mg = form.dosage_mg.data,
-        frequency = form.frequency.data,
-        taken = form.taken.data,
-        med_info = form.med_info.data)
-        # form.populate_obj(medication)
-        db.session.add(medication)
-        db.session.commit()
-        print("""
+    # if form.validate_on_submit():
+    data = request.get_json()
+    medication = Meds_List(
+    user_id = current_user.id,
+    med_name = form.med_name.data,
+    dosage_mg = form.dosage_mg.data,
+    frequency = form.frequency.data,
+    taken = form.taken.data,
+    med_info = form.med_info.data)
+    # form.populate_obj(medication)
+    db.session.add(medication)
+    db.session.commit()
+    medications = Meds_List.query.filter_by(user_id=current_user.id)
+    print("""
 
         Successfully added medication to Database
 
         """)
-        return medication.to_dict()
+    return {'medications': [med.to_dict() for med in medications]}
+    # else:
+    #     return jsonify({"errors": form.errors})
 
 
 #* *-*-*-*-*-*-* Update Active Meds Route [PUT] *-*-*-*-*-*-*

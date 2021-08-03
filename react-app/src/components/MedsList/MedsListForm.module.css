@@ -2,15 +2,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     padding: 20px 40px;
     margin-top: 60px;
     margin-left: 360px;
     margin-right: 360px;
-    /* width: 60%; */
+    width: 60%;
     height: 20%;
     border-radius: 15px;
     /* background-color: lightslategray; */
-    box-shadow: 0px 1px 18px rgba(40, 40, 40, 1);
+    box-shadow: 0px 1px 18px rgb(72, 217, 236);
 
   }
 
@@ -43,13 +44,14 @@
 
   .med_data_inputs {
     font-family: 'Dosis', sans-serif;
-    font-size: 24px;
+    font-size: 20px;
     min-width: 300px;
-    max-width: 300px;
+    max-width: 500px;
     color: black;
     outline: none;
     background-color: white;
     padding: 10px;
+    /* margin-top: -5px; */
     border-bottom:1px solid black;
     transition: border-bottom 0.3s;
   }
@@ -59,27 +61,29 @@
 
   }
 
- .med_data_inputs::placeholder {
-    color: white;
+.newMedLabel {
+    margin-top: 10px;
+}
+
+  .newMedsHeader {
     font-size: 24px;
-    font-family: 'Dosis', sans-serif;
+    margin-bottom: 10px;
+    border-bottom: black 1px solid;
   }
 
-    .med_data_inputs:-webkit-autofill,
-    .med_data_inputs:-webkit-autofill:hover,
-    .med_data_inputs:-webkit-autofill:focus,
-    .med_data_inputs:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px white inset !important;
-  }
-
-  .inputField:-webkit-autofill {
-    -webkit-text-fill-color: black !important;
-  }
-
-  .buttonContainer {
+  .allInputs {
     display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-    margin: 10px 0;
+    justify-content: center;
+  }
+
+ .med_data_inputs::placeholder {
+    color: rgb(236, 20, 139);
+    font-size: 18px;
+    font-family: 'Dosis', sans-serif;
+    font-weight: 900;
+  }
+
+  .med_info_text {
+    font-family: 'Dosis', sans-serif;
+    width: 200px;
   }

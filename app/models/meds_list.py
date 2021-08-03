@@ -15,8 +15,10 @@ class Meds_List(db.Model, UserMixin):
     created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now())
     updated_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now(), onupdate=db.func.now())
 
+
     user = relationship("User", back_populates="meds_list")
     meds_taken = relationship("Meds_Log", back_populates="meds_logged")
+
 
     def to_dict(self):
         return {

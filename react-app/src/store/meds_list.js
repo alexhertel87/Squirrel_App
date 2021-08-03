@@ -32,50 +32,27 @@ const delete_med = (med) => ({
 // ------------ CREATE New Med Thunk ------------//
 
 export const add_new_med = (med) => async (dispatch) => {
-    const { userId, medName, dosageMg, frequency, taken, medInfo } = med
 
-    const res = await fetch('/api/active_list/new', {
+    const res = await fetch('/api/meds_list/new', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            user_id: userId,
-            med_name: medName,
-            dosage_mg: dosageMg,
-            frequency: frequency,
-            taken: taken,
-            med_info: medInfo
-        }),
+        body: JSON.stringify(med),
     })
     console.log(res);
     if (res.ok) {
         const meds = await res.json()
+        console.log("MEDSSSSSSS",meds);
         dispatch(new_med(meds))
         return meds
     }
 }
 
-
-// export const add_new_med = (med) => async (dispatch) => {
-//     const res = await fetch('/api/active_list/new', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(med),
-//     })
-//     if (res.ok) {
-//         const meds = await res.json()
-//         dispatch(new_med(meds))
-//         return meds
-//     }
-// }
-
 // ------------ GET Active Meds Thunk ------------//
 
 export const all_active_meds = (user_id) => async (dispatch) => {
-    const res = await fetch(`/api/active_list/${user_id}/all`)
+    const res = await fetch(`/api/meds_list/${user_id}/all`)
     if (res.ok) {
         const all_active = await res.json()
         dispatch(all_meds(all_active.active_meds))
@@ -85,18 +62,18 @@ export const all_active_meds = (user_id) => async (dispatch) => {
 
 // ------------ UPDATE Active Meds Thunk ------------//
 
-export const update_active_med = (med_id) => async (dispatch) => {
-    const res = await fetch(`/api/active_list/${med_id}/update`, {
+export const update_active_med = (med) => async (dispatch) => {
+    const res = await fetch(`/api/meds_list/${med.id}/update`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(med_id),
+        body: JSON.stringify(med),
     })
     if (res.ok) {
-        const med = await res.json()
-        dispatch(update_med(med))
-        return med
+        const oneMed = await res.json()
+        dispatch(update_med(oneMed))
+        return oneMed
     }
 }
 
