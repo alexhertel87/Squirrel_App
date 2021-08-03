@@ -10,7 +10,7 @@ meds_list_routes = Blueprint('meds_list', __name__)
 #! ----- IT WORKS -----
 
 @meds_list_routes.route('/active', methods=['GET'])
-@login_required
+# @login_required
 def meds_list():
     # active_meds = Meds_List.query.filter_by(user_id=current_user.id).all()
     # active_meds = Meds_List.query.filter_by(user_id=4).all()
@@ -22,7 +22,7 @@ def meds_list():
 
 
 @meds_list_routes.route('/new', methods=['POST'])
-@login_required
+# @login_required
 def new_active_meds():
     form = MedsForm()
     form['csrf_token'].data = request.cookies['csrf_token']
@@ -47,15 +47,16 @@ def new_active_meds():
 
 
 #* *-*-*-*-*-*-* Update Active Meds Route [PUT] *-*-*-*-*-*-*
+#! ----- IT WORKS -----
 
 @meds_list_routes.route('/<int:id>/update', methods=['PUT'])
-@login_required
+# @login_required
 def update_active_meds(id):
     form = MedsForm()
     form['csrf_token'].data = request.cookies['csrf_token']
     if form.validate_on_submit():
         medication = Meds_List.query.get(int(id))
-        medication.user_id = current_user.id
+        medication.user_id = form.user_id.data
         medication.med_name = form.med_name.data
         medication.dosage_mg = form.dosage_mg.data
         medication.frequency = form.frequency.data
