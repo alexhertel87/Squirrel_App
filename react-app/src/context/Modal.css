@@ -1,0 +1,38 @@
+#modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: loadIn 0.3s;
+}
+.newMedModal {
+  /* position: relative !important; */
+  z-index: 2;
+}
+
+#modal-background {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  /* background-color: rgba(0, 0, 0, 0.7); */
+}
+
+#modal-content {
+  position: relative;
+  /* background-color: rgba(177, 170, 170, 0.7); */
+}
+
+@keyframes loadIn {
+  from {
+    opacity: 0.0;
+  }
+  to {
+    opacity: 1.0;
+  }
+}

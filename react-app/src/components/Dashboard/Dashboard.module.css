@@ -1,0 +1,28 @@
+.dashboard_body {
+    /* border: black 1px solid; */
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    width: 70vw;
+}
+
+.dashboard_container {
+
+}
+
+.dashboard_header {
+    font-size: 30px;
+}
+
+.dashboard_box {
+    /* border: black 1px solid; */
+}
+
+.dashboard_item {
+    /* border: purple 3px solid; */
+    font-size: 30px;
+}
+
+.dashboard_button, .newMedButton {
+/* height: 60px; */
+}
