@@ -11,6 +11,7 @@ import SignUpForm from './components/NavBar/SignupFormModal/SignUpForm';
 import MedsListForm from './components/MedsList/MedsListForm';
 import Dashboard from './components/Dashboard/Dashboard';
 import * as MedsListActions from './store/meds_list'
+import MedsListData from './components/CurrentMedsModal/MedsListData.js';
 
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
   useEffect(() => {
     (async() => {
       await dispatch(authenticate());
-      
+
       setLoaded(true);
     })();
   }, [dispatch]);
@@ -41,6 +42,9 @@ function App() {
         </Route>
         <Route path='/dashboard' exact={true}>
           <Dashboard />
+        </Route>
+        <Route path='/dashboard/current_meds' exact={true}>
+          <MedsListData />
         </Route>
         <Route path='/sign-up' exact={true}>
           <SignUpForm />

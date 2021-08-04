@@ -58,7 +58,6 @@ def update_active_meds(id):
     form['csrf_token'].data = request.cookies['csrf_token']
     if form.validate_on_submit():
         medication = Meds_List.query.get(int(id))
-        medication.user_id = form.user_id.data
         medication.med_name = form.med_name.data
         medication.dosage_mg = form.dosage_mg.data
         medication.frequency = form.frequency.data

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { add_new_med } from '../../store/meds_list';
 import * as sessionActions from '../../store/session';
 import * as userActions from '../../store/meds_list';
@@ -10,6 +10,7 @@ import { NewMedModal } from '../NewMedModal/NewMed';
 import {CurrMedsModal} from '../CurrentMedsModal/CurrentMeds';
 import styles from './Dashboard.module.css';
 import * as MedsListActions from '../../store/meds_list'
+import MedsListData from '../CurrentMedsModal/MedsListData';
 
 export const Dashboard = () => {
 
@@ -29,8 +30,15 @@ export const Dashboard = () => {
                         </div>
                     </div>
                     <div className={styles.dashboard_item}>My Current Medications</div>
-                        <div>
-                            <CurrMedsModal />
+                    <div>
+                        <Link to="/dashboard/current_meds">
+                        <button
+                            text="View Current Medications"
+                            className={styles.dashboard_button}
+                            href="/dashboard/current_meds">
+                            View Current Medications
+                        </button>
+                        </Link>
                         </div>
                     </div>
                     <div className={styles.dashboard_item}>Task List
