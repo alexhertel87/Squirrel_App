@@ -10,6 +10,7 @@ import { authenticate } from './store/session';
 import SignUpForm from './components/NavBar/SignupFormModal/SignUpForm';
 import MedsListForm from './components/MedsList/MedsListForm';
 import Dashboard from './components/Dashboard/Dashboard';
+import * as MedsListActions from './store/meds_list'
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
   useEffect(() => {
     (async() => {
       await dispatch(authenticate());
+      
       setLoaded(true);
     })();
   }, [dispatch]);

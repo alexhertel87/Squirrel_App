@@ -40,22 +40,23 @@ export const add_new_med = (med) => async (dispatch) => {
         },
         body: JSON.stringify(med),
     })
-    console.log(res);
+
     if (res.ok) {
         const meds = await res.json()
-        console.log("MEDSSSSSSS",meds);
         dispatch(new_med(meds))
         return meds
     }
 }
 
-// ------------ GET Active Meds Thunk ------------//
+// ------------ GET All Active Meds Thunk ------------//
 
-export const all_active_meds = (user_id) => async (dispatch) => {
-    const res = await fetch(`/api/meds_list/${user_id}/all`)
+export const all_active_meds = () => async (dispatch) => {
+    const res = await fetch(`/api/meds_list/active`)
     if (res.ok) {
         const all_active = await res.json()
-        dispatch(all_meds(all_active.active_meds))
+        // dispatch(all_meds(all_active.active_meds))
+        dispatch(all_meds(all_active))
+
         return 'SUCCESS'
     }
 }
@@ -88,7 +89,7 @@ export const delete_active_med = (med_id) => async (dispatch) => {
 }
 
 // -------------------------------------------//
-const initialState = {}
+const initialState = {medications: []}
 // -------------------------------------------//
 
 //* ------------ Meds List Reducer ------------//
@@ -96,18 +97,17 @@ const initialState = {}
 const active_meds_reducer = (state = initialState, action) => {
     switch (action.type) {
         case 'NEW_ACTIVE_MED':{
-            const new_state = {
-                ...state,
-                [action.payload.id]: action.payload,
-            }
+            const new_state = Object.assign({}, state)
+            new_state[action.payload.id] = action.payload
+            // new_state = action.payload
+
             return new_state;
         }
         case 'GET_ACTIVE_MEDS':{
             const new_state = {
+                ...action.payload,
             }
-            action.payload.forEach((med) => {
-                new_state[med.id] = med
-            })
+
             return new_state;
         }
         case 'UPDATE_ACTIVE_MED':{

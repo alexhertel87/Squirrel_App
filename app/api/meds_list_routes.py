@@ -12,10 +12,9 @@ meds_list_routes = Blueprint('meds_list', __name__)
 @meds_list_routes.route('/active', methods=['GET'])
 # @login_required
 def meds_list():
-    # active_meds = Meds_List.query.filter_by(user_id=current_user.id).all()
-    # active_meds = Meds_List.query.filter_by(user_id=4).all()
-    return {'active_meds': [meds.to_dict() for meds in current_user.meds_list]}
-    # return {"Hello"}
+    print ("--------->>>>>>", current_user.meds_list)
+    return {med.id: med.to_dict() for med in current_user.meds_list}
+
 
 #* *-*-*-*-*-*-* New Active Meds Route [POST] *-*-*-*-*-*-*
 #! ----- IT WORKS -----
@@ -44,7 +43,7 @@ def new_active_meds():
         Successfully added medication to Database
 
         """)
-    return {'medications': [med.to_dict() for med in medications]}
+    return medication.to_dict()
     # else:
     #     return jsonify({"errors": form.errors})
 

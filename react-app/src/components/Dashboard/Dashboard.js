@@ -7,9 +7,16 @@ import * as userActions from '../../store/meds_list';
 import Button from '../Button';
 import MedsListForm from '../MedsList/MedsListForm';
 import { NewMedModal } from '../NewMedModal/NewMed';
+import {CurrMedsModal} from '../CurrentMedsModal/CurrentMeds';
 import styles from './Dashboard.module.css';
+import * as MedsListActions from '../../store/meds_list'
 
 export const Dashboard = () => {
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(MedsListActions.all_active_meds());
+    }, [dispatch]);
 
     return (
         <body className={styles.dashboard_body}>
@@ -23,7 +30,7 @@ export const Dashboard = () => {
                     </div>
                     <div className={styles.dashboard_item}>My Current Medications</div>
                         <div>
-                            <button text="placeholder" className={styles.dashboard_button }>placeholder</button>
+                            <CurrMedsModal />
                         </div>
                     </div>
                     <div className={styles.dashboard_item}>Task List
