@@ -24,7 +24,7 @@ const NavBar = () => {
     <nav className={styles.navContainer}>
       <div className={styles.nav_leftside}>
         <div className="nav-logo">
-          <div className={styles.logoDiv}>Squirrel!   
+          <div className={styles.logoDiv}>Squirrel!
               <Link to="/">
                 <img className="logo-pic" src={logo} alt="squirrel_logo"></img>
               </Link>
@@ -34,8 +34,13 @@ const NavBar = () => {
       <div className={styles.nav_right}>
         <ul className={styles.linkDiv}>
           <li>
-            <NavLink to='/' exact={true} activeClassName='active'>
+            <NavLink to='/dashboard' exact={true} activeClassName='active'>
               Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to='/dashboard/current_meds' exact={true} activeClassName='active'>
+              Dashboard
             </NavLink>
           </li>
           <li>

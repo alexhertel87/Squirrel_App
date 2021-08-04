@@ -1,46 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { add_new_med } from '../../store/meds_list';
 import * as sessionActions from '../../store/session';
 import * as userActions from '../../store/meds_list';
-import styles from './MedsListForm.module.css';
-import EditMedModal from '../EditMedModal/EditMedIndex';
+
 
 import Button from '../Button';
+import styles from './EditMed.module.css';
 
-export const MedsListForm = ({setShowModal}) => {
+
+export const EditMedForm = ({med, setShowModal}) => {
     const dispatch = useDispatch();
     const params = useParams();
     const user = useSelector(state => state.session.user);
 
     const [errors, setErrors] = useState([]);
-    const [medName, setMedName] = useState('');
-    const [dosageMg, setDosageMg] = useState('');
-    const [taken, setTaken] = useState(false);
-    const [frequency, setFrequency] = useState('');
-    const [medInfo, setMedInfo] = useState('');
+    const [medName, setMedName] = useState(med.med_name);
+    const [dosageMg, setDosageMg] = useState(med.dosage_mg);
+    const [taken, setTaken] = useState(med.taken);
+    const [frequency, setFrequency] = useState(med.frequency);
+    const [medInfo, setMedInfo] = useState(med.med_info);
 
     const user_id = user?.id;
+    const id = med?.id;
 
     const onSubmit = async (e) => {
         e.preventDefault();
         if (user_id) {
             setErrors([]);
             const data = {
-                // user_id: userId,
+                id: id,
+                user_id: user_id,
                 med_name: medName,
                 dosage_mg: dosageMg,
                 frequency: frequency,
                 taken: taken,
                 med_info: medInfo
             }
-            // debugger
-            dispatch(userActions.add_new_med(data));
+
+            dispatch(userActions.update_active_med(data));
             setShowModal(false);
         }
         else {
-            setErrors(['Please login to add a new med']);
+            setErrors(['Please login to edit your med']);
         }
     }
 
@@ -53,7 +55,7 @@ export const MedsListForm = ({setShowModal}) => {
 
     return (
         <div className={styles.form_container}>
-            <h1 className={styles.newMedsHeader}>Add a New Medication</h1>
+            <h1 className={styles.newMedsHeader}>Edit Your Medication</h1>
             <form
                 className={styles.meds_form}
                 onSubmit={onSubmit}>
@@ -66,7 +68,6 @@ export const MedsListForm = ({setShowModal}) => {
                                 type="text"
                                 name="medName"
                                 onChange={(e) => {
-                                    // debugger
                                     setMedName(e.target.value)
                                 }
                                 }
@@ -137,4 +138,5 @@ export const MedsListForm = ({setShowModal}) => {
         </div>
     );
 }
-    export default MedsListForm;
+
+export default EditMedForm;

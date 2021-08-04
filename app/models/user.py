@@ -31,5 +31,5 @@ class User(db.Model, UserMixin):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            # 'meds_list': self.meds_list.to_dict(),
+            'meds_list': {med.id: med.to_dict() for med in self.meds_list},
         }
