@@ -6,6 +6,7 @@ import * as sessionActions from '../../store/session';
 import * as userActions from '../../store/meds_list';
 import * as MedsListActions from '../../store/meds_list'
 import EditMedModal from '../EditMedModal/EditMedIndex';
+import { NewMedModal } from '../NewMedModal/NewMed';
 
 export const MedsListData = () => {
 
@@ -28,7 +29,7 @@ export const MedsListData = () => {
                         <th>Dosage (mg)</th>
                         <th>How often do you take this?</th>
                         <th>Medication Info & Notes</th>
-                        <th>Taken (Yes || No)</th>
+                        {/* <th>Taken (Yes || No)</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -38,7 +39,7 @@ export const MedsListData = () => {
                             <td>{med.dosage_mg}</td>
                             <td>{med.frequency}</td>
                             <td>{med.med_info}</td>
-                            <td>{med.taken}</td>
+                            {/* <td>{med.taken}</td> */}
                             <EditMedModal med={med}/>
                             <button onClick={()=>dispatch(userActions.delete_active_med(med.id))}>Delete</button>
                         </tr>

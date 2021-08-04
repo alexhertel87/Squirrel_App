@@ -12,7 +12,6 @@ meds_list_routes = Blueprint('meds_list', __name__)
 @meds_list_routes.route('/active', methods=['GET'])
 # @login_required
 def meds_list():
-    print ("--------->>>>>>", current_user.meds_list)
     return {med.id: med.to_dict() for med in current_user.meds_list}
 
 
