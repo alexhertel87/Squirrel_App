@@ -6,7 +6,7 @@
     bottom: 0;
     width: 100vw;
     z-index: 1;
-    background-color: #0dc7e7;
+    background-color: rgb(6, 241, 210);
     /* background-color: aquamarine; */
     color: #f2f2f2;
     /* box-shadow: -2px -2px 15px #BFAF8F, 2px -2px 15px #BFAF8F; */
@@ -14,7 +14,7 @@
     justify-content: flex-start;
     align-items: center;
     font-size: 18px;
-    box-shadow: 0px -2px 18px rgb(72, 236, 127);
+    box-shadow: 0px -3px 18px rgb(6, 241, 210);
 }
 
 .footer-text{
