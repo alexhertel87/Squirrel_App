@@ -1,6 +1,12 @@
 import { createContext, useContext, useRef, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+<<<<<<< HEAD
 import './Modal.css';
+=======
+// import styles from '../components/NavBar/ModalForms.module.css'
+import "./Modal.css"
+
+>>>>>>> main
 
 const ModalContext = createContext();
 
@@ -35,4 +41,8 @@ export function Modal({ onClose, children }) {
     </div>,
     modalNode
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> main
