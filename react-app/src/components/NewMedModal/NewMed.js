@@ -24,3 +24,4 @@ export const NewMedModal = () => {
     </div>
     )
 }
+export default NewMedModal;
