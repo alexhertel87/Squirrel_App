@@ -124,7 +124,7 @@ export const EditMedForm = ({med, setShowModal}) => {
                             type="submit"
                             className={styles.submit_button}>
                             <Button
-                                text={"Add New Medication"}
+                                text={"Submit Edit"}
                                 action={onSubmit} />
                             </button>
                         </div>
