@@ -12,7 +12,7 @@ import MedsListForm from './components/MedsList/MedsListForm';
 import Dashboard from './components/Dashboard/Dashboard';
 import * as MedsListActions from './store/meds_list'
 import MedsListData from './components/CurrentMedsModal/MedsListData.js';
-
+import Footer from './components/Footer/index.js';
 
 function App() {
   const [loaded, setLoaded] = useState(false);
@@ -59,6 +59,7 @@ function App() {
           <h1 >Squirrel!</h1>
         </ProtectedRoute>
       </Switch>
+      <Footer />
     </BrowserRouter>
   );
 }

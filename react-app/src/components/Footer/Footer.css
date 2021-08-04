@@ -1,26 +1,32 @@
 .footer {
-    background-color: aquamarine;
+    display: flex;
+    justify-content: space-around;
     height: 35px;
     position: fixed;
     bottom: 0;
     width: 100vw;
     z-index: 1;
-    background-color: #1B2026;
+    background-color: #0dc7e7;
+    /* background-color: aquamarine; */
     color: #f2f2f2;
     /* box-shadow: -2px -2px 15px #BFAF8F, 2px -2px 15px #BFAF8F; */
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-family: 'Nunito';
     font-size: 18px;
+    box-shadow: 0px -2px 18px rgb(72, 236, 127);
 }
 
 .footer-text{
     margin-left: 20px;
+    color: black;
+    font-family: 'Dosis', sans-serif;
+    font-size: 20px;
+    /* font-weight: 900; */
 }
 
 .footer-element, .footerIcon {
-    color: white;
+    color: black;
     text-decoration: none;
     margin-left: 80px;
 }
