@@ -22,7 +22,9 @@ export const MedsListData = () => {
 
 
     return (
-        <div className={styles.TableDiv}>
+        <div>
+            <div className={styles.meds_header}>Current Medications</div>
+            <div className={styles.TableDiv}>
             <table>
                 <thead className={styles.TableHeader}>
                     <tr className={styles.ColumnNames}>
@@ -36,10 +38,10 @@ export const MedsListData = () => {
                 <tbody className={styles.TableBody}>
                     {medsArray && medsArray.map(med => (
                         <tr className={styles.medData}>
-                            <td>{med.med_name}</td>
-                            <td>{med.dosage_mg}</td>
-                            <td>{med.frequency}</td>
-                            <td>{med.med_info}</td>
+                            <td className={styles.meds_data}>{med.med_name}</td>
+                            <td className={styles.meds_data}>{med.dosage_mg}</td>
+                            <td className={styles.meds_data}>{med.frequency}</td>
+                            <td className={styles.meds_data}>{med.med_info}</td>
                             {/* <td>{med.taken}</td> */}
                             <EditMedModal med={med} />
                             <button onClick={() => dispatch(userActions.delete_active_med(med.id))}
@@ -48,7 +50,9 @@ export const MedsListData = () => {
                     ))}
                 </tbody>
             </table>
-        </div>
+            </div>
+        </div >
+        // </div>
     )
 }
 

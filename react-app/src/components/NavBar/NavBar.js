@@ -25,7 +25,7 @@ const NavBar = () => {
       <div className={styles.nav_leftside}>
         <div className="nav-logo">
           <div className={styles.logoDiv}>Squirrel!
-              <Link to="/">
+              <Link to="/dashboard">
                 <img className="logo-pic" src={logo} alt="squirrel_logo"></img>
               </Link>
             </div>
