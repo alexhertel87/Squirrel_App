@@ -18,7 +18,7 @@ const LoginForm = () => {
     if (data) {
       setErrors(data);
     }
-    
+
   };
 
   const demoLogin = async (e) => {
@@ -76,7 +76,6 @@ const LoginForm = () => {
                 <Button
                   text={"Log In"}
                   action={onLogin}
-                  color={"electricblue"}
                   width={100} />
               </button>
             </div>
@@ -85,7 +84,6 @@ const LoginForm = () => {
                 <Button
                   text={"Demo User Login"}
                   action={demoLogin}
-                  // color={"limegreen"}
                   width={180} />
               </button>
             </div>

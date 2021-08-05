@@ -12,7 +12,7 @@
   }
 
   .logoutButton {
-    background-color: rgba(8, 188, 243, 0.582);
+    background-color: rgba(52, 232, 235, 0.582);
     border: none;
     border-radius: 18px;
     font-family: 'Dosis', sans-serif;
@@ -22,9 +22,10 @@
 
   .logoutButton:hover {
     transition: background-color 0.7s;
-    background-color: rgba(241, 168, 32, 0.603);
-   background-color: rgba(255, 71, 71, 0.703);
-   border-radius: 15px;
+    /* background-color: rgba(241, 168, 32, 0.603); */
+   /* background-color: rgba(235, 52, 143, 0.703); */
+   box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
+
    font-weight: 700;
   }
 
