@@ -10,7 +10,9 @@
   height: 20%;
   border-radius: 15px;
   /* background-color: lightslategray; */
-  box-shadow: 0px 1px 18px rgb(6, 241, 210);
+  /* box-shadow: 0px 1px 18px rgb(6, 241, 210); */
+  box-shadow: 0px 1px 18px rgb(89, 92, 91);
+
 
 }
 
@@ -60,7 +62,7 @@
 }
 
 .inputField::placeholder {
-  color: white;
+  color: rgb(0, 0, 0);
   font-size: 24px;
   font-family: 'Dosis', sans-serif;
 }
