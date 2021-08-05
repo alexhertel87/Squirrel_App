@@ -12,7 +12,20 @@
   }
 
   .logoutButton {
-    /* background-color: #f5f5f5; */
+    background-color: rgba(8, 188, 243, 0.582);
+    border: none;
+    border-radius: 18px;
+    font-family: 'Dosis', sans-serif;
+    font-size: 19px;
+    font-weight: 900;
+  }
+
+  .logoutButton:hover {
+    transition: background-color 0.7s;
+    background-color: rgba(241, 168, 32, 0.603);
+   background-color: rgba(255, 71, 71, 0.703);
+   border-radius: 15px;
+   font-weight: 700;
   }
 
   .navContainer {
@@ -36,9 +49,13 @@
 
   a {
     font-size: 18px;
-    margin-right: 8px;
+    margin-right: 18px;
+    text-decoration: underline;
   }
 
 a:hover {
-
+    font-size: 18px;
+    margin-right: 18px;
+    text-decoration: underline;
+    font-weight: 900;
 }

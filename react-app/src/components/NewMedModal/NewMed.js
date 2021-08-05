@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal } from '../../context/Modal';
 import MedsListForm from '../MedsList/MedsListForm';
 import styles from './NewMedForm.module.css'
-// import styles from '../../Dashboard/Dashboard.module.css'
+// import classes from '../../Dashboard/Dashboard.module.css'
 
 
 export const NewMedModal = () => {
@@ -11,7 +11,7 @@ export const NewMedModal = () => {
     return (
         <div className={styles.medFormContainer}>
             <button
-                className={styles.dashboard_button}
+                className={styles.dash_med_button}
                 onClick={() => setShowModal(true)}>
                 New Medication
             </button>

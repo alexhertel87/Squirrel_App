@@ -83,3 +83,20 @@
     align-items: center;
     margin: 10px 0;
   }
+
+
+
+  .dash_med_button {
+    background-color: rgba(43, 228, 228, 0.5);
+    border: none;
+    border-radius: 15px;
+    font-family: 'Dosis', sans-serif;
+    font-size: 16px;
+}
+
+.dash_med_button:hover {
+  transition: background-color 0.7s;
+  background-color: rgba(71, 255, 86, 0.603);
+  border-radius: 15px;
+  font-weight: 700;
+}

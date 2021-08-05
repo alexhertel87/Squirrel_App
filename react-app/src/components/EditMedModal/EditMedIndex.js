@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Modal } from '../../context/Modal';
 import EditMedForm from './EditMedForm';
 import styles from './EditMed.module.css'
-// import styles from '../../Dashboard/Dashboard.module.css'
 
 
 export const EditMedModal = ({med}) => {
@@ -11,13 +10,13 @@ export const EditMedModal = ({med}) => {
     return (
         <div className={styles.medFormContainer}>
             <button
-                className={styles.dashboard_button}
+                className={styles.edit_med_btn}
                 onClick={() => setShowModal(true)}>
                 Edit Medication
             </button>
             {showModal && (
                 <Modal onClose={() => setShowModal(false)}>
-                    <EditMedForm med={med} setShowModal={setShowModal}/>
+                    <EditMedForm med={med} setShowModal={setShowModal} />
                 </Modal>
             )
         }

@@ -1,28 +1,82 @@
 .dashboard_body {
-    /* border: black 1px solid; */
     display: flex;
-    flex-direction: column;
-    justify-items: center;
-    width: 70vw;
+    flex-direction: row;
+    justify-content: center;
+    /* border: black 2px solid; */
+
 }
 
 .dashboard_container {
+display: flex;
+justify-content: center;
+flex-direction: column;
+margin-top: 30px;
+/* border: rgb(67, 212, 30) 1px solid; */
+padding: 20px;
+border-radius: 20px;
+box-shadow: 0px 1px 10px rgb(72, 236, 200);
+box-shadow: 0px 1px 18px rgb(72, 83, 236);
+box-shadow: 0px 1px 15px rgb(236, 151, 72);
+box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
 
 }
 
 .dashboard_header {
     font-size: 30px;
+    text-align: center;
+    margin-bottom: 10px;
+    text-decoration-line: underline;
 }
 
 .dashboard_box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     /* border: black 1px solid; */
 }
 
 .dashboard_item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
     /* border: purple 3px solid; */
-    font-size: 30px;
+    font-size: 25px;
+    margin-top: 10px;
+    /* margin-bottom: 5px; */
 }
 
-.dashboard_button, .newMedButton {
-/* height: 60px; */
+.dash_med_button {
+     background-color: rgba(43, 228, 228, 0.5);
+     border: none;
+     border-radius: 18px;
+     font-family: 'Dosis', sans-serif;
+     font-size: 16px;
+     margin-top: 3px;
+}
+
+.dash_med_button:hover {
+    transition: background-color 0.7s;
+    background-color: rgba(59, 228, 240, 0.603);
+    background-color: rgba(71, 255, 86, 0.603);
+    border-radius: 15px;
+    font-weight: 700;
+}
+
+.dash_task_button {
+    background-color: rgba(228, 43, 219, 0.5);
+    border: none;
+    border-radius: 18px;
+    font-family: 'Dosis', sans-serif;
+    font-size: 16px;
+    margin-top: 3px;
+}
+
+.dash_task_button:hover {
+   transition: background-color 0.7s;
+   background-color: rgba(77, 255, 71, 0.603);
+   background-color: rgba(241, 168, 32, 0.603);
+   border-radius: 15px;
+   font-weight: 700;
 }

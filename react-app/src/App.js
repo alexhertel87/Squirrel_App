@@ -14,10 +14,29 @@ import * as MedsListActions from './store/meds_list'
 import MedsListData from './components/CurrentMedsModal/MedsListData.js';
 import Footer from './components/Footer/index.js';
 
+import 'date-fns'
+import Grid from '@material-ui/core/Grid';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+
+
+
 function App() {
   const [loaded, setLoaded] = useState(false);
   const dispatch = useDispatch();
+//--------
+  const [selectedDate, setSelectedDate] = React.useState(
+    new Date()
+  );
 
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  }
+//--------
   useEffect(() => {
     (async() => {
       await dispatch(authenticate());

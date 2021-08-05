@@ -8,7 +8,7 @@ class Active_Tasks(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id =  db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     task_name = db.Column(db.String(100) , nullable=False, unique=True)
-    due_date_1 = db.Column(db.DateTime(timezone=True), nullable=False)
+    due_date_1 = db.Column(db.DateTime(timezone=True), nullable=True)
     due_date_2 = db.Column(db.DateTime(timezone=True), nullable=True)
     completed = db.Column(db.Boolean, nullable=True)
     completed_at = db.Column(db.DateTime(timezone=True), nullable=True)
