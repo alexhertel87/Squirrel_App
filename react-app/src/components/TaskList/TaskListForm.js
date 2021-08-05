@@ -118,5 +118,6 @@ export const TaskListForm = ({ setShowModal }) => {
             </form>
         </div>
     )
-
 }
+
+export default TaskListForm;
