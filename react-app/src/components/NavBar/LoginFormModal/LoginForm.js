@@ -18,6 +18,7 @@ const LoginForm = () => {
     if (data) {
       setErrors(data);
     }
+    
   };
 
   const demoLogin = async (e) => {
@@ -49,7 +50,7 @@ const LoginForm = () => {
           ))}
         </div>
         <div>
-          <label htmlFor='email'>Email</label>
+          <label htmlFor='email' className={ styles.placeholder}>Email</label>
           <input
             className={styles.inputField}
             name='email'
@@ -60,7 +61,7 @@ const LoginForm = () => {
           />
         </div>
         <div className={styles.inputRow}>
-          <label htmlFor='password'>Password</label>
+          <label htmlFor='password' className={ styles.placeholder}>Password</label>
           <input
             className={styles.inputField}
             name='password'

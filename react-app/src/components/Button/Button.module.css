@@ -12,10 +12,10 @@
   position: absolute;
   padding: 20px 20px;
   border: none;
-  width: 260px;
+  width: 270px;
   /* margin-top: 20px; */
   border-radius: 40px;
-  background-color: rgb(40, 40, 40);
+  background-color: rgb(194, 45, 231);
   transition: background-color 0.3s, transform 0.3s;
 }
 
@@ -29,7 +29,9 @@
 }
 
 .button:hover {
-  background-color: rgb(60, 60, 60);
+  background-color: rgb(230, 177, 31);
   transform: scale(1.07, 1.05);
-  transition: background-color 0.3s, transform 0.3s;
+  transition: background-color 0.3s, transform 0.5s;
+  /* background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%); */
+
 }
