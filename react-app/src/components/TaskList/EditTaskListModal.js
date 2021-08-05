@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal } from '../../context/Modal';
-import EditTaskForm from './EditTaskForm';
+import EditTaskForm from './EditTaskListForm';
 import styles from './TaskList.module.css'
 
 

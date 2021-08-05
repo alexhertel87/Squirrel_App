@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { login } from '../../../store/session';
 import Button from '../../Button';
 import styles from '../ModalForms.module.css';
@@ -11,6 +11,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const user = useSelector(state => state.session.user);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const onLogin = async (e) => {
     e.preventDefault();
@@ -18,7 +19,7 @@ const LoginForm = () => {
     if (data) {
       setErrors(data);
     }
-
+    history.push('/dashboard');
   };
 
   const demoLogin = async (e) => {
@@ -77,7 +78,7 @@ const LoginForm = () => {
                   text={"Log In"}
                   action={onLogin}
                   width={100} />
-                  
+
               </button>
             </div>
             <div>

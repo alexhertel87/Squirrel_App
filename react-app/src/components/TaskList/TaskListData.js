@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-// import { new_task_item } from '../../store/tasks_list';
 import * as sessionActions from '../../store/session';
-import * as userActions from '../../store/tasks_list';
+
 import * as TaskListActions from '../../store/task_list';
 import EditTaskModal from './EditTaskListModal';
 import styles from './TaskList.module.css';
@@ -24,7 +23,7 @@ export const TaskListData = () => {
     return (
         <div>
             <h1 className={styles.tasks_header}>My To-Do List</h1>
-            <h2 className={styles.tasks_header}>(C'mon...it'll only take 10 minutes)</h2>
+            <h2 className={styles.tasks_subHeader}>(C'mon...it'll only take 10 minutes)</h2>
             <div className={styles.TableDiv}>
             <table>
                 <thead className={styles.TableHeader}>
@@ -45,7 +44,7 @@ export const TaskListData = () => {
                             <td className={styles.tasks_data}>{task.completed}</td>
                             <td className={styles.tasks_data}>{task.completed_at}</td>
                             <EditTaskModal task={task} />
-                            <button onClick={() => dispatch(userActions.delete_task_item(task.id))}
+                            <button onClick={() => dispatch(TaskListActions.delete_task_item(task.id))}
                                 className={styles.task_btn}>Delete</button>
                         </tr>
                     ))}
