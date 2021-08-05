@@ -7,15 +7,15 @@
     width: 100vw;
     z-index: 1;
     background-color: rgba(6, 241, 210, 0.349);
-    /* background-color: aquamarine; */
+    background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
     color: #f2f2f2;
     /* box-shadow: -2px -2px 15px #BFAF8F, 2px -2px 15px #BFAF8F; */
     display: flex;
     justify-content: flex-start;
     align-items: center;
     font-size: 18px;
-    box-shadow: 0px -2px 8px rgb(6, 241, 210);
-    box-shadow: 0px -2px 8px rgba(174, 6, 241, 0.39);
+    /* box-shadow: 0px -2px 8px rgb(6, 241, 210);
+    box-shadow: 0px -2px 8px rgba(174, 6, 241, 0.39); */
 
 }
 
@@ -32,3 +32,5 @@
     text-decoration: none;
     margin-left: 80px;
 }
+
+background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
