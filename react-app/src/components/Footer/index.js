@@ -13,7 +13,9 @@ export default function Footer() {
             </div>
             <div className='footer-element'>
                 <a className='footerIcon' href='https://www.github.com/alexhertel87'>
-                    <i className='fab fa-github'></i> GitHub</a>
+                    <i className='fab fa-github'></i>
+                    GitHub
+                </a>
             </div>
 
         </footer>
