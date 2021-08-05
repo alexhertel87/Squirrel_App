@@ -5,19 +5,19 @@ const UPDATE_ONE_TASK = '/tasks/update'
 const DELETE_ONE_TASK = '/tasks/delete'
 
 const new_task = (task) => ({
-    type: 'NEW_TASK_ITEM',
+    type: NEW_TASK_ITEM,
     payload: task
 })
-const get_all_tasks = () => ({
-    type: 'GET_ALL_TASKS',
+const get_all_tasks = (tasks) => ({
+    type: GET_ALL_TASKS,
     payload: tasks
 })
 const update_task = (task) => ({
-    type: 'UPDATE_ONE_TASK',
+    type: UPDATE_ONE_TASK,
     payload: task
 })
 const delete_task = (task) => ({
-    type: 'DELETE_ONE_TASK',
+    type: DELETE_ONE_TASK,
     payload: task
 })
 

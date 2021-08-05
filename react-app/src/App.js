@@ -10,10 +10,11 @@ import { authenticate } from './store/session';
 import SignUpForm from './components/NavBar/SignupFormModal/SignUpForm';
 import MedsListForm from './components/MedsList/MedsListForm';
 import Dashboard from './components/Dashboard/Dashboard';
-import * as MedsListActions from './store/meds_list'
+// import * as MedsListActions from './store/meds_list'
 import MedsListData from './components/CurrentMedsModal/MedsListData.js';
 import Footer from './components/Footer/index.js';
 import TaskListForm from './components/TaskList/TaskListForm.js';
+import TaskListData from './components/TaskList/TaskListData.js';
 
 
 
@@ -52,10 +53,13 @@ function App() {
         <Route path='/dashboard/current_meds' exact={true}>
           <MedsListData />
         </Route>
+        <Route path='/dashboard/task_list' exact={true}>
+          <TaskListData />
+        </Route>
         <Route path='/sign-up' exact={true}>
           <SignUpForm />
         </Route>
-        <ProtectedRoute path='/users' exact={true} >
+        {/* <ProtectedRoute path='/users' exact={true} >
           <UsersList/>
         </ProtectedRoute>
         <ProtectedRoute path='/users/:userId' exact={true} >
@@ -63,7 +67,7 @@ function App() {
         </ProtectedRoute>
         <ProtectedRoute path='/' exact={true} >
           <h1 >Squirrel!</h1>
-        </ProtectedRoute>
+        </ProtectedRoute> */}
       </Switch>
       <Footer />
     </BrowserRouter>

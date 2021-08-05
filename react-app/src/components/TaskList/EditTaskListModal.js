@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { Modal } from '../../context/Modal';
-import EditMedForm from './EditMedForm';
-import styles from './EditMed.module.css'
+import EditTaskForm from './EditTaskForm';
+import styles from './TaskList.module.css'
 
 
 export const EditTaskModal = ({med}) => {
     const [showModal, setShowModal] = useState(false);
 
     return (
-        <div className={styles.medFormContainer}>
+        <div className={styles.taskFormContainer}>
             <button
-                className={styles.edit_med_btn}
+                className={styles.edit_task_btn}
                 onClick={() => setShowModal(true)}>
-                Edit Medication
+                Edit Task
             </button>
             {showModal && (
                 <Modal onClose={() => setShowModal(false)}>
-                    <EditMedForm med={med} setShowModal={setShowModal} />
+                    <EditTaskForm med={med} setShowModal={setShowModal} />
                 </Modal>
             )
         }
