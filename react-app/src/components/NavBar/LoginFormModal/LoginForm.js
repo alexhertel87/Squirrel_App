@@ -28,6 +28,7 @@ const LoginForm = () => {
     if (data) {
       setErrors(data);
     }
+    history.push('/dashboard');
   };
 
   const updateEmail = (e) => {
