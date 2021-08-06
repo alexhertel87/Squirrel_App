@@ -4,20 +4,36 @@
   padding-top: 5px;
   padding-bottom: 10px;
   font-family: 'Dosis', sans-serif;
-  /* font-family: 'El Messiri', sans-serif; */
+  border-bottom: black 1px solid;
   /* background-color: #f7c39e; */
 }
 
 .logo-pic {
   /* transform: translateY(20px); */
-  height: 60px;
+  height: 62px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  margin-top: 10px;
+  margin-left: 15px;
+  /* width: auto; */
+  max-width: 135px;
+  max-height: 150px;
+  border-radius: 15px;
+}
+
+.logo-pic:hover {
+  /* transform: translateY(20px); */
+  /* width: 62px;
+  height: 62px; */
   margin-top: 10px;
   margin-left: 15px;
   /* width: auto; */
   max-width: 135px;
   max-height: 150px;
 
+  box-shadow: 0px 1px 5px rgba(23, 117, 240, 0.925);
 }
+
 .nav-container > *{
   padding: 0 20px 0 20px;
 }

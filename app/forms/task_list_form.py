@@ -6,8 +6,8 @@ from app.models import Active_Tasks, User, db
 
 
 class TaskForm(FlaskForm):
-    task_name = StringField('Task Name', validators=[DataRequired()])
-    due_date_1 = DateField('Due Date 1', validators=[DataRequired()])
-    due_date_2 = DateField('Due Date 2')
-    completed = BooleanField('Completed')
-    completed_at = DateField('Completed at')
+    task_name = StringField('task_name', validators=[DataRequired()])
+    due_date_1 = DateField('due_date_1', validators=[DataRequired()])
+    due_date_2 = DateField('due_date_2')
+    completed = BooleanField('completed')
+    completed_at = DateField('completed_at')

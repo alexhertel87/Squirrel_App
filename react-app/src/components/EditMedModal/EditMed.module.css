@@ -3,7 +3,70 @@
     border: none;
     border-radius: 15px;
     font-family: 'Dosis', sans-serif;
-    font-size: 16px;
+    font-size: 22px;
     margin-top: 4px;
     margin-bottom: 4px;
+
+}
+
+.edit_med_btn:hover {
+    box-shadow: 0px 1px 5px rgba(14, 13, 13, 0.486);
+   }
+
+.new_meds_cont {
+    background-color: white;
+    text-align: center;
+    border-radius: 5px;
+    min-width: 300px;
+}
+
+.med_data_inputs {
+    max-width: 200px;
+    box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
+    text-align: center;
+    border-radius: 15px;
+    margin-bottom: 5px;
+}
+
+.meds_form {
+    box-shadow: 0px 1px 15px rgba(25, 186, 214, 0.986);
+    background-color: white;
+    z-index: 20;
+    text-align: center;
+    border-radius: 15px;
+    min-width: 300px;
+    padding: 15px;
+}
+
+.newMedsHeader{
+    text-align: center;
+    text-decoration: underline;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.med_buttons {
+    margin-top: 30px;
+}
+
+.submit_button {
+    margin-top: 30px;
+}
+
+.med_info_text{
+    font-family: 'Dosis', sans-serif;
+    border: thin solid rgb(168, 162, 162);
+    border-radius: 10px;
+    width: 200px;
+    height: fit-content;
+    margin-top: 5px;
+    border: black 1px solid;
+}
+
+.form_container {
+    background-color: white;
+}
+
+.newMedLabel{
+    margin-top: 15px;
 }

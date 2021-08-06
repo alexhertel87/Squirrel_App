@@ -7,26 +7,27 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  font-family: 'El Messiri', sans-serif;
   font-family: 'Dosis', sans-serif;
+  font-weight: 500;
   font-size: 60px;
   }
 
   .logoutButton {
-    background-color: rgba(52, 232, 235, 0.582);
+    background-color: rgba(235, 52, 226, 0.582);
     border: none;
     border-radius: 18px;
     font-family: 'Dosis', sans-serif;
-    font-size: 16px;
+    font-size: 22px;
+    height: 35px;
     font-weight: 900;
+    padding-left: 8px;
   }
 
   .logoutButton:hover {
     transition: background-color 0.7s;
-    /* background-color: rgba(241, 168, 32, 0.603); */
-   /* background-color: rgba(235, 52, 143, 0.703); */
-   box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
-
-   font-weight: 700;
+    box-shadow: 0px 1px 5px rgba(14, 13, 13, 0.486);
+    font-weight: 700;
   }
 
   .navContainer {
@@ -35,27 +36,31 @@
     padding-top: 5px;
     padding-bottom: 10px;
     font-family: 'Dosis', sans-serif;
+    border-bottom: black 1px solid;
+    box-shadow: 0px 5px 15px rgba(14, 13, 13, 0.486);
     /* background-color: #f7c39e; */
   }
 
   .nav_right {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     gap: 22px;
-    height: 35px;
+    height: 45px;
     margin-top: 20px;
-    margin-right: 15px;
+    margin-right: 25px;
   }
 
   a {
-    font-size: 18px;
+    font-size: 24px;
     margin-right: 18px;
-    text-decoration: underline;
+    padding-left: 8px;
+    /* border-left: black 1px solid; */
+    /* text-decoration: underline; */
   }
 
 a:hover {
-    font-size: 18px;
+    font-size: 25px;
     margin-right: 18px;
     text-decoration: underline;
     font-weight: 900;

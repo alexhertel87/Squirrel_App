@@ -1,16 +1,16 @@
 .TableDiv {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     font-size: 24px;
     margin-top: 30px;
-    margin-left: 120px;
-    margin-right: 120px;
+    margin-left: 250px;
+    margin-right: 250px;
     border-radius: 15px;
+    min-width: 1150px;
     padding: 20px;
     box-shadow: 0px 1px 18px rgb(72, 217, 236);
     box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
-
 }
 
 .TableHeader{
@@ -21,11 +21,11 @@
 }
 
 .ColumnNames {
-    /* display: flex; */
     font-weight: 900;
-    font-size: 20px;
-    margin-left: 20px;
+    font-size: 26px;
+    margin-left: 25px;
     padding-right: 30px;
+    padding-left: 30px;
 }
 
 .TableBody{
@@ -33,7 +33,7 @@
 }
 
 .MedInfo {
-    font-size: 20px;
+    font-size: 25px;
 }
 
 .med_btns {
@@ -41,12 +41,30 @@
     border: none;
     border-radius: 15px;
     font-family: 'Dosis', sans-serif;
-    font-size: 16px;
+    font-size: 22px;
     margin-top: 4px;
     margin-bottom: 4px;
+    /* margin-left: 44px; */
+}
+
+.med_btns:hover {
+    box-shadow: 0px 1px 5px rgba(14, 13, 13, 0.486);
 }
 
 .medData {
+    /* font-size: 204; */
     text-align: center;
     z-index: 1;
+}
+
+.meds_data{
+    font-size: 24px;
+}
+
+.meds_header {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 900;
+    text-decoration: underline;
+    margin-top: 85px;
 }

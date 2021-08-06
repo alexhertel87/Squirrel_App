@@ -7,7 +7,7 @@ from app.forms.task_list_form import TaskForm
 task_list_routes = Blueprint('task_list', __name__)
 
 #!------------ GET Works ------------#
-@task_list_routes.route('/list', methods=['GET'])
+@task_list_routes.route('/all', methods=['GET'])
 # @login_required
 def task_list():
     return {task.id: task.to_dict() for task in current_user.active_tasks}
@@ -16,19 +16,24 @@ def task_list():
 @task_list_routes.route('/new', methods=['POST'])
 # @login_required
 def new_task():
+    print("""
+
+        POST ROUTE GOT HIT
+
+    """)
     form = TaskForm()
     # form['csrf_token'].data = request.cookies['csrf_token']
-    data = request.get_json()
+    data = request.get_json(force=True)
+    print("DATA ----> ", data["task_name"])
     task_item = Active_Tasks(
     user_id = current_user.id,
-    task_name = form.task_name.data,
-    due_date_1 = form.due_date_1.data,
-    due_date_2 = form.due_date_2.data,
-    completed = form.completed.data,
-    completed_at = form.completed_at.data)
+    task_name = data["task_name"],
+    due_date_1 = data["due_date_1"],
+    due_date_2 = data["due_date_2"])
     db.session.add(task_item)
     db.session.commit()
-    task_items = Active_Tasks.query.filter_by(user_id=current_user.id)
+    print("TASK ITEMSSSS", task_item)
+    # task_items = Active_Tasks.query.filter_by(user_id=current_user.id)
     print("""
 
     Task created successfully.
@@ -37,26 +42,34 @@ def new_task():
     return task_item.to_dict()
 
 
-@task_list_routes.route('/<int:id>/update', methods=['PUT'])
+@task_list_routes.route('/update/<int:id>/', methods=['PUT'])
 @login_required
 def update_task(id):
     form = TaskForm()
     form['csrf_token'].data = request.cookies['csrf_token']
-    if form.validate_on_submit():
-        task_item = Active_Tasks.query.get(int(id))
-        task_item.task_name = form.task_name.data
-        task_item.due_date_1 = form.due_date_1.data
-        task_item.due_date_2 = form.due_date_2.data
-        task_item.completed = form.completed.data
-        task_item.completed_at = form.completed_at.data
-        db.session.add(task_item)
-        db.session.commit()
-        print("""
+    # if form.validate_on_submit():
+    print("DOES THIS PRINT???")
+    edit_task = Active_Tasks.query.get(id)
+    print("EDIT TASK ----> ", edit_task.to_dict())
+    print("----------->", form.due_date_1, "=========>>", type(form.due_date_1))
 
-        Task Item Successfully Updated
-
-        """)
-        return task_item.to_dict()
+    form.populate_obj(edit_task)
+    db.session.commit()
+    return edit_task.to_dict()
+    # form['csrf_token'].data = request.cookies['csrf_token']
+    # if form.validate_on_submit():
+    #     task_item = Active_Tasks.query.get(int(id))
+    #     task_item.task_name = form.task_name.data
+    #     task_item.due_date_1 = form.due_date_1.data
+    #     task_item.due_date_2 = form.due_date_2.data
+    #     task_item.completed = form.completed.data
+    #     task_item.completed_at = form.completed_at.data
+    #     db.session.add(task_item)
+    #     db.session.commit()
+    #     print("""
+    #     Task Item Successfully Updated
+    #     """)
+    #     return task_item.to_dict()
 
 
 @task_list_routes.route('/<int:id>/delete', methods=['DELETE'])

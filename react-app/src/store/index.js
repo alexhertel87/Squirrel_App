@@ -2,10 +2,12 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import session from './session'
 import active_meds from './meds_list';
+import task_items from './task_list';
 
 const rootReducer = combineReducers({
   session,
   active_meds,
+  task_items
 });
 
 

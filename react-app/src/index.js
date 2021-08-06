@@ -10,7 +10,7 @@ const store = configureStore();
 
 ReactDOM.render(
   <React.StrictMode>
-       <ReduxProvider store={store}>
+    <ReduxProvider store={store}>
       <ModalProvider>
         <App />
       </ModalProvider>

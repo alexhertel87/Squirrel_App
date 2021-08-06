@@ -11,6 +11,8 @@ import {CurrMedsModal} from '../CurrentMedsModal/CurrentMeds';
 import styles from './Dashboard.module.css';
 import * as MedsListActions from '../../store/meds_list'
 import MedsListData from '../CurrentMedsModal/MedsListData';
+import TaskListData from '../TaskList/TaskListData';
+import TaskListModal from '../TaskList/TaskListModal';
 
 export const Dashboard = () => {
 
@@ -42,14 +44,17 @@ export const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div className={styles.dashboard_item}>Task List
+                    <div className={styles.dashboard_item}>Add to Task List
                         <div>
-                            <button text="placeholder" className={styles.dash_task_button }>placeholder</button>
+                            <TaskListModal />
                         </div>
+
                     </div>
-                    <div className={styles.dashboard_item}>Completed Tasks
+                    <div className={styles.dashboard_item}>My To-Do List
                         <div>
-                            <button text="placeholder" className={styles.dash_task_button }>placeholder</button>
+                            <Link to="/dashboard/task_list" className={styles.dash_task_button}>
+                                View To-Do List
+                             </Link>
                         </div>
                     </div>
                 </div>
