@@ -7,7 +7,7 @@ class Active_Tasks(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id =  db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    task_name = db.Column(db.String(100) , nullable=False, unique=True)
+    task_name = db.Column(db.String(100) , nullable=False)
     due_date_1 = db.Column(db.DateTime(timezone=True), nullable=True)
     due_date_2 = db.Column(db.DateTime(timezone=True), nullable=True)
     completed = db.Column(db.Boolean, nullable=True)
@@ -17,3 +17,14 @@ class Active_Tasks(db.Model, UserMixin):
 
     user = relationship("User", back_populates="active_tasks")
     completed = relationship("Completed_Tasks", back_populates="active")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'task_name': self.task_name,
+            'due_date_1': self.due_date_1,
+            'due_date_2': self.due_date_2,
+            'completed': self.completed,
+            'completed_at': self.completed_at,
+        }

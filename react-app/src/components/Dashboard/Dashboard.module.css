@@ -8,17 +8,17 @@
 
 .dashboard_container {
 display: flex;
-justify-content: center;
 flex-direction: column;
+justify-content: center;
 margin-top: 30px;
 /* border: rgb(67, 212, 30) 1px solid; */
 padding: 20px;
-width: 950px;
+width: 550px;
 height: auto;
-min-width: 650px;
+min-width: 550px;
 /* min-height: 500px; */
 border-radius: 20px;
-margin-top: 250px;
+margin-top: 150px;
 box-shadow: 0px 1px 10px rgb(72, 236, 200);
 box-shadow: 0px 1px 18px rgb(72, 83, 236);
 box-shadow: 0px 1px 15px rgb(236, 151, 72);
@@ -35,7 +35,7 @@ box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
 
 .dashboard_box {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-evenly;
     margin-bottom: 25px;
     /* border: black 1px solid; */
@@ -55,7 +55,7 @@ box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
 }
 
 .dash_med_button {
-     background-color: rgba(43, 228, 228, 0.5);
+     background-color: rgba(43, 228, 52, 0.5);
      border: none;
      border-radius: 18px;
      font-family: 'Dosis', sans-serif;
@@ -68,12 +68,15 @@ box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
     transition: background-color 0.7s;
     background-color: rgba(59, 228, 240, 0.603);
     background-color: rgba(71, 255, 86, 0.603);
+    background-color: rgba(228, 43, 219, 0.5);
+
     border-radius: 15px;
     font-weight: 700;
 }
 
 .dash_task_button {
-    background-color: rgba(228, 43, 219, 0.5);
+
+    background-color: rgba(241, 168, 32, 0.603);
     border: none;
     border-radius: 18px;
     font-family: 'Dosis', sans-serif;
@@ -85,7 +88,7 @@ box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
 .dash_task_button:hover {
    transition: background-color 0.7s;
    background-color: rgba(77, 255, 71, 0.603);
-   background-color: rgba(241, 168, 32, 0.603);
+   background-color: rgba(228, 43, 219, 0.5);
    border-radius: 15px;
    font-weight: 700;
 }

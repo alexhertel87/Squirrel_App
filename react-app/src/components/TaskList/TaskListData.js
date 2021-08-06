@@ -6,9 +6,11 @@ import * as sessionActions from '../../store/session';
 import * as TaskListActions from '../../store/task_list';
 import EditTaskModal from './EditTaskListModal';
 import styles from './TaskList.module.css';
+import TaskListForm from './TaskListForm';
+import TaskListModal from './TaskListModal';
 
 
-export const TaskListData = () => {
+const TaskListData = () => {
 
     const tasks = useSelector((state) => state.task_items);
 
@@ -21,10 +23,13 @@ export const TaskListData = () => {
 
 
     return (
-        <div>
+        <div className={ styles.task_list_page}>
             <h1 className={styles.tasks_header}>My To-Do List</h1>
             <h2 className={styles.tasks_subHeader}>(C'mon...it'll only take 10 minutes)</h2>
             <div className={styles.TableDiv}>
+                <div>
+                    <TaskListModal />
+                </div>
             <table>
                 <thead className={styles.TableHeader}>
                     <tr className={styles.ColumnNames}>

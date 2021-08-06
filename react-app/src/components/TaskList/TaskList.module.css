@@ -1,0 +1,184 @@
+.task_list_page {
+    display: block;
+    border: crimson solid 1px;
+}
+
+.tasks_header {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 900;
+    text-decoration: underline;
+    margin-top: 85px;
+    border: dodgerblue solid 1px;
+}
+
+.tasks_subHeader {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 900;
+    text-decoration: underline;
+    margin-top: 15px;
+    border: rgb(255, 30, 244) solid 1px;
+}
+
+
+.TableDiv {
+    /* border: forestgreen solid 4px; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    position: fixed;
+    font-size: 24px;
+    margin-top: 30px;
+    margin-left: 350px;
+    margin-right: 350px;
+    border-radius: 15px;
+    min-width: 1150px;
+    padding: 20px;
+    box-shadow: 0px 1px 18px rgb(72, 217, 236);
+    box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
+}
+
+.TableHeader {
+
+}
+
+
+.ColumnNames {
+    font-weight: 900;
+    font-size: 22px;
+    margin-left: 25px;
+    padding-right: 30px;
+    padding-left: 30px;
+}
+
+
+.TableBody {
+
+}
+
+.task_items {
+
+}
+
+.tasks_data {
+
+}
+
+
+.task_btn {
+    background-color: rgba(228, 43, 52, 0.596);
+    border: none;
+    border-radius: 15px;
+    font-family: 'Dosis', sans-serif;
+    font-size: 22px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.edit_task_btn {
+    background-color: rgba(43, 228, 228, 0.5);
+    border: none;
+    border-radius: 15px;
+    font-family: 'Dosis', sans-serif;
+    font-size: 22px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.edit_task_btn:hover {
+    box-shadow: 0px 1px 5px rgba(14, 13, 13, 0.486);
+}
+
+.task_form_container {
+    border: forestgreen solid 1px;
+    background-color: white;
+    box-shadow: 0px 1px 15px rgba(25, 186, 214, 0.986);
+    border-radius: 15px;
+    padding: 20px;
+
+}
+
+.h1 {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 900;
+    text-decoration: underline;
+}
+
+.h2 {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 900;
+    /* text-decoration: underline; */
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+
+.task_form {
+    background-color: white;
+    z-index: 20;
+    text-align: center;
+    border-radius: 15px;
+    min-width: 400px;
+    padding: 15px;
+
+}
+label {
+    font-size: 22px;
+    font-weight: 900;
+}
+
+input, input#task_name {
+    border-bottom: black solid 1px;
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: hotpink;
+    width: 350px;
+    text-align: center;
+}
+
+.dash_task_button {
+    background-color: rgba(241, 168, 32, 0.603);
+    border: none;
+    border-radius: 18px;
+    font-family: 'Dosis', sans-serif;
+    font-size: 24px;
+    margin-top: 3px;
+    margin-top: 13px;
+}
+
+.dash_task_button:hover {
+    transition: background-color 0.7s;
+    background-color: rgba(77, 255, 71, 0.603);
+    background-color: rgba(228, 43, 219, 0.5);
+    border-radius: 15px;
+    font-weight: 700;
+ }
+
+
+.task_form_input {
+    /* border-bottom: black solid 1px; */
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: hotpink;
+
+}
+.task_form_row {
+
+}
+
+.task_form_button {
+    background-color: rgba(252, 73, 148, 0.555);
+    border: none;
+    border-radius: 15px;
+    font-family: 'Dosis', sans-serif;
+    font-size: 22px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.taskFormContainer {
+
+}

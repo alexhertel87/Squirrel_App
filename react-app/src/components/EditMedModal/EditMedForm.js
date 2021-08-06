@@ -119,7 +119,7 @@ export const EditMedForm = ({med, setShowModal}) => {
                                 ></textarea>
                             </div>
                         </label >
-                            <div>
+                    <div className={ styles.med_buttons}>
                             <button
                                 type="submit"
                                 className={styles.submit_button}>

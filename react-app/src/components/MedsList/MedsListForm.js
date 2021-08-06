@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { add_new_med } from '../../store/meds_list';
 import * as sessionActions from '../../store/session';
 import * as userActions from '../../store/meds_list';
@@ -20,10 +20,12 @@ export const MedsListForm = ({setShowModal}) => {
     const [taken, setTaken] = useState(false);
     const [frequency, setFrequency] = useState('');
     const [medInfo, setMedInfo] = useState('');
+    const history = useHistory();
 
     const user_id = user?.id;
 
     const onSubmit = async (e) => {
+        // const history = useHistory();
         e.preventDefault();
         if (user_id) {
             setErrors([]);
@@ -35,13 +37,13 @@ export const MedsListForm = ({setShowModal}) => {
                 taken: taken,
                 med_info: medInfo
             }
-            // debugger
             dispatch(userActions.add_new_med(data));
             setShowModal(false);
         }
         else {
             setErrors(['Please login to add a new med']);
         }
+        history.push('/dashboard/current_meds');
     }
 
     useEffect(() => {

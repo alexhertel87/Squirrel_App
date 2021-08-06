@@ -35,7 +35,7 @@ const NavBar = () => {
         <ul className={styles.linkDiv}>
           <li>
             <NavLink to='/dashboard' exact={true} activeClassName='active'>
-              Home
+              Dashboard
             </NavLink>
           </li>
           <li>

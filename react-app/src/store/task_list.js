@@ -30,11 +30,12 @@ const delete_task = (task) => ({
 // ------------ CREATE New Task Item Thunk ------------//
 
 export const new_task_item = (task) => async (dispatch) => {
-    const res = await fetch(`/tasks/new`, {
+    console.log("TASK ------>> ",task);
+    const res = await fetch(`/api/tasks/new`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        // headers: {
+        //     'Content-Type': 'application/json',
+        // },
         body: JSON.stringify(task)
     })
     if (res.ok) {
@@ -47,7 +48,7 @@ export const new_task_item = (task) => async (dispatch) => {
 // ------------ GET All Tasks Thunk ------------//
 
 export const all_task_items = () => async (dispatch) => {
-    const res = await fetch(`/tasks/all`)
+    const res = await fetch(`/api/tasks/all`)
     if (res.ok) {
         const all_tasks = await res.json()
         dispatch(get_all_tasks(all_tasks))
@@ -58,7 +59,7 @@ export const all_task_items = () => async (dispatch) => {
 // ------------ UPDATE Task Item Thunk ------------//
 
 export const update_task_item = (task) => async (dispatch) => {
-    const res = await fetch(`/tasks/update`, {
+    const res = await fetch(`/api/tasks/update`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
