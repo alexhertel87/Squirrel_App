@@ -4,7 +4,7 @@ import EditTaskForm from './EditTaskListForm';
 import styles from './TaskList.module.css'
 
 
-export const EditTaskModal = ({med}) => {
+export const EditTaskModal = ({task}) => {
     const [showModal, setShowModal] = useState(false);
 
     return (
@@ -16,7 +16,7 @@ export const EditTaskModal = ({med}) => {
             </button>
             {showModal && (
                 <Modal onClose={() => setShowModal(false)}>
-                    <EditTaskForm med={med} setShowModal={setShowModal} />
+                    <EditTaskForm task={task} setShowModal={setShowModal} />
                 </Modal>
             )
         }

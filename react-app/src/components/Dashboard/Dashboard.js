@@ -53,7 +53,7 @@ export const Dashboard = () => {
                     <div className={styles.dashboard_item}>My To-Do List
                         <div>
                             <Link to="/dashboard/task_list" className={styles.dash_task_button}>
-                                View Completed Tasks
+                                View To-Do List
                              </Link>
                         </div>
                     </div>

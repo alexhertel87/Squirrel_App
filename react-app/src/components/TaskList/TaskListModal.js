@@ -13,7 +13,7 @@ export const TaskListModal = () => {
             <button
                 className={styles.dash_task_button}
                 onClick={() => setShowModal(true)}>
-                Add A New Task
+                Add a New Task
             </button>
             {showModal && (
                 <Modal onClose={() => setShowModal(false)}>

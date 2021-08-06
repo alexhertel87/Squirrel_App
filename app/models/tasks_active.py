@@ -13,8 +13,8 @@ class Active_Tasks(db.Model, UserMixin):
     completed = db.Column(db.Boolean, nullable=True)
     completed_at = db.Column(db.DateTime(timezone=True), nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now())
-    updated_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now(), onupdate=db.func.now())
-
+    updated_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now())
+#onupdate=db.func.now()
     user = relationship("User", back_populates="active_tasks")
     completed = relationship("Completed_Tasks", back_populates="active")
 

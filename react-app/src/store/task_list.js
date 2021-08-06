@@ -59,18 +59,34 @@ export const all_task_items = () => async (dispatch) => {
 // ------------ UPDATE Task Item Thunk ------------//
 
 export const update_task_item = (task) => async (dispatch) => {
-    const res = await fetch(`/api/tasks/update`, {
+    const {id, task_name, due_date_1, due_date_2, completed, completed_at} = task
+    const res = await fetch(`/api/tasks/update/${id}/`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(task)
+        body: JSON.stringify(
+            {
+                task_name,
+                due_date_1,
+                due_date_2,
+                completed,
+                completed_at
+            }
+        )
     })
+    console.log(res);
     if (res.ok) {
         const tasks = await res.json()
+        console.log(tasks);
         dispatch(update_task(tasks))
         return tasks
     }
+    else {
+        console.log("ERROR");
+
+    }
+
 }
 
 // ------------ DELETE Task Item Thunk ------------//
@@ -89,26 +105,27 @@ const initialState = {tasks: []}
 
 const task_list_reducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'NEW_TASK_ITEM': {
+        case NEW_TASK_ITEM: {
             const new_state = Object.assign({}, state)
+            console.log(action);
             new_state[action.payload.id] = action.payload
-
+            console.log(new_state);
             return new_state;
         }
-        case 'GET_ALL_TASKS': {
+        case GET_ALL_TASKS: {
             const new_state = {
                 ...action.payload
             }
             return new_state;
         }
-        case 'UPDATE_ONE_TASK': {
+        case UPDATE_ONE_TASK: {
             const new_state = {
                 ...state,
                 [action.payload.id]: action.payload
             }
             return new_state;
         }
-        case 'DELETE_ONE_TASK': {
+        case DELETE_ONE_TASK: {
             const new_state = {
                 ...state
             }
