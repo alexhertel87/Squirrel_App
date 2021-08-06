@@ -28,7 +28,7 @@ table {
 }
 
 .TableDiv {
-    border: forestgreen solid 4px;
+    /* border: forestgreen solid 4px; */
     display: flex;
     flex-direction: row;
     justify-content: space-around;
