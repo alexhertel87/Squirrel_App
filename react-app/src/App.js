@@ -59,7 +59,7 @@ function App() {
         <Route path='/sign-up' exact={true}>
           <SignUpForm />
         </Route>
-        {/* <ProtectedRoute path='/users' exact={true} >
+        <ProtectedRoute path='/users' exact={true} >
           <UsersList/>
         </ProtectedRoute>
         <ProtectedRoute path='/users/:userId' exact={true} >
@@ -67,7 +67,7 @@ function App() {
         </ProtectedRoute>
         <ProtectedRoute path='/' exact={true} >
           <h1 >Squirrel!</h1>
-        </ProtectedRoute> */}
+        </ProtectedRoute>
       </Switch>
       <Footer />
     </BrowserRouter>

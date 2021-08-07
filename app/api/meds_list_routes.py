@@ -20,7 +20,7 @@ def meds_list():
 
 
 @meds_list_routes.route('/new', methods=['POST'])
-# @login_required
+@login_required
 def new_active_meds():
     form = MedsForm()
     form['csrf_token'].data = request.cookies['csrf_token']
