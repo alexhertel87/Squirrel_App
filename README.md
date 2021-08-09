@@ -1,4 +1,4 @@
-```# Squirrel!
+# Squirrel!
 
 
 Squirrel! is a medication log and tracker, as well as a to-do/task list that is geared towards aiding the ADHD and neurodivergant community with remembering to take their medications and complete everyday tasks.
@@ -27,5 +27,3 @@ Squirrel! is built on a Flask-SQLAlchemy backend and a Redux/React frontend stac
 * Users will be able to check a box next to their currently-prescribed medications that (that will un-check each day) and as they are checked, that medication will be added to a separate table called "Medication Log" that will display whether the user successfully took that medication on that given day.
 * Users will also be able to set reminders that will notify them to take their medications each morning
 
-
-```
