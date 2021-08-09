@@ -22,6 +22,7 @@ export const TaskListForm = ({ setShowModal }) => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        console.log('TEST SUCCESS')
         if (user_id) {
             setErrors([]);
             const task = {
@@ -46,9 +47,8 @@ export const TaskListForm = ({ setShowModal }) => {
             <h1 className={styles.h1}>Add a New Task to Your To-Do List</h1>
             <h2 className={styles.h2}>(The Anti-Procrastination Station)</h2>
             <form onSubmit={onSubmit} className={styles.task_form}>
-                <div className={styles.task_form_row}>
-                    <label htmlFor="task_name">Task Name</label>
-                    <div className={styles.task_form_input}>
+                    <label htmlFor="task_name">Task Name
+                    {/* <div className={styles.task_form_input}> */}
                         <input
                             type="text"
                             id="task_name"
@@ -56,12 +56,13 @@ export const TaskListForm = ({ setShowModal }) => {
                             value={taskName}
                             onChange={(e) => setTaskName(e.target.value)}
                             placeholder="What do you need to do"
-                        ></input>
-                    </div>
-                </div>
-                <div className={styles.task_form_row}>
-                    <label htmlFor="due_date_1">Optimal Due Date</label>
-                    <div className={styles.task_form_input}>
+                            ></input>
+                            </label>
+                    {/* </div> */}
+
+
+                    <label htmlFor="due_date_1">Optimal Due Date
+                    {/* <div className={styles.task_form_input}> */}
                         <input
                             type="date"
                             id="due_date_1"
@@ -69,12 +70,12 @@ export const TaskListForm = ({ setShowModal }) => {
                             value={dueDate1}
                             onChange={(e) => setDueDate1(e.target.value)}
                             placeholder="Target Due Date"
-                        ></input>
-                    </div>
-                </div>
-                <div className={styles.task_form_row}>
-                    <label htmlFor="due_date_2">*Absolute Latest* Due Date</label>
-                    <div className={styles.task_form_input}>
+                            ></input>
+                    {/* </div> */}
+                    </label>
+
+
+                    <label htmlFor="due_date_2">*Absolute Latest* Due Date
                         <input
                             type="date"
                             id="due_date_2"
@@ -82,40 +83,43 @@ export const TaskListForm = ({ setShowModal }) => {
                             value={dueDate2}
                             onChange={(e) => setDueDate2(e.target.value)}
                             placeholder="(...If you procrastinated...)"
+                            className={styles.task_form_input}
                         ></input>
-                    </div>
-                </div>
+
+                    </label>
+
+                {/* <div className={styles.task_form_row}>
+                </div> */}
                 {/* <div className={styles.task_form_row}>
                     <label htmlFor="completed">Completed</label>
                     <div className={styles.task_form_input}>
                         <input
-                            type="checkbox"
-                            id="completed"
-                            name="completed"
-                            value={completed}
-                            onChange={(e) => setCompleted(e.target.checked)}
+                        type="checkbox"
+                        id="completed"
+                        name="completed"
+                        value={completed}
+                        onChange={(e) => setCompleted(e.target.checked)}
                         ></input>
-                    </div>
-                </div>
+                        </div>
+                        </div>
                 <div className={styles.task_form_row}>
-                    <label htmlFor="completed_at">Completed At</label>
-                    <div className={styles.task_form_input}>
-                        <input
-                            type="date"
+                <label htmlFor="completed_at">Completed At</label>
+                <div className={styles.task_form_input}>
+                <input
+                type="date"
                             id="completed_at"
                             name="completed_at"
                             value={completedAt}
                             onChange={(e) => setCompletedAt(e.target.value)}
                             placeholder="Lets get this done!"
-                        ></input>
+                            ></input>
                     </div>
                 </div> */}
-                <div className={styles.task_form_row}>
-                    <button type="submit" className={styles.task_form_button}>
-                        Add Task
-                    </button>
-                </div>
+
             </form>
+            <button type="submit" className={styles.task_form_button}>
+                    Add Task
+            </button>
         </div>
     )
 }

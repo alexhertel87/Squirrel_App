@@ -3,6 +3,7 @@ import React from 'react';
 import { NavLink, Link, Redirect, useHistory } from 'react-router-dom';
 import LogoutButton from './LogoutButton/LogoutButton';
 import './Navbar.css'
+import { useSelector } from 'react-redux';
 import LoginFormModal from "./LoginFormModal";
 // import SignupFormModal from "./SignupFormModal";
 // import SignUpForm from './SignupFormModal/SignUpForm';
@@ -11,7 +12,11 @@ import Button from "../Button";
 import styles from './Navbar.module.css';
 
 
+
 const NavBar = () => {
+  // const user = useSelector(state => state.session.user);
+  // const [user, setUser] = useState(user);
+
 
   // let userRender = (
   //   <>
@@ -31,6 +36,9 @@ const NavBar = () => {
             </div>
         </div>
       </div>
+      {/* <div className={styles.nav_middle}>
+        <div>Welcome { user.username }</div>
+      </div> */}
       <div className={styles.nav_right}>
         <ul className={styles.linkDiv}>
           <li>

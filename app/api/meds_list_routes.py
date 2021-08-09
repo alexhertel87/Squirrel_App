@@ -9,7 +9,8 @@ meds_list_routes = Blueprint('meds_list', __name__)
 #* *-*-*-*-*-*-* All Active Meds List Route [GET] *-*-*-*-*-*-*
 #! ----- IT WORKS -----
 
-@meds_list_routes.route('/active', methods=['GET'])
+# @meds_list_routes.route('/<int:id>/active', methods=['GET'])
+@meds_list_routes.route('/meds_list/active', methods=['GET'])
 # @login_required
 def meds_list():
     return {med.id: med.to_dict() for med in current_user.meds_list}
@@ -51,6 +52,7 @@ def new_active_meds():
 #! ----- IT WORKS -----
 
 @meds_list_routes.route('/<int:id>/update', methods=['PUT'])
+# @meds_list_routes.route('/<int:id>/update', methods=['PUT'])
 # @login_required
 def update_active_meds(id):
     form = MedsForm()
