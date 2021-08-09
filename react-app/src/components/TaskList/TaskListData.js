@@ -42,7 +42,8 @@ const TaskListData = () => {
                     </tr>
                 </thead>
                 <tbody className={styles.TableBody}>
-                    {taskArray && taskArray.map(task => (
+                        {taskArray && taskArray.map(task => (
+                        <>
                         <tr className={styles.task_items}>
                             <td className={styles.tasks_data}>{task.task_name}</td>
                             <td className={styles.tasks_data}>{task.due_date_1}</td>
@@ -50,9 +51,10 @@ const TaskListData = () => {
                             <td className={styles.tasks_data}>{task.completed}</td>
                             <td className={styles.tasks_data}>{task.completed_at}</td>
                             <EditTaskModal task={task} />
-                            <button onClick={() => dispatch(TaskListActions.delete_task_item(task.id))}
-                                className={styles.task_btn}>Delete</button>
                         </tr>
+                            <button onClick={() => dispatch(TaskListActions.delete_task_item(task.id))}
+                                    className={styles.task_btn}>Delete</button>
+                        </>
                     ))}
                 </tbody>
             </table>

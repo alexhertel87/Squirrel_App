@@ -27,8 +27,8 @@ export const EditTaskForm = ({ setShowModal, task }) => {
     const [taskName, setTaskName] = useState(task.task_name);
     const [dueDate1, setDueDate1] = useState(task.dueDate1);
     const [dueDate2, setDueDate2] = useState(task.dueDate2);
-    const [completed, setCompleted] = useState(false);
-    const [completedAt, setCompletedAt] = useState("");
+    // const [completed, setCompleted] = useState(false);
+    // const [completedAt, setCompletedAt] = useState("");
 
     console.log(dueDate1);
 
@@ -45,8 +45,8 @@ export const EditTaskForm = ({ setShowModal, task }) => {
                 task_name: taskName,
                 due_date_1: dueDate1,
                 due_date_2: dueDate2,
-                completed: completed,
-                completed_at: completedAt
+                // completed: completed,
+                // completed_at: completedAt
             };
             console.log(task);
             dispatch(userActions.update_task_item(task));
@@ -106,7 +106,7 @@ export const EditTaskForm = ({ setShowModal, task }) => {
                     ></input>
                 </div>
             </div>
-            <div className={styles.task_form_row}>
+            {/* <div className={styles.task_form_row}>
                 <label htmlFor="completed">Completed</label>
                 <div className={styles.task_form_input}>
                     <input
@@ -130,7 +130,7 @@ export const EditTaskForm = ({ setShowModal, task }) => {
                         placeholder="Lets get this done!"
                     ></input>
                 </div>
-            </div>
+            </div> */}
             <div className={styles.task_form_row}>
                 <button type="submit" className={styles.task_form_button}>
                     Submit Edit
