@@ -47,33 +47,22 @@ def new_task():
 def update_task(id):
     form = TaskForm()
     form['csrf_token'].data = request.cookies['csrf_token']
-    # if form.validate_on_submit():
-    print("DOES THIS PRINT???")
-    edit_task = Active_Tasks.query.get(id)
-    print("EDIT TASK ----> ", edit_task.to_dict())
-    print("----------->", form.due_date_1, "=========>>", type(form.due_date_1))
-
-    form.populate_obj(edit_task)
+    task_item = Active_Tasks.query.get(int(id))
+    task_item.task_name = form.task_name.data
+    task_item.due_date_1 = form.due_date_1.data
+    task_item.due_date_2 = form.due_date_2.data
+    db.session.add(task_item)
     db.session.commit()
-    return edit_task.to_dict()
-    # form['csrf_token'].data = request.cookies['csrf_token']
-    # if form.validate_on_submit():
-    #     task_item = Active_Tasks.query.get(int(id))
-    #     task_item.task_name = form.task_name.data
-    #     task_item.due_date_1 = form.due_date_1.data
-    #     task_item.due_date_2 = form.due_date_2.data
-    #     task_item.completed = form.completed.data
-    #     task_item.completed_at = form.completed_at.data
-    #     db.session.add(task_item)
-    #     db.session.commit()
-    #     print("""
-    #     Task Item Successfully Updated
-    #     """)
-    #     return task_item.to_dict()
+    print("""
+
+    Task Item Successfully Updated
+
+    """)
+    return task_item.to_dict()
 
 
 @task_list_routes.route('/<int:id>/delete', methods=['DELETE'])
-@login_required
+# @login_required
 def delete_task(id):
     task_item = Active_Tasks.query.get(id)
     db.session.delete(task_item)

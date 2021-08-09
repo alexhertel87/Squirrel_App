@@ -9,5 +9,5 @@ class TaskForm(FlaskForm):
     task_name = StringField('task_name', validators=[DataRequired()])
     due_date_1 = DateField('due_date_1', validators=[DataRequired()])
     due_date_2 = DateField('due_date_2')
-    completed = BooleanField('completed')
-    completed_at = DateField('completed_at')
+    # completed = BooleanField('completed')
+    # completed_at = DateField('completed_at')

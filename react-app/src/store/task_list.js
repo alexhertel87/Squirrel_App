@@ -59,7 +59,7 @@ export const all_task_items = () => async (dispatch) => {
 // ------------ UPDATE Task Item Thunk ------------//
 
 export const update_task_item = (task) => async (dispatch) => {
-    const {id, task_name, due_date_1, due_date_2, completed, completed_at} = task
+    const {id, task_name, due_date_1, due_date_2} = task
     const res = await fetch(`/api/tasks/update/${id}/`, {
         method: 'PUT',
         headers: {
@@ -70,12 +70,10 @@ export const update_task_item = (task) => async (dispatch) => {
                 task_name,
                 due_date_1,
                 due_date_2,
-                completed,
-                completed_at
             }
         )
     })
-    console.log(res);
+    console.log("RESSSSS ----> " ,res);
     if (res.ok) {
         const tasks = await res.json()
         console.log(tasks);
@@ -84,21 +82,23 @@ export const update_task_item = (task) => async (dispatch) => {
     }
     else {
         console.log("ERROR");
-
     }
-
 }
-
 // ------------ DELETE Task Item Thunk ------------//
 
-export const delete_task_item = (task) => async (dispatch) => {
-    const res = await fetch(`/tasks/delete`, {
+export const delete_task_item = (taskId) => async (dispatch) => {
+    // const res = await fetch(`/tasks/delete/${taskId}`, {
+    const res = await fetch(`/api/tasks/${taskId}/delete`, {
         method: 'DELETE',
     })
-    dispatch(delete_task(task))
+    dispatch(delete_task(taskId))
+    console.log("TASK DELETED ---->");
+    return 'DELETED'
+
 }
 // -------------------------------------------//
-const initialState = {tasks: []}
+// const initialState = {tasks: []}
+const initialState = {}
 // -------------------------------------------//
 
 //* ------------ Task List Reducer ------------//
