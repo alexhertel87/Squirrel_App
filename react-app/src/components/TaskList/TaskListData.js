@@ -26,7 +26,7 @@ const TaskListData = () => {
     return (
         <div className={ styles.task_list_page}>
             <h1 className={styles.tasks_header}>My To-Do List</h1>
-            <h2 className={styles.tasks_subHeader}>C'mon...just do it. It'll only take 10 minutes...</h2>
+            <h2 className={styles.tasks_subHeader}>C'mon...just do it. You know it'll only take 10 minutes.</h2>
             <div className={styles.TableDiv}>
                 <div className={styles.new_task_modal}>
                     <TaskListModal />
