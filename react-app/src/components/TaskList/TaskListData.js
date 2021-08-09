@@ -37,8 +37,8 @@ const TaskListData = () => {
                         <th className={styles.ColumnNames}>Task Name</th>
                         <th className={styles.ColumnNames}>Goal Due Date</th>
                         <th className={styles.ColumnNames}>LATEST Due By</th>
-                            <th className={styles.ColumnNames}>Completed (Y || N)</th>
-                            <th className={styles.ColumnNames}>Completed At</th>
+                            {/* <th className={styles.ColumnNames}>Completed (Y || N)</th>
+                            <th className={styles.ColumnNames}>Completed At</th> */}
                     </tr>
                 </thead>
                 <tbody className={styles.TableBody}>
@@ -48,8 +48,8 @@ const TaskListData = () => {
                             <td className={styles.tasks_data}>{task.task_name}</td>
                             <td className={styles.tasks_data}>{task.due_date_1}</td>
                             <td className={styles.tasks_data}>{task.due_date_2}</td>
-                            <td className={styles.tasks_data}>{task.completed}</td>
-                            <td className={styles.tasks_data}>{task.completed_at}</td>
+                            {/* <td className={styles.tasks_data}>{task.completed}</td> */}
+                            {/* <td className={styles.tasks_data}>{task.completed_at}</td> */}
                             <EditTaskModal task={task} />
                         </tr>
                             <button onClick={() => dispatch(TaskListActions.delete_task_item(task.id))}
