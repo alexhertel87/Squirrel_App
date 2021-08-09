@@ -86,6 +86,10 @@ font-size: 20px;
     margin-bottom: 4px;
 }
 
+.task_btn:hover {
+    box-shadow: 0px 1px 5px rgba(14, 13, 13, 0.486);
+}
+
 .edit_task_btn {
     background-color: rgba(43, 228, 228, 0.5);
     border: none;
