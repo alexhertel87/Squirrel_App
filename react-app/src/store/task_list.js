@@ -5,19 +5,19 @@ const UPDATE_ONE_TASK = '/tasks/update'
 const DELETE_ONE_TASK = '/tasks/delete'
 
 const new_task = (task) => ({
-    type: NEW_TASK_ITEM,
+    type: 'NEW_TASK_ITEM',
     payload: task
 })
 const get_all_tasks = (tasks) => ({
-    type: GET_ALL_TASKS,
+    type: 'GET_ALL_TASKS',
     payload: tasks
 })
 const update_task = (task) => ({
-    type: UPDATE_ONE_TASK,
+    type: 'UPDATE_ONE_TASK',
     payload: task
 })
 const delete_task = (task) => ({
-    type: DELETE_ONE_TASK,
+    type: 'DELETE_ONE_TASK',
     payload: task
 })
 
@@ -105,31 +105,31 @@ const initialState = {}
 
 const task_list_reducer = (state = initialState, action) => {
     switch (action.type) {
-        case NEW_TASK_ITEM: {
+        case 'NEW_TASK_ITEM': {
             const new_state = Object.assign({}, state)
             console.log(action);
             new_state[action.payload.id] = action.payload
             console.log(new_state);
             return new_state;
         }
-        case GET_ALL_TASKS: {
+        case 'GET_ALL_TASKS': {
             const new_state = {
                 ...action.payload
             }
             return new_state;
         }
-        case UPDATE_ONE_TASK: {
+        case 'UPDATE_ONE_TASK': {
             const new_state = {
                 ...state,
                 [action.payload.id]: action.payload
             }
             return new_state;
         }
-        case DELETE_ONE_TASK: {
+        case 'DELETE_ONE_TASK': {
             const new_state = {
                 ...state
             }
-            delete new_state[action.payload.id]
+            delete new_state[action.payload]
             return new_state;
         }
         default:
