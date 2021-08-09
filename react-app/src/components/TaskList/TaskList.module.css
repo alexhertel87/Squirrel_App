@@ -21,20 +21,18 @@
     /* border: rgb(255, 30, 244) solid 1px; */
 }
 
-table {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
+
 
 .TableDiv {
+    /* border: forestgreen solid 4px; */
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-around;
+    text-align: center;
     font-size: 24px;
     margin-top: 30px;
-    margin-left: 250px;
-    margin-right: 250px;
+    margin-left: 450px;
+    margin-right: 450px;
     margin-bottom: 250px;
     border-radius: 15px;
     min-width: 1050px;
@@ -48,13 +46,14 @@ table {
 }
 
 .new_task_modal {
-    display: flex;
+    /* display: flex; */
+    margin-bottom: 60px;
     align-items: center;
 }
 
 .ColumnNames {
     font-weight: 900;
-    font-size: 22px;
+    font-size: 26px;
     margin-left: 25px;
     padding-right: 30px;
     padding-left: 30px;
@@ -71,7 +70,9 @@ table {
 }
 
 .tasks_data {
-
+margin-bottom: -5px;
+margin-top: -5px;
+font-size: 20px;
 }
 
 
