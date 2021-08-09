@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { signUp } from '../../../store/session';
 import styles from '../ModalForms.module.css';
 import LoginForm from "../LoginFormModal/LoginForm";
@@ -15,6 +15,7 @@ const SignUpForm = () => {
   const user = useSelector(state => state.session.user);
   const [existingUser, setExistingUser] = useState(false);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const onSignUp = async (e) => {
     e.preventDefault();
@@ -23,6 +24,7 @@ const SignUpForm = () => {
       if (data) {
         setErrors(data)
       }
+      history.push('/dashboard');
     }
   };
 
