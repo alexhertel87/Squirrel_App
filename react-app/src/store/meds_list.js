@@ -98,15 +98,12 @@ const active_meds_reducer = (state = initialState, action) => {
         case 'NEW_ACTIVE_MED':{
             const new_state = Object.assign({}, state)
             new_state[action.payload.id] = action.payload
-            // new_state = action.payload
-
             return new_state;
         }
         case 'GET_ACTIVE_MEDS':{
             const new_state = {
                 ...action.payload,
             }
-
             return new_state;
         }
         case 'UPDATE_ACTIVE_MED':{
