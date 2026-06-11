@@ -7,6 +7,7 @@ export const defaultSupportState = {
   taskEnergy: {},
   taskSteps: {},
   routines: {},
+  currentTaskId: '',
   comfort: {
     calm: false,
     highContrast: false,
@@ -46,6 +47,7 @@ export const normalizeSupportState = (data = {}) => ({
     ...defaultSupportState.routines,
     ...(data.routines || {}),
   },
+  currentTaskId: data.currentTaskId || defaultSupportState.currentTaskId,
   comfort: {
     ...defaultSupportState.comfort,
     ...(data.comfort || {}),
@@ -79,6 +81,9 @@ const mergeSupportState = (...states) => states.reduce((merged, state) => {
       ...merged.routines,
       ...normalized.routines,
     },
+    currentTaskId: Object.prototype.hasOwnProperty.call(state || {}, 'currentTaskId')
+      ? normalized.currentTaskId
+      : merged.currentTaskId,
     comfort: {
       ...merged.comfort,
       ...normalized.comfort,
@@ -93,6 +98,7 @@ const getLegacySupportState = () => ({
   taskEnergy: loadJson('squirrel-task-energy', {}),
   taskSteps: loadJson('squirrel-task-steps', {}),
   routines: loadJson('squirrel-routine-progress', {}),
+  currentTaskId: loadJson('squirrel-current-task', ''),
   comfort: loadJson('squirrel-comfort-settings', defaultSupportState.comfort),
 });
 
@@ -108,6 +114,7 @@ export const saveSupportStateLocal = (supportState) => {
   saveJson('squirrel-task-energy', normalized.taskEnergy);
   saveJson('squirrel-task-steps', normalized.taskSteps);
   saveJson('squirrel-routine-progress', normalized.routines);
+  saveJson('squirrel-current-task', normalized.currentTaskId);
   saveJson('squirrel-comfort-settings', normalized.comfort);
   return normalized;
 };

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import * as TaskListActions from '../../store/task_list';
 import EditTaskModal from './EditTaskListModal';
 import styles from './TaskList.module.css';
@@ -26,11 +27,14 @@ const TaskListData = () => {
   const tasks = useSelector((state) => state.task_items);
   const taskArray = Object.values(tasks).filter((task) => task && task.id);
   const dispatch = useDispatch();
+  const location = useLocation();
   const [support, setSupport] = useState(getLocalSupportState);
   const [newStepByTask, setNewStepByTask] = useState({});
   const [filter, setFilter] = useState('all');
   const energyByTask = support.taskEnergy;
   const stepsByTask = support.taskSteps;
+  const isChoosingCurrentTask = new URLSearchParams(location.search).get('pick') === 'current';
+  const currentTask = taskArray.find((task) => String(task.id) === String(support.currentTaskId));
 
   useEffect(() => {
     dispatch(TaskListActions.all_task_items());
@@ -69,6 +73,38 @@ const TaskListData = () => {
         [taskId]: energy,
       },
     }));
+  };
+
+  const selectCurrentTask = (taskId) => {
+    updateSupport((current) => ({
+      ...current,
+      currentTaskId: taskId,
+      routines: {
+        ...current.routines,
+        'reset:Pick next task': true,
+      },
+    }));
+  };
+
+  const clearCurrentTask = () => {
+    updateSupport((current) => ({
+      ...current,
+      currentTaskId: '',
+      routines: {
+        ...current.routines,
+        'reset:Pick next task': false,
+      },
+    }));
+  };
+
+  const removeTask = (taskId) => {
+    dispatch(TaskListActions.delete_task_item(taskId));
+    if (String(support.currentTaskId) === String(taskId)) clearCurrentTask();
+  };
+
+  const handleTaskCreated = (createdTask, nextSupport) => {
+    if (nextSupport) setSupport(nextSupport);
+    if (createdTask?.id) setFilter('all');
   };
 
   const addStarterSteps = (taskId) => {
@@ -127,8 +163,33 @@ const TaskListData = () => {
           <h1>Make the next step smaller</h1>
           <p>Sort by energy, break tasks into steps, and restart without guilt.</p>
         </div>
-        <TaskListModal />
+        <TaskListModal
+          makeCurrentDefault={isChoosingCurrentTask}
+          onTaskCreated={handleTaskCreated}
+        />
       </section>
+
+      {(currentTask || isChoosingCurrentTask) && (
+        <section className={styles.currentTaskBanner} aria-label="Current task">
+          <div>
+            <p className={styles.eyebrow}>Current task</p>
+            {currentTask ? (
+              <>
+                <strong>{currentTask.task_name}</strong>
+                <span>{energyByTask[currentTask.id] || 'medium'} energy · due {formatDate(currentTask.due_date_1)}</span>
+              </>
+            ) : (
+              <>
+                <strong>Choose what gets your attention next.</strong>
+                <span>Select an existing task below, or add a new one and make it current.</span>
+              </>
+            )}
+          </div>
+          {currentTask && (
+            <button onClick={clearCurrentTask} type="button">Clear</button>
+          )}
+        </section>
+      )}
 
       <section className={styles.toolbar} aria-label="Task filters">
         {energyOptions.map((option) => (
@@ -148,9 +209,10 @@ const TaskListData = () => {
           const taskEnergy = energyByTask[task.id] || 'medium';
           const steps = stepsByTask[task.id] || [];
           const completedSteps = steps.filter((step) => step.done).length;
+          const isCurrentTask = String(support.currentTaskId) === String(task.id);
 
           return (
-            <article className={styles.card} key={task.id}>
+            <article className={`${styles.card} ${isCurrentTask ? styles.currentCard : ''}`} key={task.id}>
               <div className={styles.cardHeader}>
                 <div>
                   <h2>{task.task_name}</h2>
@@ -198,9 +260,17 @@ const TaskListData = () => {
               </div>
 
               <div className={styles.cardActions}>
+                <button
+                  aria-pressed={isCurrentTask}
+                  className={isCurrentTask ? styles.currentTaskButtonActive : styles.currentTaskButton}
+                  onClick={() => selectCurrentTask(task.id)}
+                  type="button"
+                >
+                  {isCurrentTask ? 'Current task' : 'Set current task'}
+                </button>
                 <EditTaskModal task={task} />
                 <button
-                  onClick={() => dispatch(TaskListActions.delete_task_item(task.id))}
+                  onClick={() => removeTask(task.id)}
                   className={styles.deleteButton}
                   type="button"
                 >

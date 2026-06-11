@@ -111,6 +111,7 @@ export const Dashboard = () => {
   const medCheckins = getMedCheckins(support);
   const routineState = support.routines;
   const comfort = support.comfort;
+  const currentTask = taskArray.find((task) => String(task.id) === String(support.currentTaskId));
   const selectedBreathingTechnique = breathingTechniques.find((technique) => technique.id === breathingTechniqueId);
   const breathingRunning = breathingSecondsLeft > 0;
   const breathingComplete = Boolean(!breathingRunning && breathingElapsed >= breathingDuration && breathingTechniqueId);
@@ -186,7 +187,7 @@ export const Dashboard = () => {
   const medsTaken = medsArray.filter((med) => medCheckins[med.id]?.status === 'taken').length;
   const quickWins = taskArray.filter((task) => ['low', 'quick'].includes(getEnergy(task.id, support)));
   const nextTasks = quickWins.length ? quickWins.slice(0, 3) : taskArray.slice(0, 3);
-  const selectedTaskName = selectedTask || nextTasks[0]?.task_name || taskArray[0]?.task_name || 'one kind next step';
+  const selectedTaskName = selectedTask || currentTask?.task_name || nextTasks[0]?.task_name || taskArray[0]?.task_name || 'one kind next step';
   const focusTime = `${String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:${String(secondsLeft % 60).padStart(2, '0')}`;
 
   const toggleRoutineStep = (routineId, step) => {
@@ -226,6 +227,11 @@ export const Dashboard = () => {
     setBreathingElapsed(0);
   };
 
+  const handleTaskCreated = (createdTask, nextSupport) => {
+    if (nextSupport) setSupport(nextSupport);
+    if (createdTask?.id) dispatch(TaskListActions.all_task_items());
+  };
+
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
@@ -239,7 +245,7 @@ export const Dashboard = () => {
         </div>
         <div className={styles.actions}>
           <NewMedModal />
-          <TaskListModal />
+          <TaskListModal onTaskCreated={handleTaskCreated} />
         </div>
       </section>
 
@@ -262,6 +268,17 @@ export const Dashboard = () => {
           <p>Pick one small start, then reassess.</p>
         </article>
       </section>
+
+      {currentTask && (
+        <section className={styles.currentTaskBanner} aria-label="Current task">
+          <div>
+            <p className={styles.eyebrow}>Current task</p>
+            <strong>{currentTask.task_name}</strong>
+            <span>{getEnergy(currentTask.id, support)} energy · due {formatDate(currentTask.due_date_1)}</span>
+          </div>
+          <Link to="/dashboard/task_list?pick=current" className={styles.secondaryButton}>Change task</Link>
+        </section>
+      )}
 
       <section className={styles.layout}>
         <div className={styles.panel}>
@@ -360,6 +377,19 @@ export const Dashboard = () => {
                   {routine.steps.map((step) => {
                     const key = `${routine.id}:${step}`;
                     const isBreathingButton = routine.id === 'reset' && step === 'Breathe';
+                    const isPickNextTaskButton = routine.id === 'reset' && step === 'Pick next task';
+                    if (isPickNextTaskButton) {
+                      return (
+                        <Link
+                          className={currentTask ? styles.checkedChip : ''}
+                          key={step}
+                          to="/dashboard/task_list?pick=current"
+                        >
+                          {currentTask ? 'Done: ' : ''}{step}
+                        </Link>
+                      );
+                    }
+
                     return (
                       <button
                         className={routineState[key] ? styles.checkedChip : ''}

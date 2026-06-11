@@ -71,6 +71,40 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.currentTaskBanner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, auto);
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  padding: 18px 22px;
+  border: 1px solid rgba(54, 189, 232, 0.34);
+  border-radius: var(--control-radius);
+  background:
+    radial-gradient(circle at top left, rgba(255, 215, 236, 0.44), transparent 22rem),
+    radial-gradient(circle at bottom right, rgba(213, 248, 255, 0.7), transparent 24rem),
+    var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.currentTaskBanner strong,
+.currentTaskBanner span {
+  display: block;
+}
+
+.currentTaskBanner strong {
+  margin-top: 4px;
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.currentTaskBanner span {
+  margin-top: 3px;
+  color: var(--color-muted);
+  font-size: 16px;
+  line-height: 1.35;
+}
+
 .layout {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -190,7 +224,8 @@
 .secondaryButton,
 .timerActions button,
 .segmented button,
-.chips button {
+.chips button,
+.chips a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -278,6 +313,13 @@
 }
 
 .chips button {
+  min-width: 112px;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+}
+
+.chips a {
   min-width: 112px;
   background: var(--color-surface);
   color: var(--color-ink);
@@ -521,6 +563,7 @@
 @media (max-width: 900px) {
   .hero,
   .summaryGrid,
+  .currentTaskBanner,
   .layout {
     grid-template-columns: 1fr;
   }

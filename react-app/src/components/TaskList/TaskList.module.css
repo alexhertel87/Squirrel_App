@@ -36,6 +36,56 @@
   width: 100%;
 }
 
+.currentTaskBanner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(104px, auto);
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 18px 22px;
+  border: 1px solid rgba(54, 189, 232, 0.34);
+  border-radius: var(--control-radius);
+  background:
+    radial-gradient(circle at top left, rgba(255, 215, 236, 0.44), transparent 22rem),
+    radial-gradient(circle at bottom right, rgba(213, 248, 255, 0.7), transparent 24rem),
+    var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.currentTaskBanner strong,
+.currentTaskBanner span {
+  display: block;
+}
+
+.currentTaskBanner strong {
+  margin-top: 4px;
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.currentTaskBanner span {
+  margin-top: 3px;
+  color: var(--color-muted);
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.currentTaskBanner button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height);
+  padding: 0 16px;
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .eyebrow {
   color: var(--color-accent-lavender);
   font-size: 14px;
@@ -53,6 +103,8 @@
 
 .toolbar button,
 .stepComposer button,
+.currentTaskButton,
+.currentTaskButtonActive,
 .deleteButton {
   display: inline-flex;
   align-items: center;
@@ -95,6 +147,13 @@
   border-radius: var(--control-radius);
   background: var(--color-surface);
   box-shadow: var(--shadow-soft);
+}
+
+.currentCard {
+  border-color: rgba(34, 111, 141, 0.5);
+  background:
+    linear-gradient(135deg, rgba(255, 248, 253, 0.86), rgba(238, 251, 255, 0.9)),
+    var(--color-surface);
 }
 
 .cardHeader {
@@ -203,7 +262,7 @@
 }
 
 .cardActions {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: auto;
   padding-top: 16px;
 }
@@ -213,8 +272,18 @@
 }
 
 .cardActions button,
+.currentTaskButton,
+.currentTaskButtonActive,
 .deleteButton {
   width: 100%;
+}
+
+.currentTaskButton {
+  background: var(--color-secondary);
+}
+
+.currentTaskButtonActive {
+  background: var(--color-pill-taken);
 }
 
 .deleteButton {
@@ -271,6 +340,18 @@
   text-align: center;
 }
 
+.formErrors {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: var(--control-radius);
+  background: var(--color-pill-skipped);
+  color: var(--color-ink);
+  font-size: 16px;
+  line-height: 1.35;
+}
+
 .task_form {
   display: grid;
   gap: 14px;
@@ -288,6 +369,22 @@
   font-weight: 700;
 }
 
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--control-height);
+  padding: 0 12px;
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+}
+
+.checkboxRow input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
 .task_form input {
   min-height: var(--control-height);
   width: 100%;
@@ -298,6 +395,13 @@
   color: var(--color-ink);
   font-size: 18px;
   text-align: left;
+}
+
+.task_form .checkboxRow input {
+  min-height: auto;
+  width: 18px;
+  height: 18px;
+  padding: 0;
 }
 
 .task_form_button {
@@ -313,6 +417,7 @@
 @media (max-width: 780px) {
   .header,
   .toolbar,
+  .currentTaskBanner,
   .cardHeader,
   .stepComposer,
   .cardActions {
