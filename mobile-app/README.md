@@ -1,6 +1,6 @@
 # Squirrel Mobile
 
-Expo/React Native companion app for Squirrel. This scaffold targets iPhone and Android from one codebase and talks to the Flask API in the repository root.
+Expo/React Native companion app for Squirrel. This scaffold targets iPhone, iPad, and Android from one codebase and talks to the Flask API in the repository root.
 
 ## What is included
 
@@ -13,6 +13,7 @@ Expo/React Native companion app for Squirrel. This scaffold targets iPhone and A
 - Visual routines
 - Sensory-friendly settings
 - Shared support-state sync through `/api/support_state/`
+- Tablet-aware iPad layout with wider content, two-column panels, and rotation support
 
 ## Run locally
 

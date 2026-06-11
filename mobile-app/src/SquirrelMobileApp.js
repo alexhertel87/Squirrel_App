@@ -10,6 +10,7 @@ import {
   Switch,
   Text,
   TextInput,
+  useWindowDimensions,
   View,
 } from 'react-native';
 
@@ -23,6 +24,7 @@ const defaultSupport = {
   taskEnergy: {},
   taskSteps: {},
   routines: {},
+  currentTaskId: '',
   comfort: {
     calm: false,
     highContrast: false,
@@ -103,6 +105,7 @@ const initialTask = {
 const normalizeSupport = (data = {}) => ({
   ...defaultSupport,
   ...data,
+  currentTaskId: data.currentTaskId || defaultSupport.currentTaskId,
   comfort: {
     ...defaultSupport.comfort,
     ...(data.comfort || {}),
@@ -192,6 +195,8 @@ const Field = ({ label, value, onChangeText, placeholder, keyboardType = 'defaul
 );
 
 export default function SquirrelMobileApp() {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [authMode, setAuthMode] = useState('login');
@@ -209,6 +214,7 @@ export default function SquirrelMobileApp() {
   const [focusMinutes, setFocusMinutes] = useState(10);
   const [focusSeconds, setFocusSeconds] = useState(0);
   const [focusTask, setFocusTask] = useState('');
+  const [makeNewTaskCurrent, setMakeNewTaskCurrent] = useState(false);
   const [breathingOpen, setBreathingOpen] = useState(false);
   const [breathingTechniqueId, setBreathingTechniqueId] = useState('');
   const [breathingDuration, setBreathingDuration] = useState(60);
@@ -223,6 +229,7 @@ export default function SquirrelMobileApp() {
   const filteredTasks = taskFilter === 'all'
     ? tasks
     : tasks.filter((task) => (support.taskEnergy[task.id] || 'medium') === taskFilter);
+  const currentTask = tasks.find((task) => String(task.id) === String(support.currentTaskId));
 
   const focusClock = `${String(Math.floor(focusSeconds / 60)).padStart(2, '0')}:${String(focusSeconds % 60).padStart(2, '0')}`;
   const selectedBreathingTechnique = breathingTechniques.find((technique) => technique.id === breathingTechniqueId);
@@ -389,6 +396,28 @@ export default function SquirrelMobileApp() {
     }));
   };
 
+  const setCurrentTask = (taskId) => {
+    syncSupport((current) => ({
+      ...current,
+      currentTaskId: taskId,
+      routines: {
+        ...current.routines,
+        'reset:Pick next task': true,
+      },
+    }));
+  };
+
+  const clearCurrentTask = () => {
+    syncSupport((current) => ({
+      ...current,
+      currentTaskId: '',
+      routines: {
+        ...current.routines,
+        'reset:Pick next task': false,
+      },
+    }));
+  };
+
   const createTask = async () => {
     if (!newTask.task_name.trim()) {
       setMessage('Task name is required.');
@@ -399,6 +428,10 @@ export default function SquirrelMobileApp() {
     try {
       const task = await api.createTask(newTask);
       setTasks((current) => [...current, task]);
+      if (makeNewTaskCurrent) {
+        setCurrentTask(task.id);
+        setMakeNewTaskCurrent(false);
+      }
       setNewTask(initialTask);
       setMessage('Task added.');
     } catch (error) {
@@ -413,6 +446,7 @@ export default function SquirrelMobileApp() {
     try {
       await api.deleteTask(id);
       setTasks((current) => current.filter((task) => task.id !== id));
+      if (String(support.currentTaskId) === String(id)) clearCurrentTask();
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -527,12 +561,16 @@ export default function SquirrelMobileApp() {
     support.comfort.calm && styles.screenCalm,
     support.comfort.highContrast && styles.screenHighContrast,
   ];
+  const scrollContentStyle = [styles.scrollContent, isTablet && styles.tabletScrollContent];
+  const authScrollStyle = [styles.authScroll, isTablet && styles.tabletAuthScroll];
+  const cardGridStyle = isTablet ? styles.tabletCardGrid : styles.stack;
+  const tabletGridCardStyle = isTablet ? styles.tabletGridCard : undefined;
 
   if (!user) {
     return (
       <SafeAreaView style={screenStyle}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.flex}>
-          <ScrollView contentContainerStyle={styles.authScroll}>
+          <ScrollView contentContainerStyle={authScrollStyle}>
             <Text style={styles.eyebrow}>Squirrel mobile</Text>
             <Text style={styles.title}>Daily support that travels with you.</Text>
             <Text style={styles.subtitle}>
@@ -582,7 +620,7 @@ export default function SquirrelMobileApp() {
 
   const renderDashboard = () => (
     <>
-      <View style={styles.hero}>
+      <View style={[styles.hero, isTablet && styles.tabletHero]}>
         <Text style={styles.eyebrow}>Gentle daily support</Text>
         <Text style={styles.title}>Start with the next kind thing.</Text>
         <Text style={styles.subtitle}>
@@ -590,7 +628,7 @@ export default function SquirrelMobileApp() {
         </Text>
       </View>
 
-      <View style={styles.summaryRow}>
+      <View style={[styles.summaryRow, isTablet && styles.tabletSummaryRow]}>
         <Card style={styles.summaryCard}>
           <Text style={styles.cardLabel}>Meds</Text>
           <Text style={styles.bigNumber}>{medsTaken}/{meds.length}</Text>
@@ -603,44 +641,69 @@ export default function SquirrelMobileApp() {
         </Card>
       </View>
 
-      <Card>
-        <Text style={styles.sectionTitle}>Start here</Text>
-        {(quickTasks.length ? quickTasks : tasks).slice(0, 3).map((task) => (
-          <View key={task.id} style={styles.listItem}>
-            <View style={styles.listText}>
-              <Text style={styles.itemTitle}>{task.task_name}</Text>
-              <Text style={styles.muted}>{support.taskEnergy[task.id] || 'medium'} energy · due {formatDate(task.due_date_1)}</Text>
-            </View>
-            <Pill>{(support.taskSteps[task.id] || []).filter((step) => step.done).length}/{(support.taskSteps[task.id] || []).length || 1}</Pill>
+      {!!currentTask && (
+        <Card style={styles.currentTaskCard}>
+          <Text style={styles.eyebrow}>Current task</Text>
+          <Text style={styles.sectionTitle}>{currentTask.task_name}</Text>
+          <Text style={styles.muted}>
+            {support.taskEnergy[currentTask.id] || 'medium'} energy · due {formatDate(currentTask.due_date_1)}
+          </Text>
+          <View style={styles.twoGrid}>
+            <AppButton style={styles.pairButton} tone="secondary" onPress={() => setActiveTab('Tasks')}>Change task</AppButton>
+            <AppButton style={styles.pairButton} tone="secondary" onPress={clearCurrentTask}>Clear</AppButton>
           </View>
-        ))}
-        {!tasks.length && <Text style={styles.muted}>No tasks yet. Add one tiny thing.</Text>}
-      </Card>
+        </Card>
+      )}
 
-      <Card>
-        <Text style={styles.sectionTitle}>Visual routines</Text>
-        {defaultRoutines.map((routine) => (
-          <View key={routine.id} style={styles.routineBlock}>
-            <Text style={styles.itemTitle}>{routine.label}</Text>
-            <View style={styles.chipGrid}>
-              {routine.steps.map((step) => {
-                const checked = !!support.routines[`${routine.id}:${step}`];
-                const isBreathingButton = routine.id === 'reset' && step === 'Breathe';
-                return (
-                  <AppButton
-                    key={step}
-                    style={styles.chipButton}
-                    tone={checked ? 'success' : 'secondary'}
-                    onPress={() => (isBreathingButton ? openBreathingCoach() : toggleRoutineStep(routine.id, step))}
-                  >
-                    {checked ? 'Done: ' : ''}{step}
-                  </AppButton>
-                );
-              })}
+      <View style={cardGridStyle}>
+        <Card style={tabletGridCardStyle}>
+          <Text style={styles.sectionTitle}>Start here</Text>
+          {(quickTasks.length ? quickTasks : tasks).slice(0, 3).map((task) => (
+            <View key={task.id} style={styles.listItem}>
+              <View style={styles.listText}>
+                <Text style={styles.itemTitle}>{task.task_name}</Text>
+                <Text style={styles.muted}>{support.taskEnergy[task.id] || 'medium'} energy · due {formatDate(task.due_date_1)}</Text>
+              </View>
+              <Pill>{(support.taskSteps[task.id] || []).filter((step) => step.done).length}/{(support.taskSteps[task.id] || []).length || 1}</Pill>
             </View>
-          </View>
-        ))}
-      </Card>
+          ))}
+          {!tasks.length && <Text style={styles.muted}>No tasks yet. Add one tiny thing.</Text>}
+        </Card>
+
+        <Card style={tabletGridCardStyle}>
+          <Text style={styles.sectionTitle}>Visual routines</Text>
+          {defaultRoutines.map((routine) => (
+            <View key={routine.id} style={styles.routineBlock}>
+              <Text style={styles.itemTitle}>{routine.label}</Text>
+              <View style={styles.chipGrid}>
+                {routine.steps.map((step) => {
+                  const checked = !!support.routines[`${routine.id}:${step}`];
+                  const isBreathingButton = routine.id === 'reset' && step === 'Breathe';
+                  const isPickNextTaskButton = routine.id === 'reset' && step === 'Pick next task';
+                  const stepDone = checked || (isPickNextTaskButton && !!currentTask);
+
+                  return (
+                    <AppButton
+                      key={step}
+                      style={styles.chipButton}
+                      tone={stepDone ? 'success' : 'secondary'}
+                      onPress={() => (
+                        isBreathingButton
+                          ? openBreathingCoach()
+                          : isPickNextTaskButton
+                            ? setActiveTab('Tasks')
+                            : toggleRoutineStep(routine.id, step)
+                      )}
+                    >
+                      {stepDone ? 'Done: ' : ''}{step}
+                    </AppButton>
+                  );
+                })}
+              </View>
+            </View>
+          ))}
+        </Card>
+      </View>
     </>
   );
 
@@ -655,27 +718,29 @@ export default function SquirrelMobileApp() {
         <AppButton disabled={loading} onPress={createMed}>Add medication</AppButton>
       </Card>
 
-      {meds.map((med) => {
-        const status = todaysCheckins[med.id]?.status;
-        return (
-          <Card key={med.id}>
-            <View style={styles.cardHeader}>
-              <View style={styles.listText}>
-                <Text style={styles.sectionTitle}>{med.med_name}</Text>
-                <Text style={styles.muted}>{med.dosage_mg}mg · {med.frequency}</Text>
+      <View style={cardGridStyle}>
+        {meds.map((med) => {
+          const status = todaysCheckins[med.id]?.status;
+          return (
+            <Card key={med.id} style={tabletGridCardStyle}>
+              <View style={styles.cardHeader}>
+                <View style={styles.listText}>
+                  <Text style={styles.sectionTitle}>{med.med_name}</Text>
+                  <Text style={styles.muted}>{med.dosage_mg}mg · {med.frequency}</Text>
+                </View>
+                <Pill tone={status || 'idle'}>{medStatusLabel(status)}</Pill>
               </View>
-              <Pill tone={status || 'idle'}>{medStatusLabel(status)}</Pill>
-            </View>
-            {!!med.med_info && <Text style={styles.note}>{med.med_info}</Text>}
-            <View style={styles.threeGrid}>
-              <AppButton style={styles.equalButton} tone={status === 'taken' ? 'success' : 'secondary'} onPress={() => updateMedCheckin(med.id, 'taken')}>Taken</AppButton>
-              <AppButton style={styles.equalButton} tone={status === 'skipped' ? 'danger' : 'secondary'} onPress={() => updateMedCheckin(med.id, 'skipped')}>Skipped</AppButton>
-              <AppButton style={styles.equalButton} tone={status === 'unsure' ? 'warning' : 'secondary'} onPress={() => updateMedCheckin(med.id, 'unsure')}>Not sure</AppButton>
-            </View>
-            <AppButton tone="danger" onPress={() => deleteMed(med.id)}>Delete medication</AppButton>
-          </Card>
-        );
-      })}
+              {!!med.med_info && <Text style={styles.note}>{med.med_info}</Text>}
+              <View style={styles.threeGrid}>
+                <AppButton style={styles.equalButton} tone={status === 'taken' ? 'success' : 'secondary'} onPress={() => updateMedCheckin(med.id, 'taken')}>Taken</AppButton>
+                <AppButton style={styles.equalButton} tone={status === 'skipped' ? 'danger' : 'secondary'} onPress={() => updateMedCheckin(med.id, 'skipped')}>Skipped</AppButton>
+                <AppButton style={styles.equalButton} tone={status === 'unsure' ? 'warning' : 'secondary'} onPress={() => updateMedCheckin(med.id, 'unsure')}>Not sure</AppButton>
+              </View>
+              <AppButton tone="danger" onPress={() => deleteMed(med.id)}>Delete medication</AppButton>
+            </Card>
+          );
+        })}
+      </View>
     </>
   );
 
@@ -686,8 +751,23 @@ export default function SquirrelMobileApp() {
         <Field label="Task" value={newTask.task_name} placeholder="Pack bag" onChangeText={(task_name) => setNewTask((task) => ({ ...task, task_name }))} />
         <Field label="Goal date" value={newTask.due_date_1} placeholder="YYYY-MM-DD" onChangeText={(due_date_1) => setNewTask((task) => ({ ...task, due_date_1 }))} />
         <Field label="Latest date" value={newTask.due_date_2} placeholder="YYYY-MM-DD" onChangeText={(due_date_2) => setNewTask((task) => ({ ...task, due_date_2 }))} />
+        <View style={styles.settingRow}>
+          <Text style={styles.itemTitle}>Make current task</Text>
+          <Switch value={makeNewTaskCurrent} onValueChange={setMakeNewTaskCurrent} />
+        </View>
         <AppButton disabled={loading} onPress={createTask}>Add task</AppButton>
       </Card>
+
+      {!!currentTask && (
+        <Card style={styles.currentTaskCard}>
+          <Text style={styles.eyebrow}>Current task</Text>
+          <Text style={styles.sectionTitle}>{currentTask.task_name}</Text>
+          <Text style={styles.muted}>
+            {support.taskEnergy[currentTask.id] || 'medium'} energy · due {formatDate(currentTask.due_date_1)}
+          </Text>
+          <AppButton tone="secondary" onPress={clearCurrentTask}>Clear current task</AppButton>
+        </Card>
+      )}
 
       <View style={styles.filterGrid}>
         {['all', ...energyOptions].map((option) => (
@@ -702,60 +782,67 @@ export default function SquirrelMobileApp() {
         ))}
       </View>
 
-      {filteredTasks.map((task) => {
-        const energy = support.taskEnergy[task.id] || 'medium';
-        const steps = support.taskSteps[task.id] || [];
-        return (
-          <Card key={task.id}>
-            <View style={styles.cardHeader}>
-              <View style={styles.listText}>
-                <Text style={styles.sectionTitle}>{task.task_name}</Text>
-                <Text style={styles.muted}>Goal {formatDate(task.due_date_1)} · Latest {formatDate(task.due_date_2)}</Text>
+      <View style={cardGridStyle}>
+        {filteredTasks.map((task) => {
+          const energy = support.taskEnergy[task.id] || 'medium';
+          const steps = support.taskSteps[task.id] || [];
+          const isCurrentTask = String(support.currentTaskId) === String(task.id);
+
+          return (
+            <Card key={task.id} style={[tabletGridCardStyle, isCurrentTask && styles.currentTaskCard]}>
+              <View style={styles.cardHeader}>
+                <View style={styles.listText}>
+                  <Text style={styles.sectionTitle}>{task.task_name}</Text>
+                  <Text style={styles.muted}>Goal {formatDate(task.due_date_1)} · Latest {formatDate(task.due_date_2)}</Text>
+                </View>
+                <Pill>{steps.filter((step) => step.done).length}/{steps.length || 1}</Pill>
               </View>
-              <Pill>{steps.filter((step) => step.done).length}/{steps.length || 1}</Pill>
-            </View>
-            <Text style={styles.label}>Energy needed</Text>
-            <View style={styles.fourGrid}>
-              {energyOptions.map((option) => (
-                <AppButton
-                  key={option}
-                  tone={energy === option ? 'primary' : 'secondary'}
-                  onPress={() => setTaskEnergy(task.id, option)}
-                  style={styles.equalButton}
-                >
-                  {option}
-                </AppButton>
+              <Text style={styles.label}>Energy needed</Text>
+              <View style={styles.fourGrid}>
+                {energyOptions.map((option) => (
+                  <AppButton
+                    key={option}
+                    tone={energy === option ? 'primary' : 'secondary'}
+                    onPress={() => setTaskEnergy(task.id, option)}
+                    style={styles.equalButton}
+                  >
+                    {option}
+                  </AppButton>
+                ))}
+              </View>
+              {steps.map((step) => (
+                <Pressable key={step.id} onPress={() => toggleStep(task.id, step.id)} style={styles.stepRow}>
+                  <View style={[styles.checkbox, step.done && styles.checkboxChecked]} />
+                  <Text style={[styles.stepText, step.done && styles.stepDone]}>{step.label}</Text>
+                </Pressable>
               ))}
-            </View>
-            {steps.map((step) => (
-              <Pressable key={step.id} onPress={() => toggleStep(task.id, step.id)} style={styles.stepRow}>
-                <View style={[styles.checkbox, step.done && styles.checkboxChecked]} />
-                <Text style={[styles.stepText, step.done && styles.stepDone]}>{step.label}</Text>
-              </Pressable>
-            ))}
-            {!steps.length && <Text style={styles.muted}>No steps yet. Make it smaller.</Text>}
-            <View style={styles.stepComposer}>
-              <TextInput
-                onChangeText={(value) => setNewStepText((current) => ({ ...current, [task.id]: value }))}
-                placeholder="Add one tiny step"
-                placeholderTextColor={colors.muted}
-                style={[styles.input, styles.stepInput]}
-                value={newStepText[task.id] || ''}
-              />
-              <AppButton onPress={() => addStep(task.id)}>Add</AppButton>
-            </View>
-            <View style={styles.twoGrid}>
-              <AppButton style={styles.pairButton} tone="secondary" onPress={() => addStarterSteps(task.id)}>Make it smaller</AppButton>
-              <AppButton style={styles.pairButton} tone="danger" onPress={() => deleteTask(task.id)}>Remove</AppButton>
-            </View>
-          </Card>
-        );
-      })}
+              {!steps.length && <Text style={styles.muted}>No steps yet. Make it smaller.</Text>}
+              <View style={styles.stepComposer}>
+                <TextInput
+                  onChangeText={(value) => setNewStepText((current) => ({ ...current, [task.id]: value }))}
+                  placeholder="Add one tiny step"
+                  placeholderTextColor={colors.muted}
+                  style={[styles.input, styles.stepInput]}
+                  value={newStepText[task.id] || ''}
+                />
+                <AppButton onPress={() => addStep(task.id)}>Add</AppButton>
+              </View>
+              <View style={styles.twoGrid}>
+                <AppButton style={styles.pairButton} tone={isCurrentTask ? 'success' : 'secondary'} onPress={() => setCurrentTask(task.id)}>
+                  {isCurrentTask ? 'Current task' : 'Set current'}
+                </AppButton>
+                <AppButton style={styles.pairButton} tone="secondary" onPress={() => addStarterSteps(task.id)}>Make it smaller</AppButton>
+                <AppButton style={styles.pairButton} tone="danger" onPress={() => deleteTask(task.id)}>Remove</AppButton>
+              </View>
+            </Card>
+          );
+        })}
+      </View>
     </>
   );
 
   const renderFocus = () => (
-    <Card>
+    <Card style={isTablet && styles.centerCard}>
       <Text style={styles.eyebrow}>Focus mode</Text>
       <Text style={styles.titleSmall}>Body-double one task</Text>
       <TextInput
@@ -778,7 +865,7 @@ export default function SquirrelMobileApp() {
         ))}
       </View>
       <Text style={styles.timerText}>{focusSeconds ? focusClock : `${focusMinutes}:00`}</Text>
-      <Text style={styles.muted}>{focusTask || quickTasks[0]?.task_name || tasks[0]?.task_name || 'one kind next step'}</Text>
+      <Text style={styles.muted}>{focusTask || currentTask?.task_name || quickTasks[0]?.task_name || tasks[0]?.task_name || 'one kind next step'}</Text>
       <View style={styles.threeGrid}>
         <AppButton style={styles.equalButton} onPress={() => setFocusSeconds(focusMinutes * 60)}>Start</AppButton>
         <AppButton style={styles.equalButton} tone="secondary" onPress={() => setFocusSeconds(0)}>Reset</AppButton>
@@ -788,8 +875,8 @@ export default function SquirrelMobileApp() {
   );
 
   const renderSettings = () => (
-    <>
-      <Card>
+    <View style={cardGridStyle}>
+      <Card style={tabletGridCardStyle}>
         <Text style={styles.sectionTitle}>Sensory-friendly settings</Text>
         {[
           ['calm', 'Calm colors'],
@@ -802,7 +889,7 @@ export default function SquirrelMobileApp() {
           </View>
         ))}
       </Card>
-      <Card>
+      <Card style={tabletGridCardStyle}>
         <Text style={styles.sectionTitle}>Account and sync</Text>
         <Text style={styles.muted}>Logged in as {user.email}</Text>
         <Text style={styles.apiNote}>Backend: {api.baseUrl}</Text>
@@ -811,7 +898,7 @@ export default function SquirrelMobileApp() {
           <AppButton style={styles.pairButton} tone="danger" onPress={logout}>Log out</AppButton>
         </View>
       </Card>
-    </>
+    </View>
   );
 
   const renderBreathingCoach = () => (
@@ -821,8 +908,8 @@ export default function SquirrelMobileApp() {
       transparent
       visible={breathingOpen}
     >
-      <View style={styles.modalBackdrop}>
-        <View style={styles.breathingModal}>
+      <View style={[styles.modalBackdrop, isTablet && styles.tabletModalBackdrop]}>
+        <View style={[styles.breathingModal, isTablet && styles.tabletBreathingModal]}>
           <ScrollView contentContainerStyle={styles.breathingModalContent}>
             <View style={styles.modalHeader}>
               <View style={styles.modalHeaderText}>
@@ -835,7 +922,7 @@ export default function SquirrelMobileApp() {
               <AppButton tone="secondary" style={styles.closeButton} onPress={closeBreathingCoach}>Close</AppButton>
             </View>
 
-            <View style={styles.breathingTechniqueGrid}>
+            <View style={[styles.breathingTechniqueGrid, isTablet && styles.tabletBreathingTechniqueGrid]}>
               {breathingTechniques.map((technique) => (
                 <Pressable
                   accessibilityRole="button"
@@ -844,6 +931,7 @@ export default function SquirrelMobileApp() {
                   onPress={() => selectBreathingTechnique(technique.id)}
                   style={({ pressed }) => [
                     styles.techniqueOption,
+                    isTablet && styles.tabletTechniqueOption,
                     breathingTechniqueId === technique.id && styles.techniqueOptionSelected,
                     breathingRunning && styles.optionDisabled,
                     pressed && !breathingRunning && styles.buttonPressed,
@@ -934,12 +1022,12 @@ export default function SquirrelMobileApp() {
   return (
     <SafeAreaView style={screenStyle}>
       <View style={styles.appShell}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ScrollView contentContainerStyle={scrollContentStyle}>
           <Text style={styles.appName}>Squirrel</Text>
           {!!message && <Text style={styles.message}>{message}</Text>}
           {renderScreen()}
         </ScrollView>
-        <View style={styles.tabBar}>
+        <View style={[styles.tabBar, isTablet ? styles.tabletTabBar : styles.phoneTabBar]}>
           {tabs.map((tab) => (
             <Pressable
               key={tab}
@@ -978,11 +1066,24 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 92,
   },
+  tabletScrollContent: {
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: 1040,
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 112,
+  },
   authScroll: {
     gap: 16,
     justifyContent: 'center',
     minHeight: '100%',
     padding: 20,
+  },
+  tabletAuthScroll: {
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: 560,
   },
   appName: {
     color: colors.primary,
@@ -997,6 +1098,9 @@ const styles = StyleSheet.create({
     borderRadius: radii.control,
     borderWidth: 1,
     backgroundColor: colors.panel,
+  },
+  tabletHero: {
+    padding: 30,
   },
   title: {
     color: colors.ink,
@@ -1038,6 +1142,9 @@ const styles = StyleSheet.create({
   summaryRow: {
     flexDirection: 'row',
     gap: 10,
+  },
+  tabletSummaryRow: {
+    gap: 16,
   },
   summaryCard: {
     flex: 1,
@@ -1085,6 +1192,28 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontSize: 16,
     lineHeight: 22,
+  },
+  stack: {
+    gap: 16,
+  },
+  tabletCardGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+  },
+  tabletGridCard: {
+    flexBasis: '48%',
+    flexGrow: 1,
+    minWidth: 320,
+  },
+  centerCard: {
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: 640,
+  },
+  currentTaskCard: {
+    borderColor: colors.primary,
+    backgroundColor: colors.panelBlue,
   },
   message: {
     padding: 12,
@@ -1296,9 +1425,7 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     position: 'absolute',
-    right: 0,
     bottom: 0,
-    left: 0,
     flexDirection: 'row',
     gap: 6,
     paddingHorizontal: 8,
@@ -1307,6 +1434,27 @@ const styles = StyleSheet.create({
     borderTopColor: colors.border,
     borderTopWidth: 1,
     backgroundColor: colors.surface,
+  },
+  phoneTabBar: {
+    right: 0,
+    left: 0,
+  },
+  tabletTabBar: {
+    alignSelf: 'center',
+    bottom: 20,
+    width: '92%',
+    maxWidth: 720,
+    paddingBottom: 10,
+    borderColor: colors.border,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderRadius: radii.control,
+    shadowColor: colors.ink,
+    shadowOpacity: 0.1,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
   },
   tab: {
     alignItems: 'center',
@@ -1332,7 +1480,12 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: 'rgba(39, 54, 64, 0.28)',
   },
+  tabletModalBackdrop: {
+    alignItems: 'center',
+    padding: 32,
+  },
   breathingModal: {
+    width: '100%',
     maxHeight: '90%',
     borderColor: colors.border,
     borderRadius: radii.control,
@@ -1343,6 +1496,9 @@ const styles = StyleSheet.create({
     shadowRadius: 24,
     shadowOffset: { width: 0, height: 14 },
     elevation: 6,
+  },
+  tabletBreathingModal: {
+    maxWidth: 760,
   },
   breathingModalContent: {
     gap: 14,
@@ -1364,6 +1520,10 @@ const styles = StyleSheet.create({
   breathingTechniqueGrid: {
     gap: sizes.gap,
   },
+  tabletBreathingTechniqueGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
   techniqueOption: {
     gap: 5,
     minHeight: 82,
@@ -1372,6 +1532,10 @@ const styles = StyleSheet.create({
     borderRadius: radii.control,
     borderWidth: 1,
     backgroundColor: colors.surface,
+  },
+  tabletTechniqueOption: {
+    flexBasis: '48%',
+    flexGrow: 1,
   },
   techniqueOptionSelected: {
     borderColor: colors.primary,
