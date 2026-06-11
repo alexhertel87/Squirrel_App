@@ -120,14 +120,8 @@ export const EditMedForm = ({med, setShowModal}) => {
                             </div>
                         </label >
                     <div className={ styles.med_buttons}>
-                            <button
-                                type="submit"
-                                className={styles.submit_button}>
-                                <Button
-                                    text={"Submit Edit"}
-                                    action={onSubmit} />
-                                </button>
-                            </div>
+                        <Button text={"Submit Edit"} type="submit" />
+                    </div>
                             <div className={styles.errorsContainer}>
                             {errors?.map((error, ind) => (
                             <div className={styles.error} key={ind}>{error}</div>

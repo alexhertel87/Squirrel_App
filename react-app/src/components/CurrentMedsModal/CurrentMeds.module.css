@@ -1,24 +1,25 @@
 .page {
   width: min(1120px, calc(100vw - 32px));
   margin: 96px auto 64px;
-  color: #1f2a24;
+  color: var(--color-ink);
 }
 
 .header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 220px);
+  align-items: end;
   gap: 24px;
   margin-bottom: 18px;
   padding: 28px;
   border: 1px solid #cfe1c7;
-  border-radius: 8px;
-  background: #f2f8ef;
+  border-radius: var(--control-radius);
+  background: var(--color-panel);
 }
 
 .header h1 {
   margin: 4px 0 8px;
   font-size: 38px;
+  line-height: 1.1;
   text-align: left;
 }
 
@@ -26,9 +27,13 @@
 .notes,
 .time,
 .emptyState p {
-  color: #5a655d;
+  color: var(--color-muted);
   font-size: 18px;
   line-height: 1.4;
+}
+
+.header button {
+  width: 100%;
 }
 
 .eyebrow {
@@ -41,23 +46,26 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px;
 }
 
 .card,
 .emptyState {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
   padding: 22px;
-  border: 1px solid #d8dfd0;
-  border-radius: 8px;
-  background: #fffdf7;
-  box-shadow: 0 8px 22px rgba(31, 42, 36, 0.08);
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
 }
 
 .cardHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
   gap: 12px;
 }
 
@@ -65,15 +73,22 @@
 .emptyState h2 {
   margin: 0 0 4px;
   font-size: 26px;
+  line-height: 1.15;
 }
 
 .status {
-  min-width: max-content;
-  padding: 7px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  min-width: 88px;
+  padding: 0 10px;
   border-radius: 999px;
   background: #e7eadf;
   font-size: 15px;
   font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .taken {
@@ -95,8 +110,8 @@
 .notes {
   margin-top: 16px;
   padding: 12px;
-  border-radius: 8px;
-  background: #f7f1e4;
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
 }
 
 .time {
@@ -105,38 +120,77 @@
 
 .checkins,
 .cardActions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  align-items: stretch;
+  gap: var(--control-gap);
   margin-top: 16px;
 }
 
+.checkins {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cardActions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.cardActions > * {
+  min-width: 0;
+}
+
 .checkins button,
+.cardActions button,
 .deleteButton {
-  min-height: 40px;
-  padding: 8px 14px;
-  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 0 14px;
+  border-radius: var(--control-radius);
   background: #e8eadf;
   color: #263427;
+  cursor: pointer;
   font-family: 'Dosis', sans-serif;
   font-size: 17px;
   font-weight: 900;
-  cursor: pointer;
+  line-height: 1;
+  text-align: center;
 }
 
 .checkins .activeCheckin {
-  background: #334d2e;
+  background: var(--color-primary);
   color: #fff;
 }
 
 .deleteButton {
-  background: #a94d37;
+  background: var(--color-danger);
   color: #fff;
 }
 
 @media (max-width: 720px) {
-  .header {
-    align-items: flex-start;
-    flex-direction: column;
+  .page {
+    width: min(100% - 24px, 1120px);
+    margin-top: 82px;
+  }
+
+  .header,
+  .cardHeader,
+  .cardActions {
+    grid-template-columns: 1fr;
+  }
+
+  .header,
+  .card,
+  .emptyState {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  .checkins {
+    grid-template-columns: 1fr;
   }
 }

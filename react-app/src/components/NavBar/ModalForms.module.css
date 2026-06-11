@@ -1,71 +1,47 @@
 .formContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px 40px;
-  margin-top: 10%;
-  margin-left: 560px;
-  margin-right: 560px;
-  min-width: fit-content;
-  /* width: 60%; */
-  height: 20%;
-  border-radius: 15px;
-  /* background-color: lightslategray; */
-  /* box-shadow: 0px 1px 18px rgb(6, 241, 210); */
-  box-shadow: 0px 1px 18px rgb(89, 92, 91);
-
-
+  width: min(440px, calc(100vw - 32px));
+  padding: 22px;
+  border-radius: var(--control-radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
 }
 
 .form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-
-}
-
-.errorsContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
+  display: grid;
+  gap: 14px;
   width: 100%;
-  height: auto;
-}
-
-.error {
-  color: pink;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .inputRow {
+  display: grid;
+  gap: 6px;
+}
+
+.placeholder,
+.inputRow label {
+  color: var(--color-ink);
+  font-size: 18px;
+  font-weight: 900;
 }
 
 .inputField {
+  min-height: var(--control-height);
+  width: 100%;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid #cad5c2;
+  border-radius: var(--control-radius);
+  background: #fff;
+  color: var(--color-ink);
   font-family: 'Dosis', sans-serif;
-  font-size: 24px;
-  min-width: 300px;
-  max-width: 300px;
-  color: black;
-  outline: none;
-  background-color: white;
-  padding: 10px;
-  border-bottom:1px solid black;
-  transition: border-bottom 0.3s;
-}
-.inputField:focus {
-  border-bottom: 1px solid black;
-  transition: border-bottom 0.3s;
-
+  font-size: 18px;
+  text-align: left;
 }
 
 .inputField::placeholder {
-  color: rgb(0, 0, 0);
-  font-size: 24px;
-  font-family: 'Dosis', sans-serif;
+  color: #7a817b;
+  font-size: 17px;
+  font-weight: 700;
 }
 
 .inputField:-webkit-autofill,
@@ -76,13 +52,34 @@
 }
 
 .inputField:-webkit-autofill {
-  -webkit-text-fill-color: black !important;
+  -webkit-text-fill-color: var(--color-ink) !important;
 }
 
 .buttonContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-  margin: 10px 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: var(--control-gap);
+  margin-top: 4px;
+}
+
+.buttonContainer button {
+  width: 100%;
+}
+
+.errorsContainer {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+}
+
+.error {
+  color: var(--color-danger);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@media (max-width: 420px) {
+  .buttonContainer {
+    grid-template-columns: 1fr;
+  }
 }

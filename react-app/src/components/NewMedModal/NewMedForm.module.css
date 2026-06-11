@@ -90,23 +90,30 @@
 
 
 
-  .dash_med_button {
-    background-color: rgba(43, 228, 228, 0.5);
-    border: none;
-    border-radius: 15px;
-    font-family: 'Dosis', sans-serif;
-    font-size: 24px;
-    margin-top: 13px;
+.medFormContainer {
+  width: 100%;
+}
 
+.dash_med_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height);
+  width: 100%;
+  padding: 0 16px;
+  border-radius: var(--control-radius);
+  background: var(--color-secondary);
+  color: #263427;
+  cursor: pointer;
+  font-family: 'Dosis', sans-serif;
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
 }
 
 .dash_med_button:hover {
-
-  transition: background-color 0.7s;
-  background-color: rgba(71, 255, 86, 0.603);
-  border-radius: 15px;
-  font-weight: 700;
-
+  background: #e6d8b4;
 }
 
 .newMedLabel {

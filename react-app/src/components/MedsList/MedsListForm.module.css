@@ -1,96 +1,83 @@
 .form_container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    position: relative;
-    padding: 20px 40px;
-    margin-top: 60px;
-    margin-left: 360px;
-    margin-right: 360px;
-    width: 60%;
-    height: 20%;
-    border-radius: 15px;
-    background-color: white;
-    box-shadow: 0px 1px 18px rgb(72, 217, 236);
-    text-align: center;
-  }
-
-  .meds_form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-
-  }
-
-  .errorsContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    width: 100%;
-    height: auto;
-  }
-
-  .error {
-    color: pink;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-
-  .inputRow {
-  }
-
-  .med_data_inputs {
-    font-family: 'Dosis', sans-serif;
-    font-size: 24px;
-    min-width: 300px;
-    max-width: 500px;
-    color: black;
-    outline: none;
-    background-color: white;
-    padding: 10px;
-    /* margin-top: -5px; */
-    border-bottom:1px solid black;
-    transition: border-bottom 0.3s;
-  }
-  .med_data_inputs:focus {
-    border-bottom: 1px solid black;
-    transition: border-bottom 0.3s;
-
-  }
-
-.newMedLabel {
-    margin-top: 10px;
-    font-size: 20px;
+  width: min(440px, calc(100vw - 32px));
+  padding: 22px;
+  border-radius: var(--control-radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+  text-align: left;
 }
 
-  .newMedsHeader {
-    font-size: 24px;
-    margin-bottom: 10px;
-    border-bottom: black 1px solid;
-  }
+.meds_form,
+.new_meds_cont {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+}
 
-  .allInputs {
-    display: flex;
-    justify-content: center;
-  }
+.newMedsHeader {
+  margin-bottom: 4px;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+}
 
- .med_data_inputs::placeholder {
-    color: rgb(236, 20, 139);
-    font-size: 18px;
-    font-family: 'Dosis', sans-serif;
-    font-weight: 900;
-  }
+.newMedLabel {
+  display: grid;
+  gap: 6px;
+  color: var(--color-ink);
+  font-size: 18px;
+  font-weight: 900;
+}
 
-  .med_info_text {
-    font-family: 'Dosis', sans-serif;
-    width: 250px;
-    border: black 1px solid;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    font-size: 20px;
-  }
+.allInputs {
+  display: grid;
+}
+
+.med_data_inputs,
+.med_info_text {
+  width: 100%;
+  min-height: var(--control-height);
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid #cad5c2;
+  border-radius: var(--control-radius);
+  background: #fff;
+  color: var(--color-ink);
+  font-family: 'Dosis', sans-serif;
+  font-size: 18px;
+  text-align: left;
+}
+
+.med_info_text {
+  min-height: 96px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.med_data_inputs::placeholder,
+.med_info_text::placeholder {
+  color: #7a817b;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.buttonRow {
+  display: grid;
+  margin-top: 4px;
+}
+
+.buttonRow button {
+  width: 100%;
+}
+
+.errorsContainer {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+}
+
+.error {
+  color: var(--color-danger);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

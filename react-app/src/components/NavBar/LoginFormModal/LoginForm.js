@@ -73,24 +73,9 @@ const LoginForm = () => {
             onChange={updatePassword}
           />
           <div className={styles.buttonContainer}>
-            <div>
-              <button type='submit'>
-                <Button
-                  text={"Log In"}
-                  action={onLogin}
-                  width={100} />
-
-              </button>
-            </div>
-            <div>
-              <button type='submit'>
-                <Button
-                  text={"Demo User Login"}
-                  action={demoLogin}
-                  width={180} />
-              </button>
-            </div>
-            </div>
+            <Button text={"Log In"} type="submit" />
+            <Button text={"Demo User Login"} action={demoLogin} />
+          </div>
           {/* <button type='submit'>Login</button> */}
         </div>
       </form>

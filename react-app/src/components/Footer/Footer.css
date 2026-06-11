@@ -1,39 +1,29 @@
 .footer {
-    display: flex;
-    justify-content: space-around;
-    height: 55px;
-    position: fixed;
-    bottom: 0;
-    width: 100vw;
-    z-index: 1;
-    background-color: rgba(6, 241, 210, 0.349);
-    background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
-    color: #f2f2f2;
-    /* box-shadow: -2px -2px 15px #BFAF8F, 2px -2px 15px #BFAF8F; */
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    font-size: 18px;
-    text-align: center;
-    box-shadow: 0px -2px 8px rgba(174, 6, 241, 0.39);
-    box-shadow: 0px -2px 8px rgb(6, 241, 210);
-    box-shadow: 0px -2px 8px rgb(113, 116, 115);
-    box-shadow: 0px -2px 15px rgba(14, 13, 13, 0.486);
-    /* box-shadow: 10px 115px 15px rgba(14, 13, 13, 0.486); */
-
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 54px;
+  padding: 0 32px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: 0 -2px 12px rgba(14, 13, 13, 0.12);
+  color: var(--color-ink);
+  font-family: 'Dosis', sans-serif;
 }
 
-.footer-text{
-    margin-left: 100px;
-    color: black;
-    font-family: 'Dosis', sans-serif;
-    font-size: 24px;
-    text-align: center;
-    /* font-weight: 900; */
+.footer-text {
+  font-size: 20px;
+  line-height: 1;
 }
 
-.footer-element, .footerIcon {
-    color: black;
-    text-decoration: none;
-    margin-left: 240px;
+.footer-element,
+.footerIcon {
+  color: var(--color-ink);
+  font-size: 18px;
+  text-decoration: none;
 }
