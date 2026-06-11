@@ -1,7 +1,54 @@
-/* TODO Add site wide styles */
 * {
     box-sizing: border-box;
     border: none;
+  }
+
+  body {
+    background: #fbfaf4;
+    color: #1f2a24;
+  }
+
+  button,
+  select,
+  input {
+    border: none;
+  }
+
+  button:focus-visible,
+  select:focus-visible,
+  input:focus-visible,
+  a:focus-visible {
+    outline: 3px solid #5b6f42;
+    outline-offset: 3px;
+  }
+
+  body.theme-calm {
+    background: #f5f1e7;
+  }
+
+  body.theme-contrast {
+    background: #ffffff;
+    color: #111111;
+  }
+
+  body.theme-contrast a,
+  body.theme-contrast a:visited {
+    color: #111111;
+  }
+
+  body.theme-contrast button,
+  body.theme-contrast select,
+  body.theme-contrast input {
+    border: 2px solid #111111;
+  }
+
+  body.reduce-motion *,
+  body.reduce-motion *::before,
+  body.reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 
   #root {

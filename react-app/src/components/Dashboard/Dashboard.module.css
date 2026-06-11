@@ -1,94 +1,274 @@
-.dashboard_body {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    /* border: black 2px solid; */
-
+.page {
+  width: min(1180px, calc(100vw - 32px));
+  margin: 96px auto 64px;
+  color: #1f2a24;
 }
 
-.dashboard_container {
-display: flex;
-flex-direction: column;
-justify-content: center;
-margin-top: 30px;
-/* border: rgb(67, 212, 30) 1px solid; */
-padding: 20px;
-width: 550px;
-height: auto;
-min-width: 550px;
-/* min-height: 500px; */
-border-radius: 20px;
-margin-top: 150px;
-box-shadow: 0px 1px 10px rgb(72, 236, 200);
-box-shadow: 0px 1px 18px rgb(72, 83, 236);
-box-shadow: 0px 1px 15px rgb(236, 151, 72);
-box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
-
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-end;
+  padding: 32px;
+  border-radius: 8px;
+  background: #f2f8ef;
+  border: 1px solid #cfe1c7;
 }
 
-.dashboard_header {
-    font-size: 38px;
-    text-align: center;
-    margin-bottom: 10px;
-    text-decoration-line: underline;
+.title {
+  max-width: 720px;
+  margin: 4px 0 10px;
+  font-size: 44px;
+  line-height: 1.05;
 }
 
-.dashboard_box {
-    display: flex;
+.subtitle {
+  max-width: 660px;
+  font-size: 20px;
+  line-height: 1.45;
+  color: #46534b;
+}
+
+.eyebrow,
+.cardLabel {
+  color: #5b6f42;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.actions,
+.timerActions,
+.toggleRow,
+.segmented,
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.summaryGrid,
+.layout {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.layout {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.summaryCard,
+.panel {
+  padding: 22px;
+  border: 1px solid #d8dfd0;
+  border-radius: 8px;
+  background: #fffdf7;
+  box-shadow: 0 8px 22px rgba(31, 42, 36, 0.08);
+}
+
+.summaryCard strong {
+  display: block;
+  margin: 8px 0 4px;
+  font-size: 32px;
+}
+
+.summaryCard p,
+.emptyState,
+.focusTask {
+  color: #5a655d;
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.panel h2 {
+  margin: 4px 0 0;
+  font-size: 26px;
+}
+
+.list {
+  display: grid;
+  gap: 10px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 8px;
+  background: #f7f1e4;
+}
+
+.listItem strong,
+.routine strong {
+  display: block;
+  font-size: 19px;
+}
+
+.listItem span {
+  display: block;
+  margin-top: 3px;
+  color: #5a655d;
+  font-size: 15px;
+}
+
+.statusPill,
+.stepCount {
+  min-width: max-content;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #e7eadf;
+  color: #1f2a24;
+  font-weight: 900;
+}
+
+.taken {
+  background: #cbe8c2;
+}
+
+.skipped {
+  background: #f3d3ca;
+}
+
+.unsure {
+  background: #efe1aa;
+}
+
+.idle {
+  background: #e7eadf;
+}
+
+.textLink,
+.secondaryButton,
+.timerActions button,
+.segmented button,
+.chips button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #334d2e;
+  color: #fff;
+  font-family: 'Dosis', sans-serif;
+  font-size: 17px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.textLink {
+  margin-top: 14px;
+}
+
+.secondaryButton {
+  background: #efe5c8;
+  color: #263427;
+}
+
+.select {
+  width: 100%;
+  min-height: 44px;
+  margin: 14px 0 12px;
+  padding: 8px 12px;
+  border: 1px solid #cad5c2;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f2a24;
+  font-family: 'Dosis', sans-serif;
+  font-size: 18px;
+}
+
+.segmented button {
+  background: #e8eadf;
+  color: #263427;
+}
+
+.segmented .activeSegment {
+  background: #334d2e;
+  color: #fff;
+}
+
+.timer {
+  margin-top: 16px;
+  font-size: 54px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.timerActions button:last-child {
+  background: #a8642c;
+}
+
+.routines {
+  display: grid;
+  gap: 16px;
+}
+
+.routine {
+  padding: 14px;
+  border-radius: 8px;
+  background: #f7f1e4;
+}
+
+.chips {
+  margin-top: 10px;
+}
+
+.chips button {
+  background: #fffdf7;
+  color: #263427;
+  border: 1px solid #d8dfd0;
+}
+
+.chips .checkedChip {
+  background: #cbe8c2;
+}
+
+.toggleRow {
+  margin-top: 14px;
+}
+
+.toggleRow label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f7f1e4;
+  font-size: 18px;
+}
+
+.toggleRow input {
+  width: auto;
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .hero,
+  .panelHeader {
+    align-items: flex-start;
     flex-direction: column;
-    justify-content: space-evenly;
-    margin-bottom: 25px;
-    /* border: black 1px solid; */
-}
+  }
 
-.dashboard_item {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    justify-items: center;
-    text-align: center;
-    /* border: purple 3px solid; */
-    font-size: 30px;
-    margin-top: 10px;
-    text-align: center;
-    /* margin-bottom: 5px; */
-}
+  .summaryGrid,
+  .layout {
+    grid-template-columns: 1fr;
+  }
 
-.dash_med_button {
-     background-color: rgba(43, 228, 52, 0.5);
-     border: none;
-     border-radius: 18px;
-     font-family: 'Dosis', sans-serif;
-     font-size: 24px;
-     margin-top: 13px;
-     text-align: center;
-}
-
-.dash_med_button:hover {
-    transition: background-color 0.7s;
-    background-color: rgba(59, 228, 240, 0.603);
-    background-color: rgba(71, 255, 86, 0.603);
-    background-color: rgba(228, 43, 219, 0.5);
-
-    border-radius: 15px;
-    font-weight: 700;
-}
-
-.dash_task_button {
-
-    background-color: rgba(241, 168, 32, 0.603);
-    border: none;
-    border-radius: 18px;
-    font-family: 'Dosis', sans-serif;
-    font-size: 24px;
-    margin-top: 3px;
-    margin-top: 13px;
-}
-
-.dash_task_button:hover {
-   transition: background-color 0.7s;
-   background-color: rgba(77, 255, 71, 0.603);
-   background-color: rgba(228, 43, 219, 0.5);
-   border-radius: 15px;
-   font-weight: 700;
+  .title {
+    font-size: 34px;
+  }
 }

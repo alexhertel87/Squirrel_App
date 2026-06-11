@@ -1,67 +1,192 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import * as sessionActions from '../../store/session';
-
 import * as TaskListActions from '../../store/task_list';
 import EditTaskModal from './EditTaskListModal';
 import styles from './TaskList.module.css';
-import TaskListForm from './TaskListForm';
 import TaskListModal from './TaskListModal';
+import { formatDate, loadJson, saveJson } from '../../utils/neuroSupport';
 
+const energyOptions = [
+  { value: 'all', label: 'All' },
+  { value: 'low', label: 'Low energy' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+  { value: 'quick', label: 'Quick win' },
+];
 
+const starterSteps = ['Open the task', 'Do the first visible piece', 'Pause and reassess'];
 
 const TaskListData = () => {
+  const tasks = useSelector((state) => state.task_items);
+  const taskArray = Object.values(tasks).filter((task) => task && task.id);
+  const dispatch = useDispatch();
+  const [energyByTask, setEnergyByTask] = useState(() => loadJson('squirrel-task-energy', {}));
+  const [stepsByTask, setStepsByTask] = useState(() => loadJson('squirrel-task-steps', {}));
+  const [newStepByTask, setNewStepByTask] = useState({});
+  const [filter, setFilter] = useState('all');
 
-    const tasks = useSelector((state) => state.task_items);
+  useEffect(() => {
+    dispatch(TaskListActions.all_task_items());
+  }, [dispatch]);
 
-    const taskArray = Object.values(tasks);
+  const filteredTasks = useMemo(() => {
+    if (filter === 'all') return taskArray;
+    return taskArray.filter((task) => (energyByTask[task.id] || 'medium') === filter);
+  }, [energyByTask, filter, taskArray]);
 
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(TaskListActions.all_task_items());
-    }, [dispatch]);
+  const updateEnergy = (taskId, energy) => {
+    const nextEnergy = {
+      ...energyByTask,
+      [taskId]: energy,
+    };
+    setEnergyByTask(nextEnergy);
+    saveJson('squirrel-task-energy', nextEnergy);
+  };
 
+  const addStarterSteps = (taskId) => {
+    const existingSteps = stepsByTask[taskId] || [];
+    const nextSteps = {
+      ...stepsByTask,
+      [taskId]: existingSteps.length ? existingSteps : starterSteps.map((label, index) => ({
+        id: `${taskId}-starter-${index}`,
+        label,
+        done: false,
+      })),
+    };
+    setStepsByTask(nextSteps);
+    saveJson('squirrel-task-steps', nextSteps);
+  };
 
-    return (
-        <div className={ styles.task_list_page}>
-            <h1 className={styles.tasks_header}>My To-Do List</h1>
-            <h2 className={styles.tasks_subHeader}>C'mon...just do it. You know it'll only take 10 minutes.</h2>
-            <div className={styles.TableDiv}>
-                <div className={styles.new_task_modal}>
-                    <TaskListModal />
+  const addStep = (taskId) => {
+    const label = (newStepByTask[taskId] || '').trim();
+    if (!label) return;
+
+    const nextSteps = {
+      ...stepsByTask,
+      [taskId]: [
+        ...(stepsByTask[taskId] || []),
+        {
+          id: `${taskId}-${Date.now()}`,
+          label,
+          done: false,
+        },
+      ],
+    };
+    setStepsByTask(nextSteps);
+    setNewStepByTask({ ...newStepByTask, [taskId]: '' });
+    saveJson('squirrel-task-steps', nextSteps);
+  };
+
+  const toggleStep = (taskId, stepId) => {
+    const nextSteps = {
+      ...stepsByTask,
+      [taskId]: (stepsByTask[taskId] || []).map((step) => (
+        step.id === stepId ? { ...step, done: !step.done } : step
+      )),
+    };
+    setStepsByTask(nextSteps);
+    saveJson('squirrel-task-steps', nextSteps);
+  };
+
+  return (
+    <main className={styles.page}>
+      <section className={styles.header}>
+        <div>
+          <p className={styles.eyebrow}>Task support</p>
+          <h1>Make the next step smaller</h1>
+          <p>Sort by energy, break tasks into steps, and restart without guilt.</p>
+        </div>
+        <TaskListModal />
+      </section>
+
+      <section className={styles.toolbar} aria-label="Task filters">
+        {energyOptions.map((option) => (
+          <button
+            className={filter === option.value ? styles.activeFilter : ''}
+            key={option.value}
+            onClick={() => setFilter(option.value)}
+            type="button"
+          >
+            {option.label}
+          </button>
+        ))}
+      </section>
+
+      <section className={styles.grid}>
+        {filteredTasks.length ? filteredTasks.map((task) => {
+          const taskEnergy = energyByTask[task.id] || 'medium';
+          const steps = stepsByTask[task.id] || [];
+          const completedSteps = steps.filter((step) => step.done).length;
+
+          return (
+            <article className={styles.card} key={task.id}>
+              <div className={styles.cardHeader}>
+                <div>
+                  <h2>{task.task_name}</h2>
+                  <p>Goal: {formatDate(task.due_date_1)} · Latest: {formatDate(task.due_date_2)}</p>
                 </div>
-            <table>
-                <thead className={styles.TableHeader}>
-                    <tr className={styles.ColumnNames}>
-                        <th className={styles.ColumnNames}>Task Name</th>
-                        <th className={styles.ColumnNames}>Goal Due Date</th>
-                        <th className={styles.ColumnNames}>LATEST Due By</th>
-                            {/* <th className={styles.ColumnNames}>Completed (Y || N)</th>
-                            <th className={styles.ColumnNames}>Completed At</th> */}
-                    </tr>
-                </thead>
-                <tbody className={styles.TableBody}>
-                        {taskArray && taskArray.map(task => (
-                        <>
-                        <tr className={styles.task_items}>
-                            <td className={styles.tasks_data}>{task.task_name}</td>
-                            <td className={styles.tasks_data}>{task.due_date_1}</td>
-                            <td className={styles.tasks_data}>{task.due_date_2}</td>
-                            {/* <td className={styles.tasks_data}>{task.completed}</td> */}
-                            {/* <td className={styles.tasks_data}>{task.completed_at}</td> */}
-                            <EditTaskModal task={task} />
-                        </tr>
-                            <button onClick={() => dispatch(TaskListActions.delete_task_item(task.id))}
-                                    className={styles.task_btn}>Delete</button>
-                        </>
-                    ))}
-                </tbody>
-            </table>
-            </div>
-        </div >
-        // </div>
-    )
-}
+                <span className={styles.progress}>{completedSteps}/{steps.length || 1}</span>
+              </div>
+
+              <label className={styles.energyLabel}>
+                Energy needed
+                <select value={taskEnergy} onChange={(event) => updateEnergy(task.id, event.target.value)}>
+                  {energyOptions.filter((option) => option.value !== 'all').map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+
+              <div className={styles.steps}>
+                {steps.length ? steps.map((step) => (
+                  <label className={step.done ? styles.doneStep : ''} key={step.id}>
+                    <input
+                      checked={step.done}
+                      onChange={() => toggleStep(task.id, step.id)}
+                      type="checkbox"
+                    />
+                    {step.label}
+                  </label>
+                )) : (
+                  <p className={styles.emptySteps}>No steps yet. Make this task less slippery.</p>
+                )}
+              </div>
+
+              <div className={styles.stepComposer}>
+                <input
+                  aria-label={`Add a step for ${task.task_name}`}
+                  onChange={(event) => setNewStepByTask({ ...newStepByTask, [task.id]: event.target.value })}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') addStep(task.id);
+                  }}
+                  placeholder="Add one tiny step"
+                  value={newStepByTask[task.id] || ''}
+                />
+                <button onClick={() => addStep(task.id)} type="button">Add</button>
+                <button onClick={() => addStarterSteps(task.id)} type="button">Make it smaller</button>
+              </div>
+
+              <div className={styles.cardActions}>
+                <EditTaskModal task={task} />
+                <button
+                  onClick={() => dispatch(TaskListActions.delete_task_item(task.id))}
+                  className={styles.deleteButton}
+                  type="button"
+                >
+                  Remove
+                </button>
+              </div>
+            </article>
+          );
+        }) : (
+          <article className={styles.emptyState}>
+            <h2>No tasks in this view</h2>
+            <p>Try another energy filter, or add one task that Future You will thank you for.</p>
+          </article>
+        )}
+      </section>
+    </main>
+  );
+};
 
 export default TaskListData;
