@@ -5,6 +5,15 @@ import * as sessionActions from '../../store/session';
 import * as userActions from '../../store/task_list';
 import styles from './TaskList.module.css';
 
+const formatDateInput = (date) => {
+    if (!date) return '';
+
+    const parsedDate = new Date(date);
+    if (Number.isNaN(parsedDate.getTime())) return '';
+
+    return parsedDate.toISOString().slice(0, 10);
+}
+
 export const EditTaskForm = ({ setShowModal, task }) => {
     console.log(task);
     const dispatch = useDispatch();
@@ -25,8 +34,8 @@ export const EditTaskForm = ({ setShowModal, task }) => {
 
     const [errors, setErrors] = useState([]);
     const [taskName, setTaskName] = useState(task.task_name);
-    const [dueDate1, setDueDate1] = useState(task.dueDate1);
-    const [dueDate2, setDueDate2] = useState(task.dueDate2);
+    const [dueDate1, setDueDate1] = useState(formatDateInput(task.due_date_1));
+    const [dueDate2, setDueDate2] = useState(formatDateInput(task.due_date_2));
     // const [completed, setCompleted] = useState(false);
     // const [completedAt, setCompletedAt] = useState("");
 

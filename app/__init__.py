@@ -23,6 +23,13 @@ login = LoginManager(app)
 login.login_view = 'auth.unauthorized'
 
 
+@login.unauthorized_handler
+def unauthorized():
+    if request.path.startswith('/api/'):
+        return {'errors': ['Unauthorized']}, 401
+    return redirect('/login')
+
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
