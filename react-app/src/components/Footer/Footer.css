@@ -13,7 +13,7 @@
   background: var(--color-surface);
   box-shadow: 0 -2px 12px rgba(14, 13, 13, 0.12);
   color: var(--color-ink);
-  font-family: 'Dosis', sans-serif;
+  font-family: var(--font-ui);
 }
 
 .footer-text {

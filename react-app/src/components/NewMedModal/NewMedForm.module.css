@@ -45,7 +45,7 @@
   }
 
   .med_data_inputs {
-    font-family: 'Dosis', sans-serif;
+    font-family: var(--font-ui);
     font-size: 24px;
     min-width: 300px;
     max-width: 300px;
@@ -65,7 +65,7 @@
  .med_data_inputs::placeholder {
     color: white;
     font-size: 24px;
-    font-family: 'Dosis', sans-serif;
+    font-family: var(--font-ui);
   }
 
     .med_data_inputs:-webkit-autofill,
@@ -105,15 +105,15 @@
   background: var(--color-secondary);
   color: var(--color-ink);
   cursor: pointer;
-  font-family: 'Dosis', sans-serif;
+  font-family: var(--font-ui);
   font-size: 17px;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1;
   text-align: center;
 }
 
 .dash_med_button:hover {
-  background: #ffc6e3;
+  background: var(--color-secondary-hover);
 }
 
 .newMedLabel {

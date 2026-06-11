@@ -25,6 +25,73 @@ const defaultRoutines = [
 ];
 
 const focusDurations = [10, 15, 25];
+const breathingDurations = [
+  { seconds: 30, label: '30 sec reset' },
+  { seconds: 60, label: '1 min starter' },
+  { seconds: 300, label: '5 min full' },
+];
+
+const breathingTechniques = [
+  {
+    id: 'box',
+    label: 'Box breathing',
+    summary: 'Steady 4-4-4-4 pattern for a structured reset.',
+    pattern: [
+      { label: 'Inhale', seconds: 4 },
+      { label: 'Hold', seconds: 4 },
+      { label: 'Exhale', seconds: 4 },
+      { label: 'Hold', seconds: 4 },
+    ],
+  },
+  {
+    id: 'balanced',
+    label: 'Balanced breathing',
+    summary: 'No holds. Good if holding your breath feels uncomfortable.',
+    pattern: [
+      { label: 'Inhale', seconds: 4 },
+      { label: 'Exhale', seconds: 4 },
+    ],
+  },
+  {
+    id: 'long-exhale',
+    label: 'Long exhale',
+    summary: 'A gentle longer exhale to help your body downshift.',
+    pattern: [
+      { label: 'Inhale', seconds: 4 },
+      { label: 'Exhale slowly', seconds: 6 },
+    ],
+  },
+  {
+    id: '478',
+    label: '4-7-8 breathing',
+    summary: 'More intense. Best when breath holds feel okay.',
+    pattern: [
+      { label: 'Inhale', seconds: 4 },
+      { label: 'Hold', seconds: 7 },
+      { label: 'Exhale slowly', seconds: 8 },
+    ],
+  },
+];
+
+const getBreathingPhase = (technique, elapsedSeconds) => {
+  if (!technique) return { label: 'Choose a technique', seconds: 0, phaseSecondsLeft: 0 };
+
+  const cycleSeconds = technique.pattern.reduce((total, phase) => total + phase.seconds, 0);
+  const cyclePosition = elapsedSeconds % cycleSeconds;
+  let cursor = 0;
+
+  for (const phase of technique.pattern) {
+    if (cyclePosition < cursor + phase.seconds) {
+      return {
+        ...phase,
+        phaseSecondsLeft: cursor + phase.seconds - cyclePosition,
+      };
+    }
+    cursor += phase.seconds;
+  }
+
+  return { ...technique.pattern[0], phaseSecondsLeft: technique.pattern[0].seconds };
+};
 
 export const Dashboard = () => {
   const dispatch = useDispatch();
@@ -36,9 +103,21 @@ export const Dashboard = () => {
   const [selectedTask, setSelectedTask] = useState('');
   const [focusMinutes, setFocusMinutes] = useState(10);
   const [secondsLeft, setSecondsLeft] = useState(0);
+  const [breathingOpen, setBreathingOpen] = useState(false);
+  const [breathingTechniqueId, setBreathingTechniqueId] = useState('');
+  const [breathingDuration, setBreathingDuration] = useState(60);
+  const [breathingSecondsLeft, setBreathingSecondsLeft] = useState(0);
+  const [breathingElapsed, setBreathingElapsed] = useState(0);
   const medCheckins = getMedCheckins(support);
   const routineState = support.routines;
   const comfort = support.comfort;
+  const selectedBreathingTechnique = breathingTechniques.find((technique) => technique.id === breathingTechniqueId);
+  const breathingRunning = breathingSecondsLeft > 0;
+  const breathingComplete = Boolean(!breathingRunning && breathingElapsed >= breathingDuration && breathingTechniqueId);
+  const breathingPhase = breathingComplete
+    ? { label: 'Done', phaseSecondsLeft: 0 }
+    : getBreathingPhase(selectedBreathingTechnique, breathingElapsed);
+  const breathingProgress = breathingDuration ? Math.min(100, (breathingElapsed / breathingDuration) * 100) : 0;
 
   const updateSupport = (updater) => {
     setSupport((current) => {
@@ -81,6 +160,29 @@ export const Dashboard = () => {
     return () => clearInterval(timer);
   }, [secondsLeft]);
 
+  useEffect(() => {
+    if (!breathingSecondsLeft) return undefined;
+
+    const timer = setInterval(() => {
+      setBreathingSecondsLeft((seconds) => Math.max(seconds - 1, 0));
+      setBreathingElapsed((seconds) => Math.min(seconds + 1, breathingDuration));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [breathingDuration, breathingSecondsLeft]);
+
+  useEffect(() => {
+    if (!breathingComplete || routineState['reset:Breathe']) return;
+
+    updateSupport((current) => ({
+      ...current,
+      routines: {
+        ...current.routines,
+        'reset:Breathe': true,
+      },
+    }));
+  }, [breathingComplete, routineState]);
+
   const medsTaken = medsArray.filter((med) => medCheckins[med.id]?.status === 'taken').length;
   const quickWins = taskArray.filter((task) => ['low', 'quick'].includes(getEnergy(task.id, support)));
   const nextTasks = quickWins.length ? quickWins.slice(0, 3) : taskArray.slice(0, 3);
@@ -96,6 +198,32 @@ export const Dashboard = () => {
         [key]: !current.routines[key],
       },
     }));
+  };
+
+  const openBreathingCoach = () => {
+    setBreathingOpen(true);
+    setBreathingTechniqueId('');
+    setBreathingSecondsLeft(0);
+    setBreathingElapsed(0);
+  };
+
+  const closeBreathingCoach = () => {
+    setBreathingOpen(false);
+    setBreathingSecondsLeft(0);
+    setBreathingElapsed(0);
+  };
+
+  const selectBreathingTechnique = (techniqueId) => {
+    if (breathingRunning) return;
+    setBreathingTechniqueId(techniqueId);
+    setBreathingSecondsLeft(0);
+    setBreathingElapsed(0);
+  };
+
+  const startBreathingSession = () => {
+    if (!selectedBreathingTechnique) return;
+    setBreathingSecondsLeft(breathingDuration);
+    setBreathingElapsed(0);
   };
 
   return (
@@ -231,11 +359,12 @@ export const Dashboard = () => {
                 <div className={styles.chips}>
                   {routine.steps.map((step) => {
                     const key = `${routine.id}:${step}`;
+                    const isBreathingButton = routine.id === 'reset' && step === 'Breathe';
                     return (
                       <button
                         className={routineState[key] ? styles.checkedChip : ''}
                         key={step}
-                        onClick={() => toggleRoutineStep(routine.id, step)}
+                        onClick={() => (isBreathingButton ? openBreathingCoach() : toggleRoutineStep(routine.id, step))}
                         type="button"
                       >
                         {routineState[key] ? 'Done: ' : ''}{step}
@@ -258,6 +387,102 @@ export const Dashboard = () => {
           <label><input checked={comfort.reducedMotion} onChange={() => updateSupport((current) => ({ ...current, comfort: { ...current.comfort, reducedMotion: !current.comfort.reducedMotion } }))} type="checkbox" /> Reduced motion</label>
         </div>
       </section>
+
+      {breathingOpen && (
+        <div className={styles.breathingOverlay} role="presentation">
+          <section
+            aria-labelledby="breathing-title"
+            aria-modal="true"
+            className={styles.breathingDialog}
+            role="dialog"
+          >
+            <div className={styles.breathingHeader}>
+              <div>
+                <p className={styles.eyebrow}>Breathe</p>
+                <h2 id="breathing-title">Pick a breathing reset</h2>
+                <p>
+                  Short resets are useful in the moment. The 5 minute option is there when you
+                  want a fuller calming practice.
+                </p>
+              </div>
+              <button className={styles.iconButton} onClick={closeBreathingCoach} type="button" aria-label="Close breathing coach">Close</button>
+            </div>
+
+            <div className={`${styles.breathingOptions} ${selectedBreathingTechnique ? styles.compactBreathingOptions : ''}`}>
+              {breathingTechniques.map((technique) => (
+                <button
+                  aria-label={`${technique.label}. ${technique.summary}`}
+                  className={breathingTechniqueId === technique.id ? styles.selectedBreathingOption : ''}
+                  disabled={breathingRunning}
+                  key={technique.id}
+                  onClick={() => selectBreathingTechnique(technique.id)}
+                  type="button"
+                >
+                  <strong>{technique.label}</strong>
+                  <span>{technique.summary}</span>
+                </button>
+              ))}
+            </div>
+
+            {selectedBreathingTechnique && (
+              <>
+                <div className={styles.durationGrid} aria-label="Breathing session length">
+                  {breathingDurations.map((duration) => (
+                    <button
+                      className={breathingDuration === duration.seconds ? styles.activeDuration : ''}
+                      disabled={breathingRunning}
+                      key={duration.seconds}
+                      onClick={() => {
+                        setBreathingDuration(duration.seconds);
+                        setBreathingElapsed(0);
+                        setBreathingSecondsLeft(0);
+                      }}
+                      type="button"
+                    >
+                      {duration.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className={styles.breathingCoach}>
+                  <div className={styles.breathingOrb} aria-hidden="true">
+                    <span>{breathingComplete ? 'Done' : breathingPhase.phaseSecondsLeft || ''}</span>
+                  </div>
+                  <div className={styles.breathingText}>
+                    <strong>{breathingComplete ? 'Nice work.' : breathingPhase.label}</strong>
+                    <span>
+                      {breathingRunning
+                        ? `${breathingSecondsLeft}s left`
+                        : breathingComplete
+                          ? 'Your breathe routine is marked done for today.'
+                          : 'Press Start when you are ready.'}
+                    </span>
+                  </div>
+                  <div className={styles.breathingProgress} aria-hidden="true">
+                    <span style={{ width: `${breathingProgress}%` }} />
+                  </div>
+                </div>
+
+                <div className={styles.breathingActions}>
+                  <button type="button" onClick={startBreathingSession}>
+                    {breathingComplete ? 'Restart' : breathingRunning ? 'Restart' : 'Start'}
+                  </button>
+                  <button type="button" onClick={() => {
+                    setBreathingSecondsLeft(0);
+                    setBreathingElapsed(0);
+                  }}>
+                    Reset
+                  </button>
+                </div>
+              </>
+            )}
+
+            <p className={styles.breathingNote}>
+              Stop if you feel dizzy or short of breath. Choose Balanced breathing if holds do not feel good.
+            </p>
+          </section>
+        </div>
+      )}
     </main>
   );
 };

@@ -39,7 +39,7 @@
 .eyebrow {
   color: var(--color-accent-lavender);
   font-size: 14px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -86,7 +86,7 @@
   border-radius: 999px;
   background: var(--color-pill-idle);
   font-size: 15px;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1;
   white-space: nowrap;
 }
@@ -153,9 +153,9 @@
   background: var(--color-surface-soft);
   color: var(--color-ink);
   cursor: pointer;
-  font-family: 'Dosis', sans-serif;
+  font-family: var(--font-ui);
   font-size: 17px;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1;
   text-align: center;
 }

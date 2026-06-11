@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   KeyboardAvoidingView,
+  Modal,
   Platform,
   Pressable,
   SafeAreaView,
@@ -38,6 +39,53 @@ const defaultRoutines = [
 const tabs = ['Dashboard', 'Meds', 'Tasks', 'Focus', 'Settings'];
 const energyOptions = ['low', 'medium', 'high', 'quick'];
 const focusDurations = [10, 15, 25];
+const breathingDurations = [
+  { seconds: 30, label: '30 sec reset' },
+  { seconds: 60, label: '1 min starter' },
+  { seconds: 300, label: '5 min full' },
+];
+
+const breathingTechniques = [
+  {
+    id: 'box',
+    label: 'Box breathing',
+    summary: 'Steady 4-4-4-4 pattern for a structured reset.',
+    pattern: [
+      { label: 'Inhale', seconds: 4 },
+      { label: 'Hold', seconds: 4 },
+      { label: 'Exhale', seconds: 4 },
+      { label: 'Hold', seconds: 4 },
+    ],
+  },
+  {
+    id: 'balanced',
+    label: 'Balanced breathing',
+    summary: 'No holds. Good if holding your breath feels uncomfortable.',
+    pattern: [
+      { label: 'Inhale', seconds: 4 },
+      { label: 'Exhale', seconds: 4 },
+    ],
+  },
+  {
+    id: 'long-exhale',
+    label: 'Long exhale',
+    summary: 'A gentle longer exhale to help your body downshift.',
+    pattern: [
+      { label: 'Inhale', seconds: 4 },
+      { label: 'Exhale slowly', seconds: 6 },
+    ],
+  },
+  {
+    id: '478',
+    label: '4-7-8 breathing',
+    summary: 'More intense. Best when breath holds feel okay.',
+    pattern: [
+      { label: 'Inhale', seconds: 4 },
+      { label: 'Hold', seconds: 7 },
+      { label: 'Exhale slowly', seconds: 8 },
+    ],
+  },
+];
 
 const initialMed = {
   med_name: '',
@@ -75,6 +123,26 @@ const medStatusLabel = (status) => {
   if (status === 'skipped') return 'Skipped';
   if (status === 'unsure') return 'Not sure';
   return 'Check in';
+};
+
+const getBreathingPhase = (technique, elapsedSeconds) => {
+  if (!technique) return { label: 'Choose a technique', phaseSecondsLeft: 0 };
+
+  const cycleSeconds = technique.pattern.reduce((total, phase) => total + phase.seconds, 0);
+  const cyclePosition = elapsedSeconds % cycleSeconds;
+  let cursor = 0;
+
+  for (const phase of technique.pattern) {
+    if (cyclePosition < cursor + phase.seconds) {
+      return {
+        ...phase,
+        phaseSecondsLeft: cursor + phase.seconds - cyclePosition,
+      };
+    }
+    cursor += phase.seconds;
+  }
+
+  return { ...technique.pattern[0], phaseSecondsLeft: technique.pattern[0].seconds };
 };
 
 const AppButton = ({ children, tone = 'primary', onPress, disabled, style }) => (
@@ -141,6 +209,11 @@ export default function SquirrelMobileApp() {
   const [focusMinutes, setFocusMinutes] = useState(10);
   const [focusSeconds, setFocusSeconds] = useState(0);
   const [focusTask, setFocusTask] = useState('');
+  const [breathingOpen, setBreathingOpen] = useState(false);
+  const [breathingTechniqueId, setBreathingTechniqueId] = useState('');
+  const [breathingDuration, setBreathingDuration] = useState(60);
+  const [breathingSecondsLeft, setBreathingSecondsLeft] = useState(0);
+  const [breathingElapsed, setBreathingElapsed] = useState(0);
 
   const today = todayKey();
   const todaysCheckins = support.checkins[today] || {};
@@ -152,6 +225,13 @@ export default function SquirrelMobileApp() {
     : tasks.filter((task) => (support.taskEnergy[task.id] || 'medium') === taskFilter);
 
   const focusClock = `${String(Math.floor(focusSeconds / 60)).padStart(2, '0')}:${String(focusSeconds % 60).padStart(2, '0')}`;
+  const selectedBreathingTechnique = breathingTechniques.find((technique) => technique.id === breathingTechniqueId);
+  const breathingRunning = breathingSecondsLeft > 0;
+  const breathingComplete = Boolean(!breathingRunning && breathingElapsed >= breathingDuration && breathingTechniqueId);
+  const breathingPhase = breathingComplete
+    ? { label: 'Done', phaseSecondsLeft: 0 }
+    : getBreathingPhase(selectedBreathingTechnique, breathingElapsed);
+  const breathingProgress = breathingDuration ? Math.min(100, (breathingElapsed / breathingDuration) * 100) : 0;
 
   const syncSupport = (updater) => {
     setSupport((current) => normalizeSupport(typeof updater === 'function' ? updater(current) : updater));
@@ -210,6 +290,27 @@ export default function SquirrelMobileApp() {
     }, 1000);
     return () => clearInterval(timer);
   }, [focusSeconds]);
+
+  useEffect(() => {
+    if (!breathingSecondsLeft) return undefined;
+    const timer = setInterval(() => {
+      setBreathingSecondsLeft((seconds) => Math.max(seconds - 1, 0));
+      setBreathingElapsed((seconds) => Math.min(seconds + 1, breathingDuration));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [breathingDuration, breathingSecondsLeft]);
+
+  useEffect(() => {
+    if (!breathingComplete || support.routines['reset:Breathe']) return;
+
+    syncSupport((current) => ({
+      ...current,
+      routines: {
+        ...current.routines,
+        'reset:Breathe': true,
+      },
+    }));
+  }, [breathingComplete, support.routines]);
 
   const submitAuth = async () => {
     setLoading(true);
@@ -385,6 +486,32 @@ export default function SquirrelMobileApp() {
     }));
   };
 
+  const openBreathingCoach = () => {
+    setBreathingOpen(true);
+    setBreathingTechniqueId('');
+    setBreathingSecondsLeft(0);
+    setBreathingElapsed(0);
+  };
+
+  const closeBreathingCoach = () => {
+    setBreathingOpen(false);
+    setBreathingSecondsLeft(0);
+    setBreathingElapsed(0);
+  };
+
+  const selectBreathingTechnique = (techniqueId) => {
+    if (breathingRunning) return;
+    setBreathingTechniqueId(techniqueId);
+    setBreathingSecondsLeft(0);
+    setBreathingElapsed(0);
+  };
+
+  const startBreathingSession = () => {
+    if (!selectedBreathingTechnique) return;
+    setBreathingSecondsLeft(breathingDuration);
+    setBreathingElapsed(0);
+  };
+
   const setComfort = (key, value) => {
     syncSupport((current) => ({
       ...current,
@@ -498,12 +625,13 @@ export default function SquirrelMobileApp() {
             <View style={styles.chipGrid}>
               {routine.steps.map((step) => {
                 const checked = !!support.routines[`${routine.id}:${step}`];
+                const isBreathingButton = routine.id === 'reset' && step === 'Breathe';
                 return (
                   <AppButton
                     key={step}
                     style={styles.chipButton}
                     tone={checked ? 'success' : 'secondary'}
-                    onPress={() => toggleRoutineStep(routine.id, step)}
+                    onPress={() => (isBreathingButton ? openBreathingCoach() : toggleRoutineStep(routine.id, step))}
                   >
                     {checked ? 'Done: ' : ''}{step}
                   </AppButton>
@@ -686,6 +814,115 @@ export default function SquirrelMobileApp() {
     </>
   );
 
+  const renderBreathingCoach = () => (
+    <Modal
+      animationType={support.comfort.reducedMotion ? 'none' : 'fade'}
+      onRequestClose={closeBreathingCoach}
+      transparent
+      visible={breathingOpen}
+    >
+      <View style={styles.modalBackdrop}>
+        <View style={styles.breathingModal}>
+          <ScrollView contentContainerStyle={styles.breathingModalContent}>
+            <View style={styles.modalHeader}>
+              <View style={styles.modalHeaderText}>
+                <Text style={styles.eyebrow}>Breathe</Text>
+                <Text style={styles.sectionTitle}>Pick a breathing reset</Text>
+                <Text style={styles.muted}>
+                  Short resets help in the moment. The 5 minute option is there for a fuller calming practice.
+                </Text>
+              </View>
+              <AppButton tone="secondary" style={styles.closeButton} onPress={closeBreathingCoach}>Close</AppButton>
+            </View>
+
+            <View style={styles.breathingTechniqueGrid}>
+              {breathingTechniques.map((technique) => (
+                <Pressable
+                  accessibilityRole="button"
+                  disabled={breathingRunning}
+                  key={technique.id}
+                  onPress={() => selectBreathingTechnique(technique.id)}
+                  style={({ pressed }) => [
+                    styles.techniqueOption,
+                    breathingTechniqueId === technique.id && styles.techniqueOptionSelected,
+                    breathingRunning && styles.optionDisabled,
+                    pressed && !breathingRunning && styles.buttonPressed,
+                  ]}
+                >
+                  <Text style={styles.techniqueTitle}>{technique.label}</Text>
+                  <Text style={styles.techniqueSummary}>{technique.summary}</Text>
+                </Pressable>
+              ))}
+            </View>
+
+            {!!selectedBreathingTechnique && (
+              <>
+                <View style={styles.threeGrid}>
+                  {breathingDurations.map((duration) => (
+                    <AppButton
+                      disabled={breathingRunning}
+                      key={duration.seconds}
+                      onPress={() => {
+                        setBreathingDuration(duration.seconds);
+                        setBreathingElapsed(0);
+                        setBreathingSecondsLeft(0);
+                      }}
+                      style={styles.equalButton}
+                      tone={breathingDuration === duration.seconds ? 'primary' : 'secondary'}
+                    >
+                      {duration.label}
+                    </AppButton>
+                  ))}
+                </View>
+
+                <View style={styles.breathingCoach}>
+                  <View style={styles.breathingOrb}>
+                    <Text style={styles.breathingOrbText}>
+                      {breathingComplete ? 'Done' : breathingPhase.phaseSecondsLeft || ''}
+                    </Text>
+                  </View>
+                  <Text style={styles.breathingPhaseText}>
+                    {breathingComplete ? 'Nice work.' : breathingPhase.label}
+                  </Text>
+                  <Text style={styles.muted}>
+                    {breathingRunning
+                      ? `${breathingSecondsLeft}s left`
+                      : breathingComplete
+                        ? 'Your breathe routine is marked done for today.'
+                        : 'Press Start when you are ready.'}
+                  </Text>
+                  <View style={styles.progressTrack}>
+                    <View style={[styles.progressFill, { width: `${breathingProgress}%` }]} />
+                  </View>
+                </View>
+
+                <View style={styles.twoGrid}>
+                  <AppButton style={styles.pairButton} onPress={startBreathingSession}>
+                    {breathingComplete ? 'Restart' : breathingRunning ? 'Restart' : 'Start'}
+                  </AppButton>
+                  <AppButton
+                    style={styles.pairButton}
+                    tone="secondary"
+                    onPress={() => {
+                      setBreathingSecondsLeft(0);
+                      setBreathingElapsed(0);
+                    }}
+                  >
+                    Reset
+                  </AppButton>
+                </View>
+              </>
+            )}
+
+            <Text style={styles.apiNote}>
+              Stop if you feel dizzy or short of breath. Choose Balanced breathing if holds do not feel good.
+            </Text>
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+
   const renderScreen = () => {
     if (activeTab === 'Meds') return renderMeds();
     if (activeTab === 'Tasks') return renderTasks();
@@ -714,6 +951,7 @@ export default function SquirrelMobileApp() {
           ))}
         </View>
       </View>
+      {renderBreathingCoach()}
     </SafeAreaView>
   );
 }
@@ -724,10 +962,10 @@ const styles = StyleSheet.create({
   },
   screen: {
     flex: 1,
-    backgroundColor: '#fff7fe',
+    backgroundColor: '#fff',
   },
   screenCalm: {
-    backgroundColor: '#f7efff',
+    backgroundColor: '#f4fbfd',
   },
   screenHighContrast: {
     backgroundColor: '#fff',
@@ -749,7 +987,7 @@ const styles = StyleSheet.create({
   appName: {
     color: colors.primary,
     fontSize: 34,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 38,
   },
   hero: {
@@ -763,13 +1001,13 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontSize: 34,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 38,
   },
   titleSmall: {
     color: colors.ink,
     fontSize: 28,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 32,
   },
   subtitle: {
@@ -780,7 +1018,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: colors.accentLavender,
     fontSize: 13,
-    fontWeight: '900',
+    fontWeight: '700',
     letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
@@ -813,26 +1051,26 @@ const styles = StyleSheet.create({
   cardLabel: {
     color: colors.accentLavender,
     fontSize: 13,
-    fontWeight: '900',
+    fontWeight: '700',
     letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
   bigNumber: {
     color: colors.ink,
     fontSize: 34,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 38,
   },
   sectionTitle: {
     color: colors.ink,
     fontSize: 23,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 27,
   },
   itemTitle: {
     color: colors.ink,
     fontSize: 18,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 22,
   },
   muted: {
@@ -854,7 +1092,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.unsure,
     color: colors.ink,
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: '700',
   },
   apiNote: {
     color: colors.muted,
@@ -908,7 +1146,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     color: '#fff',
     fontSize: 16,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 18,
     textAlign: 'center',
   },
@@ -921,7 +1159,7 @@ const styles = StyleSheet.create({
   label: {
     color: colors.ink,
     fontSize: 16,
-    fontWeight: '900',
+    fontWeight: '700',
   },
   input: {
     minHeight: sizes.controlHeight,
@@ -1001,7 +1239,7 @@ const styles = StyleSheet.create({
   pillText: {
     color: colors.ink,
     fontSize: 13,
-    fontWeight: '900',
+    fontWeight: '700',
   },
   routineBlock: {
     gap: 10,
@@ -1046,7 +1284,7 @@ const styles = StyleSheet.create({
   timerText: {
     color: colors.ink,
     fontSize: 58,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 64,
     textAlign: 'center',
   },
@@ -1083,9 +1321,116 @@ const styles = StyleSheet.create({
   tabText: {
     color: colors.ink,
     fontSize: 12,
-    fontWeight: '900',
+    fontWeight: '700',
   },
   activeTabText: {
     color: '#fff',
+  },
+  modalBackdrop: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 16,
+    backgroundColor: 'rgba(39, 54, 64, 0.28)',
+  },
+  breathingModal: {
+    maxHeight: '90%',
+    borderColor: colors.border,
+    borderRadius: radii.control,
+    borderWidth: 1,
+    backgroundColor: colors.surface,
+    shadowColor: colors.ink,
+    shadowOpacity: 0.18,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 14 },
+    elevation: 6,
+  },
+  breathingModalContent: {
+    gap: 14,
+    padding: 18,
+  },
+  modalHeader: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 12,
+    justifyContent: 'space-between',
+  },
+  modalHeaderText: {
+    flex: 1,
+    gap: 4,
+  },
+  closeButton: {
+    minWidth: 76,
+  },
+  breathingTechniqueGrid: {
+    gap: sizes.gap,
+  },
+  techniqueOption: {
+    gap: 5,
+    minHeight: 82,
+    padding: 12,
+    borderColor: colors.border,
+    borderRadius: radii.control,
+    borderWidth: 1,
+    backgroundColor: colors.surface,
+  },
+  techniqueOptionSelected: {
+    borderColor: colors.primary,
+    backgroundColor: colors.panelBlue,
+  },
+  optionDisabled: {
+    opacity: 0.68,
+  },
+  techniqueTitle: {
+    color: colors.ink,
+    fontSize: 17,
+    fontWeight: '700',
+    lineHeight: 21,
+  },
+  techniqueSummary: {
+    color: colors.muted,
+    fontSize: 14,
+    lineHeight: 19,
+  },
+  breathingCoach: {
+    alignItems: 'center',
+    gap: 10,
+    padding: 18,
+    borderRadius: radii.control,
+    backgroundColor: colors.soft,
+  },
+  breathingOrb: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 132,
+    height: 132,
+    borderColor: colors.taken,
+    borderRadius: 66,
+    borderWidth: 8,
+    backgroundColor: colors.surface,
+  },
+  breathingOrbText: {
+    color: colors.primary,
+    fontSize: 30,
+    fontWeight: '700',
+    lineHeight: 34,
+  },
+  breathingPhaseText: {
+    color: colors.ink,
+    fontSize: 24,
+    fontWeight: '700',
+    lineHeight: 29,
+    textAlign: 'center',
+  },
+  progressTrack: {
+    overflow: 'hidden',
+    width: '100%',
+    height: 10,
+    borderRadius: radii.pill,
+    backgroundColor: colors.surface,
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: radii.pill,
+    backgroundColor: colors.primary,
   },
 });

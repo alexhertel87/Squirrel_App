@@ -1,28 +1,30 @@
 :root {
-  --color-ink: #352442;
-  --color-muted: #665575;
-  --color-surface: #fff8fe;
-  --color-surface-soft: #f3efff;
-  --color-panel: linear-gradient(135deg, #f9e7ff 0%, #eaf8ff 100%);
-  --color-border: #dcc8fb;
-  --color-primary: #7c45d9;
-  --color-primary-hover: #6630bc;
-  --color-secondary: #ffd8ee;
+  --font-ui: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --color-ink: #273640;
+  --color-muted: #5e6e76;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f1fbfd;
+  --color-panel: linear-gradient(135deg, #fff8fd 0%, #eefbff 100%);
+  --color-border: #d8e9ee;
+  --color-primary: #226f8d;
+  --color-primary-hover: #185d78;
+  --color-secondary: #ffd7ec;
+  --color-secondary-hover: #ffc7e4;
   --color-danger: #b74769;
-  --color-warning: #a566d6;
-  --color-input-border: #cbb7f2;
-  --color-accent-pink: #df5fb5;
+  --color-warning: #8a67c8;
+  --color-input-border: #c7dce4;
+  --color-accent-pink: #d15aad;
   --color-accent-blue: #36bde8;
-  --color-accent-lavender: #8b64e8;
-  --color-pill-idle: #edf5ff;
-  --color-pill-taken: #cff5ff;
-  --color-pill-skipped: #ffd4e9;
-  --color-pill-unsure: #ead9ff;
+  --color-accent-lavender: #6b5fb3;
+  --color-pill-idle: #f3f8fb;
+  --color-pill-taken: #d5f8ff;
+  --color-pill-skipped: #ffdaea;
+  --color-pill-unsure: #eee3ff;
   --control-height: 44px;
   --control-radius: 8px;
   --control-gap: 10px;
   --page-gutter: 16px;
-  --shadow-soft: 0 10px 24px rgba(91, 58, 128, 0.12);
+  --shadow-soft: 0 10px 24px rgba(31, 56, 68, 0.1);
 }
 
 * {
@@ -62,13 +64,16 @@ nav {
   margin: 0;
   border: 0;
   padding: 0;
-  font-family: 'Dosis', sans-serif;
+  font-family: var(--font-ui);
   font-size: 1rem;
   list-style: none;
 }
 
 body {
-  background: linear-gradient(180deg, #fff7fe 0%, #eef9ff 100%);
+  background:
+    radial-gradient(circle at top left, rgba(255, 238, 248, 0.72), transparent 30rem),
+    radial-gradient(circle at bottom right, rgba(221, 249, 255, 0.9), transparent 34rem),
+    #ffffff;
   color: var(--color-ink);
 }
 
@@ -99,7 +104,7 @@ a:focus-visible {
 }
 
 body.theme-calm {
-  background: #f7efff;
+  background: #f4fbfd;
 }
 
 body.theme-contrast {

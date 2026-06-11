@@ -8,7 +8,7 @@
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface);
   box-shadow: 0 5px 15px rgba(14, 13, 13, 0.12);
-  font-family: 'Dosis', sans-serif;
+  font-family: var(--font-ui);
 }
 
 .nav_leftside,
@@ -23,9 +23,9 @@
   align-items: center;
   gap: 10px;
   color: var(--color-ink);
-  font-family: 'Dosis', sans-serif;
+  font-family: var(--font-ui);
   font-size: 46px;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -50,7 +50,7 @@
   border-radius: var(--control-radius);
   color: var(--color-ink);
   font-size: 18px;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -62,11 +62,11 @@
 .logoutButton {
   background: var(--color-secondary);
   cursor: pointer;
-  font-family: 'Dosis', sans-serif;
+  font-family: var(--font-ui);
 }
 
 .logoutButton:hover {
-  background: #ffc6e3;
+  background: var(--color-secondary-hover);
 }
 
 @media (max-width: 760px) {
