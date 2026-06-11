@@ -4,7 +4,13 @@ import * as TaskListActions from '../../store/task_list';
 import EditTaskModal from './EditTaskListModal';
 import styles from './TaskList.module.css';
 import TaskListModal from './TaskListModal';
-import { formatDate, loadJson, saveJson } from '../../utils/neuroSupport';
+import {
+  fetchSupportState,
+  formatDate,
+  getLocalSupportState,
+  normalizeSupportState,
+  persistSupportState,
+} from '../../utils/neuroSupport';
 
 const energyOptions = [
   { value: 'all', label: 'All' },
@@ -20,14 +26,35 @@ const TaskListData = () => {
   const tasks = useSelector((state) => state.task_items);
   const taskArray = Object.values(tasks).filter((task) => task && task.id);
   const dispatch = useDispatch();
-  const [energyByTask, setEnergyByTask] = useState(() => loadJson('squirrel-task-energy', {}));
-  const [stepsByTask, setStepsByTask] = useState(() => loadJson('squirrel-task-steps', {}));
+  const [support, setSupport] = useState(getLocalSupportState);
   const [newStepByTask, setNewStepByTask] = useState({});
   const [filter, setFilter] = useState('all');
+  const energyByTask = support.taskEnergy;
+  const stepsByTask = support.taskSteps;
 
   useEffect(() => {
     dispatch(TaskListActions.all_task_items());
   }, [dispatch]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    fetchSupportState().then((nextSupport) => {
+      if (isMounted) setSupport(nextSupport);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const updateSupport = (updater) => {
+    setSupport((current) => {
+      const nextSupport = normalizeSupportState(typeof updater === 'function' ? updater(current) : updater);
+      persistSupportState(nextSupport);
+      return nextSupport;
+    });
+  };
 
   const filteredTasks = useMemo(() => {
     if (filter === 'all') return taskArray;
@@ -35,57 +62,61 @@ const TaskListData = () => {
   }, [energyByTask, filter, taskArray]);
 
   const updateEnergy = (taskId, energy) => {
-    const nextEnergy = {
-      ...energyByTask,
-      [taskId]: energy,
-    };
-    setEnergyByTask(nextEnergy);
-    saveJson('squirrel-task-energy', nextEnergy);
+    updateSupport((current) => ({
+      ...current,
+      taskEnergy: {
+        ...current.taskEnergy,
+        [taskId]: energy,
+      },
+    }));
   };
 
   const addStarterSteps = (taskId) => {
     const existingSteps = stepsByTask[taskId] || [];
-    const nextSteps = {
-      ...stepsByTask,
-      [taskId]: existingSteps.length ? existingSteps : starterSteps.map((label, index) => ({
-        id: `${taskId}-starter-${index}`,
-        label,
-        done: false,
-      })),
-    };
-    setStepsByTask(nextSteps);
-    saveJson('squirrel-task-steps', nextSteps);
+    updateSupport((current) => ({
+      ...current,
+      taskSteps: {
+        ...current.taskSteps,
+        [taskId]: existingSteps.length ? existingSteps : starterSteps.map((label, index) => ({
+          id: `${taskId}-starter-${index}`,
+          label,
+          done: false,
+        })),
+      },
+    }));
   };
 
   const addStep = (taskId) => {
     const label = (newStepByTask[taskId] || '').trim();
     if (!label) return;
 
-    const nextSteps = {
-      ...stepsByTask,
-      [taskId]: [
-        ...(stepsByTask[taskId] || []),
-        {
-          id: `${taskId}-${Date.now()}`,
-          label,
-          done: false,
-        },
-      ],
-    };
-    setStepsByTask(nextSteps);
+    updateSupport((current) => ({
+      ...current,
+      taskSteps: {
+        ...current.taskSteps,
+        [taskId]: [
+          ...(current.taskSteps[taskId] || []),
+          {
+            id: `${taskId}-${Date.now()}`,
+            label,
+            done: false,
+          },
+        ],
+      },
+    }));
     setNewStepByTask({ ...newStepByTask, [taskId]: '' });
-    saveJson('squirrel-task-steps', nextSteps);
   };
 
   const toggleStep = (taskId, stepId) => {
-    const nextSteps = {
-      ...stepsByTask,
-      [taskId]: (stepsByTask[taskId] || []).map((step) => (
-        step.id === stepId ? { ...step, done: !step.done } : step
-      )),
-    };
-    setStepsByTask(nextSteps);
-    saveJson('squirrel-task-steps', nextSteps);
+    updateSupport((current) => ({
+      ...current,
+      taskSteps: {
+        ...current.taskSteps,
+        [taskId]: (current.taskSteps[taskId] || []).map((step) => (
+          step.id === stepId ? { ...step, done: !step.done } : step
+        )),
+      },
+    }));
   };
 
   return (

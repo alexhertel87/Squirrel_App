@@ -7,12 +7,14 @@ import * as MedsListActions from '../../store/meds_list';
 import * as TaskListActions from '../../store/task_list';
 import {
   formatDate,
+  fetchSupportState,
   getEnergy,
   getMedCheckins,
+  getLocalSupportState,
   getTaskSteps,
-  loadJson,
   medStatusLabel,
-  saveJson,
+  normalizeSupportState,
+  persistSupportState,
 } from '../../utils/neuroSupport';
 import styles from './Dashboard.module.css';
 
@@ -30,16 +32,21 @@ export const Dashboard = () => {
   const tasks = useSelector((state) => state.task_items);
   const medsArray = useMemo(() => Object.values(meds).filter((med) => med && med.id), [meds]);
   const taskArray = useMemo(() => Object.values(tasks).filter((task) => task && task.id), [tasks]);
-  const [medCheckins] = useState(getMedCheckins);
-  const [routineState, setRoutineState] = useState(() => loadJson('squirrel-routine-progress', {}));
-  const [comfort, setComfort] = useState(() => loadJson('squirrel-comfort-settings', {
-    calm: false,
-    highContrast: false,
-    reducedMotion: false,
-  }));
+  const [support, setSupport] = useState(getLocalSupportState);
   const [selectedTask, setSelectedTask] = useState('');
   const [focusMinutes, setFocusMinutes] = useState(10);
   const [secondsLeft, setSecondsLeft] = useState(0);
+  const medCheckins = getMedCheckins(support);
+  const routineState = support.routines;
+  const comfort = support.comfort;
+
+  const updateSupport = (updater) => {
+    setSupport((current) => {
+      const nextSupport = normalizeSupportState(typeof updater === 'function' ? updater(current) : updater);
+      persistSupportState(nextSupport);
+      return nextSupport;
+    });
+  };
 
   useEffect(() => {
     dispatch(MedsListActions.all_active_meds());
@@ -47,10 +54,21 @@ export const Dashboard = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    let isMounted = true;
+
+    fetchSupportState().then((nextSupport) => {
+      if (isMounted) setSupport(nextSupport);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
     document.body.classList.toggle('theme-calm', comfort.calm);
     document.body.classList.toggle('theme-contrast', comfort.highContrast);
     document.body.classList.toggle('reduce-motion', comfort.reducedMotion);
-    saveJson('squirrel-comfort-settings', comfort);
   }, [comfort]);
 
   useEffect(() => {
@@ -64,19 +82,20 @@ export const Dashboard = () => {
   }, [secondsLeft]);
 
   const medsTaken = medsArray.filter((med) => medCheckins[med.id]?.status === 'taken').length;
-  const quickWins = taskArray.filter((task) => getEnergy(task.id) === 'low');
+  const quickWins = taskArray.filter((task) => ['low', 'quick'].includes(getEnergy(task.id, support)));
   const nextTasks = quickWins.length ? quickWins.slice(0, 3) : taskArray.slice(0, 3);
   const selectedTaskName = selectedTask || nextTasks[0]?.task_name || taskArray[0]?.task_name || 'one kind next step';
   const focusTime = `${String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:${String(secondsLeft % 60).padStart(2, '0')}`;
 
   const toggleRoutineStep = (routineId, step) => {
     const key = `${routineId}:${step}`;
-    const nextState = {
-      ...routineState,
-      [key]: !routineState[key],
-    };
-    setRoutineState(nextState);
-    saveJson('squirrel-routine-progress', nextState);
+    updateSupport((current) => ({
+      ...current,
+      routines: {
+        ...current.routines,
+        [key]: !current.routines[key],
+      },
+    }));
   };
 
   return (
@@ -155,9 +174,9 @@ export const Dashboard = () => {
               <div className={styles.listItem} key={task.id}>
                 <div>
                   <strong>{task.task_name}</strong>
-                  <span>{getEnergy(task.id)} energy · due {formatDate(task.due_date_1)}</span>
+                  <span>{getEnergy(task.id, support)} energy · due {formatDate(task.due_date_1)}</span>
                 </div>
-                <span className={styles.stepCount}>{getTaskSteps(task.id).filter((step) => step.done).length}/{getTaskSteps(task.id).length || 1}</span>
+                <span className={styles.stepCount}>{getTaskSteps(task.id, support).filter((step) => step.done).length}/{getTaskSteps(task.id, support).length || 1}</span>
               </div>
             )) : (
               <p className={styles.emptyState}>No tasks yet. Add one tiny thing.</p>
@@ -234,9 +253,9 @@ export const Dashboard = () => {
         <p className={styles.eyebrow}>Sensory-friendly settings</p>
         <h2>Make the app easier to sit with</h2>
         <div className={styles.toggleRow}>
-          <label><input checked={comfort.calm} onChange={() => setComfort({ ...comfort, calm: !comfort.calm })} type="checkbox" /> Calm colors</label>
-          <label><input checked={comfort.highContrast} onChange={() => setComfort({ ...comfort, highContrast: !comfort.highContrast })} type="checkbox" /> Higher contrast</label>
-          <label><input checked={comfort.reducedMotion} onChange={() => setComfort({ ...comfort, reducedMotion: !comfort.reducedMotion })} type="checkbox" /> Reduced motion</label>
+          <label><input checked={comfort.calm} onChange={() => updateSupport((current) => ({ ...current, comfort: { ...current.comfort, calm: !current.comfort.calm } }))} type="checkbox" /> Calm colors</label>
+          <label><input checked={comfort.highContrast} onChange={() => updateSupport((current) => ({ ...current, comfort: { ...current.comfort, highContrast: !current.comfort.highContrast } }))} type="checkbox" /> Higher contrast</label>
+          <label><input checked={comfort.reducedMotion} onChange={() => updateSupport((current) => ({ ...current, comfort: { ...current.comfort, reducedMotion: !current.comfort.reducedMotion } }))} type="checkbox" /> Reduced motion</label>
         </div>
       </section>
     </main>

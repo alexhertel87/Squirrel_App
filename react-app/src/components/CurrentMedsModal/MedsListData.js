@@ -4,7 +4,15 @@ import * as userActions from '../../store/meds_list';
 import * as MedsListActions from '../../store/meds_list';
 import EditMedModal from '../EditMedModal/EditMedIndex';
 import { NewMedModal } from '../NewMedModal/NewMed';
-import { getMedCheckins, medStatusLabel, saveJson, todayKey } from '../../utils/neuroSupport';
+import {
+  fetchSupportState,
+  getLocalSupportState,
+  getMedCheckins,
+  medStatusLabel,
+  normalizeSupportState,
+  persistSupportState,
+  todayKey,
+} from '../../utils/neuroSupport';
 import styles from './CurrentMeds.module.css';
 
 const checkinOptions = [
@@ -17,22 +25,47 @@ export const MedsListData = () => {
   const meds = useSelector((state) => state.active_meds);
   const medsArray = Object.values(meds).filter((med) => med && med.id);
   const dispatch = useDispatch();
-  const [checkins, setCheckins] = useState(getMedCheckins);
+  const [support, setSupport] = useState(getLocalSupportState);
+  const checkins = getMedCheckins(support);
 
   useEffect(() => {
     dispatch(MedsListActions.all_active_meds());
   }, [dispatch]);
 
-  const updateCheckin = (medId, status) => {
-    const nextCheckins = {
-      ...checkins,
-      [medId]: {
-        status,
-        time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-      },
+  useEffect(() => {
+    let isMounted = true;
+
+    fetchSupportState().then((nextSupport) => {
+      if (isMounted) setSupport(nextSupport);
+    });
+
+    return () => {
+      isMounted = false;
     };
-    setCheckins(nextCheckins);
-    saveJson(`squirrel-med-checkins-${todayKey()}`, nextCheckins);
+  }, []);
+
+  const updateSupport = (updater) => {
+    setSupport((current) => {
+      const nextSupport = normalizeSupportState(typeof updater === 'function' ? updater(current) : updater);
+      persistSupportState(nextSupport);
+      return nextSupport;
+    });
+  };
+
+  const updateCheckin = (medId, status) => {
+    updateSupport((current) => ({
+      ...current,
+      checkins: {
+        ...current.checkins,
+        [todayKey()]: {
+          ...(current.checkins[todayKey()] || {}),
+          [medId]: {
+            status,
+            time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+          },
+        },
+      },
+    }));
   };
 
   return (
