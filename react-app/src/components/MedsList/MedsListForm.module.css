@@ -40,7 +40,7 @@
   min-height: var(--control-height);
   margin: 0;
   padding: 0 12px;
-  border: 1px solid #cad5c2;
+  border: 1px solid var(--color-input-border);
   border-radius: var(--control-radius);
   background: #fff;
   color: var(--color-ink);
@@ -57,7 +57,7 @@
 
 .med_data_inputs::placeholder,
 .med_info_text::placeholder {
-  color: #7a817b;
+  color: var(--color-muted);
   font-size: 17px;
   font-weight: 700;
 }

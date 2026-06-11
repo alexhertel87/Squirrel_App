@@ -10,7 +10,7 @@
   align-items: end;
   gap: 24px;
   padding: 32px;
-  border: 1px solid #cfe1c7;
+  border: 1px solid var(--color-border);
   border-radius: var(--control-radius);
   background: var(--color-panel);
 }
@@ -24,14 +24,14 @@
 
 .subtitle {
   max-width: 660px;
-  color: #46534b;
+  color: var(--color-muted);
   font-size: 20px;
   line-height: 1.45;
 }
 
 .eyebrow,
 .cardLabel {
-  color: #5b6f42;
+  color: var(--color-accent-lavender);
   font-size: 14px;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -163,7 +163,7 @@
   min-width: 72px;
   padding: 0 10px;
   border-radius: 999px;
-  background: #e7eadf;
+  background: var(--color-pill-idle);
   color: var(--color-ink);
   font-weight: 900;
   line-height: 1;
@@ -171,19 +171,19 @@
 }
 
 .taken {
-  background: #cbe8c2;
+  background: var(--color-pill-taken);
 }
 
 .skipped {
-  background: #f3d3ca;
+  background: var(--color-pill-skipped);
 }
 
 .unsure {
-  background: #efe1aa;
+  background: var(--color-pill-unsure);
 }
 
 .idle {
-  background: #e7eadf;
+  background: var(--color-pill-idle);
 }
 
 .textLink,
@@ -210,7 +210,7 @@
 .secondaryButton {
   min-width: 104px;
   background: var(--color-secondary);
-  color: #263427;
+  color: var(--color-ink);
 }
 
 .select {
@@ -218,7 +218,7 @@
   min-height: var(--control-height);
   margin: 14px 0 12px;
   padding: 0 12px;
-  border: 1px solid #cad5c2;
+  border: 1px solid var(--color-input-border);
   border-radius: var(--control-radius);
   background: #fff;
   color: var(--color-ink);
@@ -233,8 +233,8 @@
 
 .segmented button {
   width: 100%;
-  background: #e8eadf;
-  color: #263427;
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
 }
 
 .segmented .activeSegment {
@@ -280,12 +280,12 @@
 .chips button {
   min-width: 112px;
   background: var(--color-surface);
-  color: #263427;
+  color: var(--color-ink);
   border: 1px solid var(--color-border);
 }
 
 .chips .checkedChip {
-  background: #cbe8c2;
+  background: var(--color-pill-taken);
 }
 
 .toggleRow {

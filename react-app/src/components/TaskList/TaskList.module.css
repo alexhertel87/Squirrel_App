@@ -11,7 +11,7 @@
   gap: 24px;
   margin-bottom: 16px;
   padding: 28px;
-  border: 1px solid #cfe1c7;
+  border: 1px solid var(--color-border);
   border-radius: var(--control-radius);
   background: var(--color-panel);
 }
@@ -37,7 +37,7 @@
 }
 
 .eyebrow {
-  color: #5b6f42;
+  color: var(--color-accent-lavender);
   font-size: 14px;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -60,8 +60,8 @@
   min-height: var(--control-height);
   padding: 0 14px;
   border-radius: var(--control-radius);
-  background: #e8eadf;
-  color: #263427;
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
   cursor: pointer;
   font-family: 'Dosis', sans-serif;
   font-size: 17px;
@@ -119,7 +119,7 @@
   min-width: 56px;
   padding: 0 10px;
   border-radius: 999px;
-  background: #efe1aa;
+  background: var(--color-pill-unsure);
   font-weight: 900;
   line-height: 1;
 }
@@ -135,7 +135,7 @@
 .energyLabel select {
   min-height: var(--control-height);
   padding: 0 10px;
-  border: 1px solid #cad5c2;
+  border: 1px solid var(--color-input-border);
   border-radius: var(--control-radius);
   background: #fff;
   color: var(--color-ink);
@@ -170,7 +170,7 @@
 }
 
 .doneStep {
-  color: #4d6650;
+  color: var(--color-accent-lavender);
   text-decoration: line-through;
 }
 
@@ -191,7 +191,7 @@
   width: 100%;
   margin: 0;
   padding: 0 12px;
-  border: 1px solid #cad5c2;
+  border: 1px solid var(--color-input-border);
   border-radius: var(--control-radius);
   color: var(--color-ink);
   font-size: 17px;
@@ -237,7 +237,7 @@
   padding: 0 16px;
   border-radius: var(--control-radius);
   background: var(--color-secondary);
-  color: #263427;
+  color: var(--color-ink);
   cursor: pointer;
   font-family: 'Dosis', sans-serif;
   font-size: 17px;
@@ -293,7 +293,7 @@
   width: 100%;
   margin: 0;
   padding: 0 12px;
-  border: 1px solid #cad5c2;
+  border: 1px solid var(--color-input-border);
   border-radius: var(--control-radius);
   color: var(--color-ink);
   font-size: 18px;

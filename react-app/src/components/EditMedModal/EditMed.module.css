@@ -11,7 +11,7 @@
   padding: 0 16px;
   border-radius: var(--control-radius);
   background: var(--color-secondary);
-  color: #263427;
+  color: var(--color-ink);
   cursor: pointer;
   font-family: 'Dosis', sans-serif;
   font-size: 17px;
@@ -21,7 +21,7 @@
 }
 
 .edit_med_btn:hover {
-  background: #e6d8b4;
+  background: #ffc6e3;
 }
 
 .form_container {
@@ -65,7 +65,7 @@
   min-height: var(--control-height);
   margin: 0;
   padding: 0 12px;
-  border: 1px solid #cad5c2;
+  border: 1px solid var(--color-input-border);
   border-radius: var(--control-radius);
   background: #fff;
   color: var(--color-ink);

@@ -11,7 +11,7 @@
   gap: 24px;
   margin-bottom: 18px;
   padding: 28px;
-  border: 1px solid #cfe1c7;
+  border: 1px solid var(--color-border);
   border-radius: var(--control-radius);
   background: var(--color-panel);
 }
@@ -37,7 +37,7 @@
 }
 
 .eyebrow {
-  color: #5b6f42;
+  color: var(--color-accent-lavender);
   font-size: 14px;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -84,7 +84,7 @@
   min-width: 88px;
   padding: 0 10px;
   border-radius: 999px;
-  background: #e7eadf;
+  background: var(--color-pill-idle);
   font-size: 15px;
   font-weight: 900;
   line-height: 1;
@@ -92,19 +92,19 @@
 }
 
 .taken {
-  background: #cbe8c2;
+  background: var(--color-pill-taken);
 }
 
 .skipped {
-  background: #f3d3ca;
+  background: var(--color-pill-skipped);
 }
 
 .unsure {
-  background: #efe1aa;
+  background: var(--color-pill-unsure);
 }
 
 .idle {
-  background: #e7eadf;
+  background: var(--color-pill-idle);
 }
 
 .notes {
@@ -150,8 +150,8 @@
   min-height: var(--control-height);
   padding: 0 14px;
   border-radius: var(--control-radius);
-  background: #e8eadf;
-  color: #263427;
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
   cursor: pointer;
   font-family: 'Dosis', sans-serif;
   font-size: 17px;

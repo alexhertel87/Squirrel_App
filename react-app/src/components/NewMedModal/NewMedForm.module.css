@@ -103,7 +103,7 @@
   padding: 0 16px;
   border-radius: var(--control-radius);
   background: var(--color-secondary);
-  color: #263427;
+  color: var(--color-ink);
   cursor: pointer;
   font-family: 'Dosis', sans-serif;
   font-size: 17px;
@@ -113,7 +113,7 @@
 }
 
 .dash_med_button:hover {
-  background: #e6d8b4;
+  background: #ffc6e3;
 }
 
 .newMedLabel {

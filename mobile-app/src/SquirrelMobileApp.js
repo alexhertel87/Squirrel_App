@@ -115,7 +115,7 @@ const Field = ({ label, value, onChangeText, placeholder, keyboardType = 'defaul
       keyboardType={keyboardType}
       onChangeText={onChangeText}
       placeholder={placeholder}
-      placeholderTextColor="#7a817b"
+      placeholderTextColor={colors.muted}
       secureTextEntry={secureTextEntry}
       style={styles.input}
       value={value}
@@ -610,7 +610,7 @@ export default function SquirrelMobileApp() {
               <TextInput
                 onChangeText={(value) => setNewStepText((current) => ({ ...current, [task.id]: value }))}
                 placeholder="Add one tiny step"
-                placeholderTextColor="#7a817b"
+                placeholderTextColor={colors.muted}
                 style={[styles.input, styles.stepInput]}
                 value={newStepText[task.id] || ''}
               />
@@ -633,7 +633,7 @@ export default function SquirrelMobileApp() {
       <TextInput
         onChangeText={setFocusTask}
         placeholder="What are we starting?"
-        placeholderTextColor="#7a817b"
+        placeholderTextColor={colors.muted}
         style={styles.input}
         value={focusTask}
       />
@@ -724,10 +724,10 @@ const styles = StyleSheet.create({
   },
   screen: {
     flex: 1,
-    backgroundColor: '#fbfaf4',
+    backgroundColor: '#fff7fe',
   },
   screenCalm: {
-    backgroundColor: '#f5f1e7',
+    backgroundColor: '#f7efff',
   },
   screenHighContrast: {
     backgroundColor: '#fff',
@@ -747,7 +747,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   appName: {
-    color: colors.ink,
+    color: colors.primary,
     fontSize: 34,
     fontWeight: '900',
     lineHeight: 38,
@@ -755,7 +755,7 @@ const styles = StyleSheet.create({
   hero: {
     gap: 8,
     padding: 22,
-    borderColor: '#cfe1c7',
+    borderColor: colors.border,
     borderRadius: radii.control,
     borderWidth: 1,
     backgroundColor: colors.panel,
@@ -778,7 +778,7 @@ const styles = StyleSheet.create({
     lineHeight: 25,
   },
   eyebrow: {
-    color: '#5b6f42',
+    color: colors.accentLavender,
     fontSize: 13,
     fontWeight: '900',
     letterSpacing: 0.8,
@@ -811,7 +811,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cardLabel: {
-    color: '#5b6f42',
+    color: colors.accentLavender,
     fontSize: 13,
     fontWeight: '900',
     letterSpacing: 0.8,
@@ -926,7 +926,7 @@ const styles = StyleSheet.create({
   input: {
     minHeight: sizes.controlHeight,
     paddingHorizontal: 12,
-    borderColor: '#cad5c2',
+    borderColor: colors.inputBorder,
     borderRadius: radii.control,
     borderWidth: 1,
     backgroundColor: '#fff',
@@ -984,7 +984,7 @@ const styles = StyleSheet.create({
     minWidth: 68,
     paddingHorizontal: 10,
     borderRadius: radii.pill,
-    backgroundColor: '#e7eadf',
+    backgroundColor: colors.idle,
   },
   pill_taken: {
     backgroundColor: colors.taken,
@@ -996,7 +996,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.unsure,
   },
   pill_idle: {
-    backgroundColor: '#e7eadf',
+    backgroundColor: colors.idle,
   },
   pillText: {
     color: colors.ink,
@@ -1040,7 +1040,7 @@ const styles = StyleSheet.create({
     lineHeight: 21,
   },
   stepDone: {
-    color: '#4d6650',
+    color: colors.accentLavender,
     textDecorationLine: 'line-through',
   },
   timerText: {
