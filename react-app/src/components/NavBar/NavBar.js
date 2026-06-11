@@ -39,6 +39,11 @@ const NavBar = () => {
             </NavLink>
           </li>
           <li>
+            <NavLink to='/dashboard/calendar' exact={true} activeClassName='active'>
+              Calendar
+            </NavLink>
+          </li>
+          <li>
             <NavLink to='/login' exact={true} activeClassName='active'>
               Login
             </NavLink>

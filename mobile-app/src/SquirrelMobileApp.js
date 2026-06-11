@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   KeyboardAvoidingView,
+  Linking,
   Modal,
   Platform,
   Pressable,
@@ -25,6 +26,12 @@ const defaultSupport = {
   taskSteps: {},
   routines: {},
   currentTaskId: '',
+  calendar: {
+    includeTasks: true,
+    includeMeds: true,
+    includeRoutines: false,
+    feedToken: '',
+  },
   comfort: {
     calm: false,
     highContrast: false,
@@ -33,24 +40,24 @@ const defaultSupport = {
 };
 
 const defaultRoutines = [
-  { id: 'morning', label: 'Morning launch', steps: ['Meds', 'Water', 'Food', 'One small task'] },
-  { id: 'reset', label: 'Midday reset', steps: ['Breathe', 'Check body', 'Pick next task'] },
-  { id: 'evening', label: 'Evening landing', steps: ['Tidy one spot', 'Prep meds', 'Set tomorrow'] },
+  { id: 'morning', label: 'Morning launch', steps: ['Meds', 'Water', 'Food', 'One Small Task'] },
+  { id: 'reset', label: 'Midday reset', steps: ['Breathe', 'Check Body', 'Pick Next Task'] },
+  { id: 'evening', label: 'Evening landing', steps: ['Tidy One Spot', 'Prep Meds', 'Set Tomorrow'] },
 ];
 
-const tabs = ['Dashboard', 'Meds', 'Tasks', 'Focus', 'Settings'];
+const tabs = ['Dashboard', 'Meds', 'Tasks', 'Focus', 'Calendar', 'Settings'];
 const energyOptions = ['low', 'medium', 'high', 'quick'];
 const focusDurations = [10, 15, 25];
 const breathingDurations = [
-  { seconds: 30, label: '30 sec reset' },
-  { seconds: 60, label: '1 min starter' },
-  { seconds: 300, label: '5 min full' },
+  { seconds: 30, label: '30 Sec Reset' },
+  { seconds: 60, label: '1 Min Starter' },
+  { seconds: 300, label: '5 Min Full' },
 ];
 
 const breathingTechniques = [
   {
     id: 'box',
-    label: 'Box breathing',
+    label: 'Box Breathing',
     summary: 'Steady 4-4-4-4 pattern for a structured reset.',
     pattern: [
       { label: 'Inhale', seconds: 4 },
@@ -61,7 +68,7 @@ const breathingTechniques = [
   },
   {
     id: 'balanced',
-    label: 'Balanced breathing',
+    label: 'Balanced Breathing',
     summary: 'No holds. Good if holding your breath feels uncomfortable.',
     pattern: [
       { label: 'Inhale', seconds: 4 },
@@ -70,21 +77,21 @@ const breathingTechniques = [
   },
   {
     id: 'long-exhale',
-    label: 'Long exhale',
+    label: 'Long Exhale',
     summary: 'A gentle longer exhale to help your body downshift.',
     pattern: [
       { label: 'Inhale', seconds: 4 },
-      { label: 'Exhale slowly', seconds: 6 },
+      { label: 'Exhale Slowly', seconds: 6 },
     ],
   },
   {
     id: '478',
-    label: '4-7-8 breathing',
+    label: '4-7-8 Breathing',
     summary: 'More intense. Best when breath holds feel okay.',
     pattern: [
       { label: 'Inhale', seconds: 4 },
       { label: 'Hold', seconds: 7 },
-      { label: 'Exhale slowly', seconds: 8 },
+      { label: 'Exhale Slowly', seconds: 8 },
     ],
   },
 ];
@@ -106,6 +113,10 @@ const normalizeSupport = (data = {}) => ({
   ...defaultSupport,
   ...data,
   currentTaskId: data.currentTaskId || defaultSupport.currentTaskId,
+  calendar: {
+    ...defaultSupport.calendar,
+    ...(data.calendar || {}),
+  },
   comfort: {
     ...defaultSupport.comfort,
     ...(data.comfort || {}),
@@ -124,7 +135,7 @@ const formatDate = (date) => {
 const medStatusLabel = (status) => {
   if (status === 'taken') return 'Taken';
   if (status === 'skipped') return 'Skipped';
-  if (status === 'unsure') return 'Not sure';
+  if (status === 'unsure') return 'Not Sure';
   return 'Check in';
 };
 
@@ -215,6 +226,8 @@ export default function SquirrelMobileApp() {
   const [focusSeconds, setFocusSeconds] = useState(0);
   const [focusTask, setFocusTask] = useState('');
   const [makeNewTaskCurrent, setMakeNewTaskCurrent] = useState(false);
+  const [calendarInfo, setCalendarInfo] = useState(null);
+  const [calendarLoading, setCalendarLoading] = useState(false);
   const [breathingOpen, setBreathingOpen] = useState(false);
   const [breathingTechniqueId, setBreathingTechniqueId] = useState('');
   const [breathingDuration, setBreathingDuration] = useState(60);
@@ -319,6 +332,11 @@ export default function SquirrelMobileApp() {
     }));
   }, [breathingComplete, support.routines]);
 
+  useEffect(() => {
+    if (!user || activeTab !== 'Calendar') return;
+    loadCalendarInfo();
+  }, [activeTab, user]);
+
   const submitAuth = async () => {
     setLoading(true);
     setMessage('');
@@ -402,7 +420,7 @@ export default function SquirrelMobileApp() {
       currentTaskId: taskId,
       routines: {
         ...current.routines,
-        'reset:Pick next task': true,
+        'reset:Pick Next Task': true,
       },
     }));
   };
@@ -413,7 +431,7 @@ export default function SquirrelMobileApp() {
       currentTaskId: '',
       routines: {
         ...current.routines,
-        'reset:Pick next task': false,
+        'reset:Pick Next Task': false,
       },
     }));
   };
@@ -556,6 +574,38 @@ export default function SquirrelMobileApp() {
     }));
   };
 
+  const loadCalendarInfo = async () => {
+    setCalendarLoading(true);
+    try {
+      setCalendarInfo(await api.getCalendarFeed());
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setCalendarLoading(false);
+    }
+  };
+
+  const resetCalendarFeed = async () => {
+    setCalendarLoading(true);
+    try {
+      setCalendarInfo(await api.resetCalendarFeed());
+      setMessage('Private calendar link reset.');
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setCalendarLoading(false);
+    }
+  };
+
+  const openCalendarUrl = async (url) => {
+    if (!url) return;
+    try {
+      await Linking.openURL(url);
+    } catch (error) {
+      setMessage(error.message);
+    }
+  };
+
   const screenStyle = [
     styles.screen,
     support.comfort.calm && styles.screenCalm,
@@ -578,8 +628,8 @@ export default function SquirrelMobileApp() {
             </Text>
 
             <View style={styles.segmented}>
-              <AppButton style={styles.pairButton} tone={authMode === 'login' ? 'primary' : 'secondary'} onPress={() => setAuthMode('login')}>Log in</AppButton>
-              <AppButton style={styles.pairButton} tone={authMode === 'signup' ? 'primary' : 'secondary'} onPress={() => setAuthMode('signup')}>Sign up</AppButton>
+              <AppButton style={styles.pairButton} tone={authMode === 'login' ? 'primary' : 'secondary'} onPress={() => setAuthMode('login')}>Log In</AppButton>
+              <AppButton style={styles.pairButton} tone={authMode === 'signup' ? 'primary' : 'secondary'} onPress={() => setAuthMode('signup')}>Sign Up</AppButton>
             </View>
 
             <Card>
@@ -606,7 +656,7 @@ export default function SquirrelMobileApp() {
                 value={authForm.password}
               />
               <AppButton disabled={loading} onPress={submitAuth}>
-                {loading ? 'Working...' : authMode === 'login' ? 'Log in' : 'Create account'}
+                {loading ? 'Working...' : authMode === 'login' ? 'Log In' : 'Create Account'}
               </AppButton>
             </Card>
 
@@ -649,7 +699,7 @@ export default function SquirrelMobileApp() {
             {support.taskEnergy[currentTask.id] || 'medium'} energy · due {formatDate(currentTask.due_date_1)}
           </Text>
           <View style={styles.twoGrid}>
-            <AppButton style={styles.pairButton} tone="secondary" onPress={() => setActiveTab('Tasks')}>Change task</AppButton>
+            <AppButton style={styles.pairButton} tone="secondary" onPress={() => setActiveTab('Tasks')}>Change Task</AppButton>
             <AppButton style={styles.pairButton} tone="secondary" onPress={clearCurrentTask}>Clear</AppButton>
           </View>
         </Card>
@@ -679,7 +729,7 @@ export default function SquirrelMobileApp() {
                 {routine.steps.map((step) => {
                   const checked = !!support.routines[`${routine.id}:${step}`];
                   const isBreathingButton = routine.id === 'reset' && step === 'Breathe';
-                  const isPickNextTaskButton = routine.id === 'reset' && step === 'Pick next task';
+                const isPickNextTaskButton = routine.id === 'reset' && step === 'Pick Next Task';
                   const stepDone = checked || (isPickNextTaskButton && !!currentTask);
 
                   return (
@@ -715,7 +765,7 @@ export default function SquirrelMobileApp() {
         <Field label="Dosage mg" value={newMed.dosage_mg} placeholder="10" keyboardType="number-pad" onChangeText={(dosage_mg) => setNewMed((med) => ({ ...med, dosage_mg }))} />
         <Field label="Frequency" value={newMed.frequency} placeholder="Morning" onChangeText={(frequency) => setNewMed((med) => ({ ...med, frequency }))} />
         <Field label="Notes" value={newMed.med_info} placeholder="Take with water" onChangeText={(med_info) => setNewMed((med) => ({ ...med, med_info }))} />
-        <AppButton disabled={loading} onPress={createMed}>Add medication</AppButton>
+        <AppButton disabled={loading} onPress={createMed}>Add Medication</AppButton>
       </Card>
 
       <View style={cardGridStyle}>
@@ -734,9 +784,9 @@ export default function SquirrelMobileApp() {
               <View style={styles.threeGrid}>
                 <AppButton style={styles.equalButton} tone={status === 'taken' ? 'success' : 'secondary'} onPress={() => updateMedCheckin(med.id, 'taken')}>Taken</AppButton>
                 <AppButton style={styles.equalButton} tone={status === 'skipped' ? 'danger' : 'secondary'} onPress={() => updateMedCheckin(med.id, 'skipped')}>Skipped</AppButton>
-                <AppButton style={styles.equalButton} tone={status === 'unsure' ? 'warning' : 'secondary'} onPress={() => updateMedCheckin(med.id, 'unsure')}>Not sure</AppButton>
+                <AppButton style={styles.equalButton} tone={status === 'unsure' ? 'warning' : 'secondary'} onPress={() => updateMedCheckin(med.id, 'unsure')}>Not Sure</AppButton>
               </View>
-              <AppButton tone="danger" onPress={() => deleteMed(med.id)}>Delete medication</AppButton>
+              <AppButton tone="danger" onPress={() => deleteMed(med.id)}>Delete Medication</AppButton>
             </Card>
           );
         })}
@@ -752,10 +802,10 @@ export default function SquirrelMobileApp() {
         <Field label="Goal date" value={newTask.due_date_1} placeholder="YYYY-MM-DD" onChangeText={(due_date_1) => setNewTask((task) => ({ ...task, due_date_1 }))} />
         <Field label="Latest date" value={newTask.due_date_2} placeholder="YYYY-MM-DD" onChangeText={(due_date_2) => setNewTask((task) => ({ ...task, due_date_2 }))} />
         <View style={styles.settingRow}>
-          <Text style={styles.itemTitle}>Make current task</Text>
+          <Text style={styles.itemTitle}>Make Current Task</Text>
           <Switch value={makeNewTaskCurrent} onValueChange={setMakeNewTaskCurrent} />
         </View>
-        <AppButton disabled={loading} onPress={createTask}>Add task</AppButton>
+        <AppButton disabled={loading} onPress={createTask}>Add Task</AppButton>
       </Card>
 
       {!!currentTask && (
@@ -765,7 +815,7 @@ export default function SquirrelMobileApp() {
           <Text style={styles.muted}>
             {support.taskEnergy[currentTask.id] || 'medium'} energy · due {formatDate(currentTask.due_date_1)}
           </Text>
-          <AppButton tone="secondary" onPress={clearCurrentTask}>Clear current task</AppButton>
+          <AppButton tone="secondary" onPress={clearCurrentTask}>Clear Current Task</AppButton>
         </Card>
       )}
 
@@ -829,9 +879,9 @@ export default function SquirrelMobileApp() {
               </View>
               <View style={styles.twoGrid}>
                 <AppButton style={styles.pairButton} tone={isCurrentTask ? 'success' : 'secondary'} onPress={() => setCurrentTask(task.id)}>
-                  {isCurrentTask ? 'Current task' : 'Set current'}
+                  {isCurrentTask ? 'Current Task' : 'Set Current'}
                 </AppButton>
-                <AppButton style={styles.pairButton} tone="secondary" onPress={() => addStarterSteps(task.id)}>Make it smaller</AppButton>
+                <AppButton style={styles.pairButton} tone="secondary" onPress={() => addStarterSteps(task.id)}>Make It Smaller</AppButton>
                 <AppButton style={styles.pairButton} tone="danger" onPress={() => deleteTask(task.id)}>Remove</AppButton>
               </View>
             </Card>
@@ -874,6 +924,91 @@ export default function SquirrelMobileApp() {
     </Card>
   );
 
+  const renderCalendar = () => (
+    <>
+      <Card>
+        <Text style={styles.eyebrow}>Calendar Sync</Text>
+        <Text style={styles.titleSmall}>Bring Squirrel Into Your Calendar.</Text>
+        <Text style={styles.muted}>
+          Subscribe once to show task due dates and gentle med reminders in Google Calendar,
+          Outlook, and Apple Calendar.
+        </Text>
+        <View style={styles.twoGrid}>
+          <AppButton style={styles.pairButton} disabled={calendarLoading} onPress={loadCalendarInfo}>
+            Refresh Links
+          </AppButton>
+          <AppButton style={styles.pairButton} disabled={calendarLoading} tone="secondary" onPress={resetCalendarFeed}>
+            Reset Private Link
+          </AppButton>
+        </View>
+      </Card>
+
+      <View style={cardGridStyle}>
+        <Card style={tabletGridCardStyle}>
+          <Text style={styles.sectionTitle}>What Syncs</Text>
+          {(calendarInfo?.includes || []).map((item) => (
+            <View key={item.id} style={styles.listItem}>
+              <View style={styles.listText}>
+                <Text style={styles.itemTitle}>{item.label}</Text>
+                <Text style={styles.muted}>{item.enabled ? 'Included' : 'Off For Now'}</Text>
+              </View>
+              <Pill>{item.count}</Pill>
+            </View>
+          ))}
+          {!calendarInfo && (
+            <Text style={styles.muted}>
+              {calendarLoading ? 'Loading calendar links...' : 'Open this tab while logged in to create your private link.'}
+            </Text>
+          )}
+        </Card>
+
+        <Card style={tabletGridCardStyle}>
+          <Text style={styles.sectionTitle}>Private Feed Link</Text>
+          <Text selectable style={styles.feedLinkText}>
+            {calendarInfo?.feedUrl || 'Calendar link loading...'}
+          </Text>
+          <Text style={styles.apiNote}>
+            Subscribed calendars refresh on each provider's schedule. Reset the link to stop access from an older subscription.
+          </Text>
+        </Card>
+      </View>
+
+      <View style={cardGridStyle}>
+        <Card style={tabletGridCardStyle}>
+          <Text style={styles.sectionTitle}>Apple Calendar</Text>
+          <Text style={styles.muted}>Use the native Calendar app with the webcal subscription link.</Text>
+          <AppButton disabled={!calendarInfo?.webcalUrl} onPress={() => openCalendarUrl(calendarInfo?.webcalUrl)}>
+            Open Apple Calendar
+          </AppButton>
+        </Card>
+
+        <Card style={tabletGridCardStyle}>
+          <Text style={styles.sectionTitle}>Google Calendar</Text>
+          <Text style={styles.muted}>Open Google Calendar, then add the private feed link from URL.</Text>
+          <AppButton disabled={!calendarInfo?.googleUrl} onPress={() => openCalendarUrl(calendarInfo?.googleUrl)}>
+            Open Google Calendar
+          </AppButton>
+        </Card>
+
+        <Card style={tabletGridCardStyle}>
+          <Text style={styles.sectionTitle}>Outlook Calendar</Text>
+          <Text style={styles.muted}>Open Outlook Calendar, then subscribe from web with your Squirrel link.</Text>
+          <AppButton disabled={!calendarInfo?.outlookUrl} onPress={() => openCalendarUrl(calendarInfo?.outlookUrl)}>
+            Open Outlook Calendar
+          </AppButton>
+        </Card>
+
+        <Card style={tabletGridCardStyle}>
+          <Text style={styles.sectionTitle}>Download .ics</Text>
+          <Text style={styles.muted}>Use this for a one-time import instead of a live subscription.</Text>
+          <AppButton disabled={!calendarInfo?.downloadUrl} onPress={() => openCalendarUrl(calendarInfo?.downloadUrl)}>
+            Download .ics
+          </AppButton>
+        </Card>
+      </View>
+    </>
+  );
+
   const renderSettings = () => (
     <View style={cardGridStyle}>
       <Card style={tabletGridCardStyle}>
@@ -894,8 +1029,8 @@ export default function SquirrelMobileApp() {
         <Text style={styles.muted}>Logged in as {user.email}</Text>
         <Text style={styles.apiNote}>Backend: {api.baseUrl}</Text>
         <View style={styles.twoGrid}>
-          <AppButton style={styles.pairButton} tone="secondary" onPress={loadEverything}>Sync now</AppButton>
-          <AppButton style={styles.pairButton} tone="danger" onPress={logout}>Log out</AppButton>
+          <AppButton style={styles.pairButton} tone="secondary" onPress={loadEverything}>Sync Now</AppButton>
+          <AppButton style={styles.pairButton} tone="danger" onPress={logout}>Log Out</AppButton>
         </View>
       </Card>
     </View>
@@ -914,7 +1049,7 @@ export default function SquirrelMobileApp() {
             <View style={styles.modalHeader}>
               <View style={styles.modalHeaderText}>
                 <Text style={styles.eyebrow}>Breathe</Text>
-                <Text style={styles.sectionTitle}>Pick a breathing reset</Text>
+                <Text style={styles.sectionTitle}>Pick A Breathing Reset</Text>
                 <Text style={styles.muted}>
                   Short resets help in the moment. The 5 minute option is there for a fuller calming practice.
                 </Text>
@@ -1015,6 +1150,7 @@ export default function SquirrelMobileApp() {
     if (activeTab === 'Meds') return renderMeds();
     if (activeTab === 'Tasks') return renderTasks();
     if (activeTab === 'Focus') return renderFocus();
+    if (activeTab === 'Calendar') return renderCalendar();
     if (activeTab === 'Settings') return renderSettings();
     return renderDashboard();
   };
@@ -1087,6 +1223,7 @@ const styles = StyleSheet.create({
   },
   appName: {
     color: colors.primary,
+    fontFamily: 'Gulim',
     fontSize: 34,
     fontWeight: '700',
     lineHeight: 38,
@@ -1192,6 +1329,16 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontSize: 16,
     lineHeight: 22,
+  },
+  feedLinkText: {
+    padding: 12,
+    borderColor: colors.border,
+    borderRadius: radii.control,
+    borderWidth: 1,
+    backgroundColor: colors.soft,
+    color: colors.ink,
+    fontSize: 13,
+    lineHeight: 18,
   },
   stack: {
     gap: 16,

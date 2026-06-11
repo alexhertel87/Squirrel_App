@@ -19,22 +19,22 @@ import {
 import styles from './Dashboard.module.css';
 
 const defaultRoutines = [
-  { id: 'morning', label: 'Morning launch', steps: ['Meds', 'Water', 'Food', 'One small task'] },
-  { id: 'reset', label: 'Midday reset', steps: ['Breathe', 'Check body', 'Pick next task'] },
-  { id: 'evening', label: 'Evening landing', steps: ['Tidy one spot', 'Prep meds', 'Set tomorrow'] },
+  { id: 'morning', label: 'Morning launch', steps: ['Meds', 'Water', 'Food', 'One Small Task'] },
+  { id: 'reset', label: 'Midday reset', steps: ['Breathe', 'Check Body', 'Pick Next Task'] },
+  { id: 'evening', label: 'Evening landing', steps: ['Tidy One Spot', 'Prep Meds', 'Set Tomorrow'] },
 ];
 
 const focusDurations = [10, 15, 25];
 const breathingDurations = [
-  { seconds: 30, label: '30 sec reset' },
-  { seconds: 60, label: '1 min starter' },
-  { seconds: 300, label: '5 min full' },
+  { seconds: 30, label: '30 Sec Reset' },
+  { seconds: 60, label: '1 Min Starter' },
+  { seconds: 300, label: '5 Min Full' },
 ];
 
 const breathingTechniques = [
   {
     id: 'box',
-    label: 'Box breathing',
+    label: 'Box Breathing',
     summary: 'Steady 4-4-4-4 pattern for a structured reset.',
     pattern: [
       { label: 'Inhale', seconds: 4 },
@@ -45,7 +45,7 @@ const breathingTechniques = [
   },
   {
     id: 'balanced',
-    label: 'Balanced breathing',
+    label: 'Balanced Breathing',
     summary: 'No holds. Good if holding your breath feels uncomfortable.',
     pattern: [
       { label: 'Inhale', seconds: 4 },
@@ -54,21 +54,21 @@ const breathingTechniques = [
   },
   {
     id: 'long-exhale',
-    label: 'Long exhale',
+    label: 'Long Exhale',
     summary: 'A gentle longer exhale to help your body downshift.',
     pattern: [
       { label: 'Inhale', seconds: 4 },
-      { label: 'Exhale slowly', seconds: 6 },
+      { label: 'Exhale Slowly', seconds: 6 },
     ],
   },
   {
     id: '478',
-    label: '4-7-8 breathing',
+    label: '4-7-8 Breathing',
     summary: 'More intense. Best when breath holds feel okay.',
     pattern: [
       { label: 'Inhale', seconds: 4 },
       { label: 'Hold', seconds: 7 },
-      { label: 'Exhale slowly', seconds: 8 },
+      { label: 'Exhale Slowly', seconds: 8 },
     ],
   },
 ];
@@ -108,6 +108,7 @@ export const Dashboard = () => {
   const [breathingDuration, setBreathingDuration] = useState(60);
   const [breathingSecondsLeft, setBreathingSecondsLeft] = useState(0);
   const [breathingElapsed, setBreathingElapsed] = useState(0);
+  const [now, setNow] = useState(() => new Date());
   const medCheckins = getMedCheckins(support);
   const routineState = support.routines;
   const comfort = support.comfort;
@@ -162,6 +163,11 @@ export const Dashboard = () => {
   }, [secondsLeft]);
 
   useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
     if (!breathingSecondsLeft) return undefined;
 
     const timer = setInterval(() => {
@@ -189,6 +195,16 @@ export const Dashboard = () => {
   const nextTasks = quickWins.length ? quickWins.slice(0, 3) : taskArray.slice(0, 3);
   const selectedTaskName = selectedTask || currentTask?.task_name || nextTasks[0]?.task_name || taskArray[0]?.task_name || 'one kind next step';
   const focusTime = `${String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:${String(secondsLeft % 60).padStart(2, '0')}`;
+  const todayDate = now.toLocaleDateString(undefined, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+  const localTime = now.toLocaleTimeString(undefined, {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
 
   const toggleRoutineStep = (routineId, step) => {
     const key = `${routineId}:${step}`;
@@ -254,18 +270,24 @@ export const Dashboard = () => {
           <span className={styles.cardLabel}>Medication</span>
           <strong>{medsTaken} of {medsArray.length}</strong>
           <p>{medsArray.length ? 'checked in today' : 'Add your first med to begin.'}</p>
-          <Link to="/dashboard/current_meds" className={styles.textLink}>Open meds</Link>
+          <Link to="/dashboard/current_meds" className={styles.textLink}>Open Meds</Link>
         </article>
         <article className={styles.summaryCard}>
           <span className={styles.cardLabel}>Tasks</span>
           <strong>{taskArray.length}</strong>
           <p>{quickWins.length ? `${quickWins.length} low-energy quick win${quickWins.length === 1 ? '' : 's'}` : 'waiting without judgment'}</p>
-          <Link to="/dashboard/task_list" className={styles.textLink}>Open tasks</Link>
+          <Link to="/dashboard/task_list" className={styles.textLink}>Open Tasks</Link>
         </article>
         <article className={styles.summaryCard}>
           <span className={styles.cardLabel}>Today</span>
-          <strong>{new Date().toLocaleDateString(undefined, { weekday: 'long' })}</strong>
-          <p>Pick one small start, then reassess.</p>
+          <strong>{todayDate}</strong>
+          <p>{localTime} local time · Pick one small start, then reassess.</p>
+        </article>
+        <article className={styles.summaryCard}>
+          <span className={styles.cardLabel}>Calendar</span>
+          <strong>Sync</strong>
+          <p>Send tasks and med reminders to your calendar.</p>
+          <Link to="/dashboard/calendar" className={styles.textLink}>Open Calendar</Link>
         </article>
       </section>
 
@@ -276,7 +298,7 @@ export const Dashboard = () => {
             <strong>{currentTask.task_name}</strong>
             <span>{getEnergy(currentTask.id, support)} energy · due {formatDate(currentTask.due_date_1)}</span>
           </div>
-          <Link to="/dashboard/task_list?pick=current" className={styles.secondaryButton}>Change task</Link>
+          <Link to="/dashboard/task_list?pick=current" className={styles.secondaryButton}>Change Task</Link>
         </section>
       )}
 
@@ -377,7 +399,7 @@ export const Dashboard = () => {
                   {routine.steps.map((step) => {
                     const key = `${routine.id}:${step}`;
                     const isBreathingButton = routine.id === 'reset' && step === 'Breathe';
-                    const isPickNextTaskButton = routine.id === 'reset' && step === 'Pick next task';
+                    const isPickNextTaskButton = routine.id === 'reset' && step === 'Pick Next Task';
                     if (isPickNextTaskButton) {
                       return (
                         <Link

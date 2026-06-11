@@ -10,6 +10,7 @@ import { authenticate } from './store/session';
 import SignUpForm from './components/NavBar/SignupFormModal/SignUpForm';
 import MedsListForm from './components/MedsList/MedsListForm';
 import Dashboard from './components/Dashboard/Dashboard';
+import Calendar from './components/Calendar/Calendar';
 // import * as MedsListActions from './store/meds_list'
 import MedsListData from './components/CurrentMedsModal/MedsListData.js';
 import Footer from './components/Footer/index.js';
@@ -55,6 +56,9 @@ function App() {
         </Route>
         <Route path='/dashboard/task_list' exact={true}>
           <TaskListData />
+        </Route>
+        <Route path='/dashboard/calendar' exact={true}>
+          <Calendar />
         </Route>
         <Route path='/sign-up' exact={true}>
           <SignUpForm />

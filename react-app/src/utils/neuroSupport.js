@@ -8,6 +8,12 @@ export const defaultSupportState = {
   taskSteps: {},
   routines: {},
   currentTaskId: '',
+  calendar: {
+    includeTasks: true,
+    includeMeds: true,
+    includeRoutines: false,
+    feedToken: '',
+  },
   comfort: {
     calm: false,
     highContrast: false,
@@ -48,6 +54,10 @@ export const normalizeSupportState = (data = {}) => ({
     ...(data.routines || {}),
   },
   currentTaskId: data.currentTaskId || defaultSupportState.currentTaskId,
+  calendar: {
+    ...defaultSupportState.calendar,
+    ...(data.calendar || {}),
+  },
   comfort: {
     ...defaultSupportState.comfort,
     ...(data.comfort || {}),
@@ -84,6 +94,10 @@ const mergeSupportState = (...states) => states.reduce((merged, state) => {
     currentTaskId: Object.prototype.hasOwnProperty.call(state || {}, 'currentTaskId')
       ? normalized.currentTaskId
       : merged.currentTaskId,
+    calendar: {
+      ...merged.calendar,
+      ...normalized.calendar,
+    },
     comfort: {
       ...merged.comfort,
       ...normalized.comfort,
@@ -99,6 +113,7 @@ const getLegacySupportState = () => ({
   taskSteps: loadJson('squirrel-task-steps', {}),
   routines: loadJson('squirrel-routine-progress', {}),
   currentTaskId: loadJson('squirrel-current-task', ''),
+  calendar: loadJson('squirrel-calendar-settings', defaultSupportState.calendar),
   comfort: loadJson('squirrel-comfort-settings', defaultSupportState.comfort),
 });
 
@@ -115,6 +130,7 @@ export const saveSupportStateLocal = (supportState) => {
   saveJson('squirrel-task-steps', normalized.taskSteps);
   saveJson('squirrel-routine-progress', normalized.routines);
   saveJson('squirrel-current-task', normalized.currentTaskId);
+  saveJson('squirrel-calendar-settings', normalized.calendar);
   saveJson('squirrel-comfort-settings', normalized.comfort);
   return normalized;
 };
@@ -184,6 +200,6 @@ export const getMedCheckins = (supportState = getLocalSupportState()) => {
 export const medStatusLabel = (status) => {
   if (status === 'taken') return 'Taken';
   if (status === 'skipped') return 'Skipped';
-  if (status === 'unsure') return 'Not sure';
+  if (status === 'unsure') return 'Not Sure';
   return 'Check in';
 };

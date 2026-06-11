@@ -15,10 +15,10 @@ import {
 
 const energyOptions = [
   { value: 'all', label: 'All' },
-  { value: 'low', label: 'Low energy' },
+  { value: 'low', label: 'Low Energy' },
   { value: 'medium', label: 'Medium' },
   { value: 'high', label: 'High' },
-  { value: 'quick', label: 'Quick win' },
+  { value: 'quick', label: 'Quick Win' },
 ];
 
 const starterSteps = ['Open the task', 'Do the first visible piece', 'Pause and reassess'];
@@ -81,7 +81,7 @@ const TaskListData = () => {
       currentTaskId: taskId,
       routines: {
         ...current.routines,
-        'reset:Pick next task': true,
+        'reset:Pick Next Task': true,
       },
     }));
   };
@@ -92,7 +92,7 @@ const TaskListData = () => {
       currentTaskId: '',
       routines: {
         ...current.routines,
-        'reset:Pick next task': false,
+        'reset:Pick Next Task': false,
       },
     }));
   };
@@ -256,7 +256,7 @@ const TaskListData = () => {
                   value={newStepByTask[task.id] || ''}
                 />
                 <button onClick={() => addStep(task.id)} type="button">Add</button>
-                <button onClick={() => addStarterSteps(task.id)} type="button">Make it smaller</button>
+                <button onClick={() => addStarterSteps(task.id)} type="button">Make It Smaller</button>
               </div>
 
               <div className={styles.cardActions}>
@@ -266,7 +266,7 @@ const TaskListData = () => {
                   onClick={() => selectCurrentTask(task.id)}
                   type="button"
                 >
-                  {isCurrentTask ? 'Current task' : 'Set current task'}
+                  {isCurrentTask ? 'Current Task' : 'Set Current Task'}
                 </button>
                 <EditTaskModal task={task} />
                 <button

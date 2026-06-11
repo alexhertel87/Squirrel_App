@@ -18,7 +18,7 @@ import styles from './CurrentMeds.module.css';
 const checkinOptions = [
   { value: 'taken', label: 'Taken' },
   { value: 'skipped', label: 'Skipped' },
-  { value: 'unsure', label: 'Not sure' },
+  { value: 'unsure', label: 'Not Sure' },
 ];
 
 export const MedsListData = () => {

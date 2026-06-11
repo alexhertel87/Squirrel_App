@@ -68,7 +68,7 @@
 }
 
 .summaryGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .currentTaskBanner {
@@ -560,9 +560,14 @@
   color: var(--color-ink);
 }
 
+@media (max-width: 1040px) {
+  .summaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 900px) {
   .hero,
-  .summaryGrid,
   .currentTaskBanner,
   .layout {
     grid-template-columns: 1fr;
@@ -590,6 +595,7 @@
   }
 
   .panelHeader,
+  .summaryGrid,
   .listItem,
   .timerActions,
   .breathingHeader,

@@ -29,7 +29,21 @@ def get_support_state():
 def update_support_state():
     data = request.get_json(silent=True) or {}
     support_state = get_or_create_support_state()
-    support_state.set_data(data.get('data', data))
+    next_data = data.get('data', data)
+    current_data = support_state.to_dict().get('data', {})
+    current_calendar = current_data.get('calendar') or {}
+    next_calendar = next_data.get('calendar') or {}
+
+    if current_calendar.get('feedToken') and not next_calendar.get('feedToken'):
+        next_data = {
+            **next_data,
+            'calendar': {
+                **next_calendar,
+                'feedToken': current_calendar.get('feedToken'),
+            },
+        }
+
+    support_state.set_data(next_data)
     db.session.add(support_state)
     db.session.commit()
     return support_state.to_dict()

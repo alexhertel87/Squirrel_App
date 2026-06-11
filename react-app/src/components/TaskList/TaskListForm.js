@@ -45,7 +45,7 @@ export const TaskListForm = ({
                     currentTaskId: createdTask.id,
                     routines: {
                         ...currentSupport.routines,
-                        'reset:Pick next task': true,
+                        'reset:Pick Next Task': true,
                     },
                 });
                 persistSupportState(nextSupport);

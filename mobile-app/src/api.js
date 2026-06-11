@@ -74,4 +74,10 @@ export const api = {
     method: 'PUT',
     body: JSON.stringify({ data }),
   }),
+
+  getCalendarFeed: () => request('/api/calendar/feed'),
+
+  resetCalendarFeed: () => request('/api/calendar/feed/reset', {
+    method: 'POST',
+  }),
 };
