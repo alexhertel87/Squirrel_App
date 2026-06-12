@@ -7,9 +7,19 @@ Squirrel! is a medication log and tracker, as well as a to-do/task list that is 
 
 To run the project locally, follow the instructions below.
 1. Clone the repo.
-2. Run `flask run` in the root directory after having run "pipenv shell" to enter the virtual environment.
-3. Run `npm start`  in the frontend 'react-app' folder to launch the front-end server.
-4. Navigate to http://localhost:3000/ and begin using the app!
+2. Run `flask db upgrade` in the root directory after having run "pipenv shell" to enter the virtual environment.
+3. Run `flask run --port 5001`.
+4. Run `npm start` in the frontend 'react-app' folder to launch the front-end server.
+5. Navigate to http://localhost:3000/ and begin using the app!
+
+## Demo Account
+
+Use this account when presenting or testing the app:
+
+- Email: `demo@squirrel.app`
+- Password: `SquirrelDemo2026!`
+
+The app recreates this account automatically when the demo login is used, so it remains available after a fresh database setup.
 
 ## Links
 [Database Schema and Backend Routes](https://github.com/alexhertel87/Squirrel_App/wiki/Database-Schema)
@@ -26,4 +36,3 @@ Squirrel! is built on a Flask-SQLAlchemy backend and a Redux/React frontend stac
 * I will add the ability to "check" off completed tasks and add them to an additional "Completed Tasks" table, as they are removed from the "To-Do" list.
 * Users will be able to check a box next to their currently-prescribed medications that (that will un-check each day) and as they are checked, that medication will be added to a separate table called "Medication Log" that will display whether the user successfully took that medication on that given day.
 * Users will also be able to set reminders that will notify them to take their medications each morning
-

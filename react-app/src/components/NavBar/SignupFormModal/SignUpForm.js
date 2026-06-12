@@ -105,21 +105,16 @@ const SignUpForm = () => {
                 required={true}
               ></input>
             </div>
-            {/* <button type="submit">Sign Up</button> */}
-            <button type="submit">
+            <div className={styles.buttonContainer}>
               <Button
                 text={"Submit"}
-                action={onSignUp}
-                color={"pink"}
-                width={200}
+                type="submit"
               />
-            </button>
-            <Button
-              text={"Already a User"}
-              action={goLogIn}
-              color={"pink"}
-              width={200}
-            />
+              <Button
+                text={"Already a User"}
+                action={goLogIn}
+              />
+            </div>
             <div className={styles.errorsContainer}>
               {errors.map((error, ind) => (
                 <div className={styles.error} key={ind}>

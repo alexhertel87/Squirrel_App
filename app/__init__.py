@@ -5,12 +5,16 @@ from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_login import LoginManager
 
-from .models import db, User, Meds_List, Meds_Log, Active_Tasks, Completed_Tasks
+from .models import db, User, Meds_List, Meds_Log, Active_Tasks, Completed_Tasks, UserSupportState
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
 from .api.meds_list_routes import meds_list_routes
 from .api.meds_log_routes import meds_log_routes
 from .api.task_list_routes import task_list_routes
+from .api.support_state_routes import support_state_routes
+from .api.calendar_routes import calendar_routes
+from .api.learning_routes import learning_routes
+from .api.search_routes import search_routes
 
 from .seeds import seed_commands
 
@@ -21,6 +25,13 @@ app = Flask(__name__)
 # Setup login manager
 login = LoginManager(app)
 login.login_view = 'auth.unauthorized'
+
+
+@login.unauthorized_handler
+def unauthorized():
+    if request.path.startswith('/api/'):
+        return {'errors': ['Unauthorized']}, 401
+    return redirect('/login')
 
 
 @login.user_loader
@@ -37,6 +48,10 @@ app.register_blueprint(auth_routes, url_prefix='/api/auth')
 app.register_blueprint(meds_list_routes, url_prefix='/api/meds_list')
 # app.register_blueprint(meds_log_routes, url_prefix='/api/meds_log')
 app.register_blueprint(task_list_routes, url_prefix='/api/tasks')
+app.register_blueprint(support_state_routes, url_prefix='/api/support_state')
+app.register_blueprint(calendar_routes, url_prefix='/api/calendar')
+app.register_blueprint(learning_routes, url_prefix='/api/learning')
+app.register_blueprint(search_routes, url_prefix='/api/search')
 # app.register_blueprint(completed_tasks_route, url_prefix='/api/completed_tasks')
 db.init_app(app)
 migrate = Migrate(app, db, compare_type=True)

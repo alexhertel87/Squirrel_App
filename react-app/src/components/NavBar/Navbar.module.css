@@ -1,67 +1,149 @@
+.navContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 78px;
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: 0 5px 15px rgba(14, 13, 13, 0.12);
+  font-family: var(--font-ui);
+}
+
+.nav_leftside,
+.nav_right,
 .linkDiv {
-    display: flex;
-  }
+  display: flex;
+  align-items: center;
+}
 
 .logoDiv {
-  margin-left: 10px;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  font-family: 'El Messiri', sans-serif;
-  font-family: 'Dosis', sans-serif;
-  font-weight: 500;
-  font-size: 60px;
+  gap: 10px;
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  font-size: 46px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.logoText {
+  display: inline-flex;
+  align-items: center;
+  height: 58px;
+  color: #ef515e;
+  line-height: 1;
+  text-shadow:
+    0 2px 8px rgba(239, 81, 94, 0.12),
+    0 1px 6px rgba(47, 187, 228, 0.18);
+}
+
+.logoDiv a {
+  display: inline-flex;
+  align-items: center;
+}
+
+:global(body.theme-dark) .logoText {
+  color: #ef515e;
+  text-shadow:
+    0 2px 10px rgba(239, 81, 94, 0.18),
+    0 1px 8px rgba(47, 187, 228, 0.24);
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .logoText {
+    /* Stops sampled from squirrel_logo.png, top-to-bottom, then mapped left-to-right. */
+    background: linear-gradient(
+      90deg,
+      #ef515e 0%,
+      #e35b84 16%,
+      #d664a7 31%,
+      #c770d4 46%,
+      #a582e6 61%,
+      #7d95e6 74%,
+      #4dade5 87%,
+      #2fbbe4 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
-  .logoutButton {
-    background-color: rgba(235, 52, 226, 0.582);
-    border: none;
-    border-radius: 18px;
-    font-family: 'Dosis', sans-serif;
-    font-size: 22px;
-    height: 35px;
-    font-weight: 900;
-    padding-left: 8px;
+  :global(body.theme-dark) .logoText {
+    background: linear-gradient(
+      90deg,
+      #ef515e 0%,
+      #e35b84 16%,
+      #d664a7 31%,
+      #c770d4 46%,
+      #a582e6 61%,
+      #7d95e6 74%,
+      #4dade5 87%,
+      #2fbbe4 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
   }
+}
 
-  .logoutButton:hover {
-    transition: background-color 0.7s;
-    box-shadow: 0px 1px 5px rgba(14, 13, 13, 0.486);
-    font-weight: 700;
-  }
+:global(body.theme-contrast) .logoText {
+  background: none;
+  color: var(--color-ink);
+  -webkit-text-fill-color: currentColor;
+  text-shadow: none;
+}
 
+.linkDiv {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.linkDiv li {
+  display: flex;
+  align-items: center;
+}
+
+.linkDiv a,
+.logoutButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height);
+  padding: var(--button-label-pad-top) 12px var(--button-label-pad-bottom);
+  border-radius: var(--control-radius);
+  color: var(--color-ink);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: var(--button-label-line-height);
+}
+
+.linkDiv a:hover {
+  background: var(--color-surface-soft);
+  text-decoration: none;
+}
+
+.logoutButton {
+  background: var(--color-secondary);
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+
+.logoutButton:hover {
+  background: var(--color-secondary-hover);
+}
+
+@media (max-width: 760px) {
   .navContainer {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 5px;
-    padding-bottom: 10px;
-    font-family: 'Dosis', sans-serif;
-    border-bottom: black 1px solid;
-    box-shadow: 0px 5px 15px rgba(14, 13, 13, 0.486);
-    /* background-color: #f7c39e; */
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .nav_right {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 22px;
-    height: 45px;
-    margin-top: 20px;
-    margin-right: 25px;
+  .linkDiv {
+    justify-content: flex-start;
   }
-
-  a {
-    font-size: 24px;
-    margin-right: 18px;
-    padding-left: 8px;
-    /* border-left: black 1px solid; */
-    /* text-decoration: underline; */
-  }
-
-a:hover {
-    font-size: 25px;
-    margin-right: 18px;
-    text-decoration: underline;
-    font-weight: 900;
 }

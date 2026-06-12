@@ -1,205 +1,437 @@
-.task_list_page {
-    display: block;
-    /* border: crimson solid 1px; */
+.page {
+  width: min(1120px, calc(100vw - 32px));
+  margin: 96px auto calc(var(--footer-height) + 24px);
+  color: var(--color-ink);
 }
 
-.tasks_header {
-    text-align: center;
-    font-size: 32px;
-    font-weight: 900;
-    text-decoration: underline;
-    margin-top: 85px;
-    /* border: dodgerblue solid 1px; */
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 220px);
+  align-items: end;
+  gap: 24px;
+  margin-bottom: 16px;
+  padding: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--color-panel);
 }
 
-.tasks_subHeader {
-    text-align: center;
-    font-size: 26px;
-    font-weight: 900;
-    /* text-decoration: underline; */
-    margin-top: 15px;
-    /* border: rgb(255, 30, 244) solid 1px; */
+.header h1 {
+  margin: 4px 0 8px;
+  font-size: 38px;
+  line-height: 1.1;
+  text-align: left;
 }
 
-
-
-.TableDiv {
-    /* border: forestgreen solid 4px; */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    text-align: center;
-    font-size: 24px;
-    margin-top: 30px;
-    margin-left: 450px;
-    margin-right: 450px;
-    margin-bottom: 250px;
-    border-radius: 15px;
-    min-width: 1050px;
-    padding: 20px;
-    box-shadow: 0px 1px 18px rgb(72, 217, 236);
-    box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
+.header p,
+.cardHeader p,
+.emptySteps,
+.emptyState p {
+  color: var(--color-muted);
+  font-size: 18px;
+  line-height: 1.4;
 }
 
-.TableHeader {
-
+.header button {
+  width: 100%;
 }
 
-.new_task_modal {
-    /* display: flex; */
-    margin-bottom: 60px;
-    align-items: center;
+.currentTaskBanner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(104px, auto);
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 18px 22px;
+  border: 1px solid rgba(54, 189, 232, 0.34);
+  border-radius: var(--control-radius);
+  background:
+    radial-gradient(circle at top left, rgba(255, 215, 236, 0.44), transparent 22rem),
+    radial-gradient(circle at bottom right, rgba(213, 248, 255, 0.7), transparent 24rem),
+    var(--color-surface);
+  box-shadow: var(--shadow-soft);
 }
 
-.ColumnNames {
-    font-weight: 900;
-    font-size: 26px;
-    margin-left: 25px;
-    padding-right: 30px;
-    padding-left: 30px;
-    text-decoration: underline;
+.currentTaskBanner strong,
+.currentTaskBanner span {
+  display: block;
 }
 
-
-.TableBody {
-
+.currentTaskBanner strong {
+  margin-top: 4px;
+  font-size: 24px;
+  line-height: 1.15;
 }
 
-.task_items {
-
+.currentTaskBanner span {
+  margin-top: 3px;
+  color: var(--color-muted);
+  font-size: 16px;
+  line-height: 1.35;
 }
 
-.tasks_data {
-margin-bottom: -5px;
-margin-top: -5px;
-font-size: 20px;
+.currentTaskBanner button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height);
+  padding: var(--button-label-pad-top) 16px var(--button-label-pad-bottom);
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: var(--button-label-line-height);
 }
 
-
-.task_btn {
-    background-color: rgba(228, 43, 52, 0.596);
-    border: none;
-    border-radius: 15px;
-    font-family: 'Dosis', sans-serif;
-    font-size: 22px;
-    margin-top: 4px;
-    margin-bottom: 4px;
+.eyebrow {
+  color: var(--color-accent-lavender);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.task_btn:hover {
-    box-shadow: 0px 1px 5px rgba(14, 13, 13, 0.486);
+.toolbar {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--control-gap);
+  margin-bottom: 16px;
 }
 
-.edit_task_btn {
-    background-color: rgba(43, 228, 228, 0.5);
-    border: none;
-    border-radius: 15px;
-    font-family: 'Dosis', sans-serif;
-    font-size: 22px;
-    margin-top: 4px;
-    margin-bottom: 4px;
+.toolbar button,
+.stepComposer button,
+.currentTaskButton,
+.currentTaskButtonActive,
+.deleteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height);
+  padding: var(--button-label-pad-top) 14px var(--button-label-pad-bottom);
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: var(--button-label-line-height);
+  text-align: center;
 }
 
-.edit_task_btn:hover {
-    box-shadow: 0px 1px 5px rgba(14, 13, 13, 0.486);
+.toolbar button {
+  width: 100%;
 }
 
-.task_form_container {
-    background-color: white;
-    box-shadow: 0px 1px 15px rgba(25, 186, 214, 0.986);
-    border-radius: 15px;
-    padding: 20px;
-
+.toolbar .activeFilter {
+  background: var(--color-primary);
+  color: #fff;
 }
 
-.h1, h1 {
-    text-align: center;
-    font-size: 28px;
-    font-weight: 900;
-    /* text-decoration: underline; */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
 }
 
-.h2 {
-    text-align: center;
-    font-size: 22px;
-    font-weight: 900;
-    /* text-decoration: underline; */
-    margin-bottom: 10px;
-    margin-top: 5px;
+.card,
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
 }
 
-
-.task_form {
-    background-color: white;
-    z-index: 20;
-    text-align: center;
-    border-radius: 15px;
-    min-width: 400px;
-    padding: 15px;
-
-}
-label {
-    font-size: 24px;
-    font-weight: 900;
+.currentCard {
+  border-color: rgba(34, 111, 141, 0.5);
+  background:
+    linear-gradient(135deg, rgba(255, 248, 253, 0.86), rgba(238, 251, 255, 0.9)),
+    var(--color-surface);
 }
 
-input, input#task_name {
-    border-bottom: black solid 1px;
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: hotpink;
-    width: 350px;
-    text-align: center;
+.cardHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
 }
 
-.dash_task_button {
-    background-color: rgba(241, 168, 32, 0.603);
-    border: none;
-    border-radius: 18px;
-    font-family: 'Dosis', sans-serif;
-    font-size: 24px;
-    margin-top: 3px;
-    margin-top: 13px;
-    width: 200px;
+.cardHeader h2,
+.emptyState h2 {
+  margin: 0 0 4px;
+  font-size: 26px;
+  line-height: 1.15;
 }
 
-.dash_task_button:hover {
-    transition: background-color 0.7s;
-    background-color: rgba(77, 255, 71, 0.603);
-    background-color: rgba(228, 43, 219, 0.5);
-    border-radius: 15px;
-    font-weight: 700;
- }
-
-
-.task_form_input {
-    /* border-bottom: black solid 1px; */
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: hotpink;
-
-}
-.task_form_row {
-
+.progress {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  min-width: 56px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--color-pill-unsure);
+  font-weight: 700;
+  line-height: 1;
 }
 
-.task_form_button {
-    background-color: rgb(164, 252, 63);
-    border: none;
-    border-radius: 15px;
-    font-family: 'Dosis', sans-serif;
-    font-size: 22px;
-    margin-top: 4px;
-    margin-bottom: 4px;
-    box-shadow: 0px 1px 5px rgba(14, 13, 13, 0.486);
+.energyLabel {
+  display: grid;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 18px;
+  font-weight: 700;
 }
 
-.task_form_button:hover {
-    background-color: rgb(164, 252, 63);
-    font-weight: 900;
-    box-shadow: 2px 3px 8px rgba(14, 13, 13, 0.486);
+.energyLabel select {
+  min-height: var(--control-height);
+  padding: 0 10px;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  font-size: 18px;
+}
+
+.steps {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.steps label {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: var(--control-height);
+  padding: 10px 12px;
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.steps input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.doneStep {
+  color: var(--color-accent-lavender);
+  text-decoration: line-through;
+}
+
+.stepComposer,
+.cardActions {
+  display: grid;
+  align-items: stretch;
+  gap: var(--control-gap);
+  margin-top: 16px;
+}
+
+.stepComposer {
+  grid-template-columns: minmax(0, 1fr) minmax(80px, auto) minmax(140px, auto);
+}
+
+.stepComposer input {
+  min-height: var(--control-height);
+  width: 100%;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--control-radius);
+  color: var(--color-ink);
+  font-size: 17px;
+  text-align: left;
+}
+
+.stepComposer button {
+  width: 100%;
+}
+
+.cardActions {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.cardActions > * {
+  min-width: 0;
+}
+
+.cardActions button,
+.currentTaskButton,
+.currentTaskButtonActive,
+.deleteButton {
+  width: 100%;
+}
+
+.currentTaskButton {
+  background: var(--color-secondary);
+}
+
+.currentTaskButtonActive {
+  background: var(--color-pill-taken);
+}
+
+.deleteButton {
+  background: var(--color-danger);
+  color: #fff;
 }
 
 .taskFormContainer {
+  width: 100%;
+}
 
+.dash_task_button,
+.task_form_button,
+.edit_task_btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height);
+  width: 100%;
+  padding: var(--button-label-pad-top) 16px var(--button-label-pad-bottom);
+  border-radius: var(--control-radius);
+  background: var(--color-secondary);
+  color: var(--color-ink);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: var(--button-label-line-height);
+}
+
+.task_form_container {
+  width: min(440px, calc(100vw - 32px));
+  padding: 22px;
+  border-radius: var(--control-radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.h1,
+.task_form_container h1 {
+  margin-bottom: 8px;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.h2 {
+  margin: 0 0 16px;
+  color: var(--color-muted);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.formErrors {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: var(--control-radius);
+  background: var(--color-pill-skipped);
+  color: var(--color-ink);
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.task_form {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  background: transparent;
+}
+
+.task_form_row {
+  display: grid;
+  gap: 6px;
+}
+
+.task_form label {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--control-height);
+  padding: 0 12px;
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+}
+
+.checkboxRow input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.task_form input {
+  min-height: var(--control-height);
+  width: 100%;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--control-radius);
+  color: var(--color-ink);
+  font-size: 18px;
+  text-align: left;
+}
+
+.task_form .checkboxRow input {
+  min-height: auto;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+}
+
+.task_form_button {
+  margin-top: 4px;
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.task_form_input {
+  color: var(--color-ink);
+}
+
+@media (max-width: 780px) {
+  .header,
+  .toolbar,
+  .currentTaskBanner,
+  .cardHeader,
+  .stepComposer,
+  .cardActions {
+    grid-template-columns: 1fr;
+  }
+
+  .page {
+    width: min(100% - 24px, 1120px);
+    margin-top: 82px;
+  }
+
+  .header,
+  .card,
+  .emptyState {
+    padding: 18px;
+  }
 }

@@ -1,39 +1,209 @@
-/* TODO Add site wide styles */
+:root {
+  --font-ui: Gulim, "Apple SD Gothic Neo", "Malgun Gothic", "Helvetica Neue", Arial, sans-serif;
+  --color-ink: #273640;
+  --color-muted: #5e6e76;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f1fbfd;
+  --color-panel: linear-gradient(135deg, #fff8fd 0%, #eefbff 100%);
+  --color-border: #d8e9ee;
+  --color-primary: #226f8d;
+  --color-primary-hover: #185d78;
+  --color-secondary: #ffd7ec;
+  --color-secondary-hover: #ffc7e4;
+  --color-danger: #b74769;
+  --color-warning: #8a67c8;
+  --color-input-border: #c7dce4;
+  --color-accent-pink: #d15aad;
+  --color-accent-blue: #36bde8;
+  --color-accent-lavender: #6b5fb3;
+  --color-pill-idle: #f3f8fb;
+  --color-pill-taken: #d5f8ff;
+  --color-pill-skipped: #ffdaea;
+  --color-pill-unsure: #eee3ff;
+  --control-height: 44px;
+  --control-radius: 8px;
+  --control-gap: 10px;
+  --button-label-line-height: 1.12;
+  --button-label-pad-top: 2px;
+  --button-label-pad-bottom: 0;
+  --footer-height: 64px;
+  --page-gutter: 16px;
+  --shadow-soft: 0 10px 24px rgba(31, 56, 68, 0.1);
+}
+
 * {
-    box-sizing: border-box;
-    border: none;
-  }
+  box-sizing: border-box;
+}
 
-  #root {
-    min-height: 100vh;
-    min-width: 100vw;
-  }
+html,
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+img,
+ol,
+ul,
+li,
+input,
+label,
+select,
+textarea,
+table,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+footer,
+header,
+menu,
+nav {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-synthesis: none;
+  font-size: 1rem;
+  list-style: none;
+}
 
-  html, body, div,
-  h1, h2, h3, h4,
-  h5, h6, p, blockquote,
-  img, ol, ul, li,
-  input, label, select,
-  table, tbody, tfoot, thead, tr, th, td,
-  footer, header, menu, nav {
-    margin: 0;
-    border: 0;
-    padding: 0;
-    font-size: 1rem;
-    list-style: none;
-    font-family: 'Dosis'
-  }
+body {
+  background:
+    radial-gradient(circle at top left, rgba(255, 238, 248, 0.72), transparent 30rem),
+    radial-gradient(circle at bottom right, rgba(221, 249, 255, 0.9), transparent 34rem),
+    #ffffff;
+  color: var(--color-ink);
+}
 
-  input:focus, textarea:focus {
-    outline: none;
-  }
+button,
+select,
+input,
+textarea {
+  font: inherit;
+}
 
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
+button {
+  line-height: var(--button-label-line-height);
+}
 
-  a:visited {
-    text-decoration: none;
-    color: #000;
-  }
+button,
+select,
+input {
+  border: none;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--color-accent-lavender);
+  outline-offset: 3px;
+}
+
+body.theme-calm {
+  background: #f4fbfd;
+}
+
+body.theme-contrast {
+  background: #ffffff;
+  color: #111111;
+}
+
+body.theme-contrast a,
+body.theme-contrast a:visited {
+  color: #111111;
+}
+
+body.theme-contrast button,
+body.theme-contrast select,
+body.theme-contrast input,
+body.theme-contrast textarea {
+  border: 2px solid #111111;
+}
+
+body.theme-dark {
+  --color-ink: #f3fbfd;
+  --color-muted: #c2d2db;
+  --color-surface: #14242c;
+  --color-surface-soft: #203640;
+  --color-panel: linear-gradient(135deg, #241f35 0%, #12313c 100%);
+  --color-border: #3d5965;
+  --color-primary: #7bdaf4;
+  --color-primary-hover: #a9e9f8;
+  --color-secondary: #4a2943;
+  --color-secondary-hover: #603456;
+  --color-danger: #ff8fb0;
+  --color-warning: #b9a8ff;
+  --color-input-border: #56727f;
+  --color-accent-pink: #ff9bd8;
+  --color-accent-blue: #83e2ff;
+  --color-accent-lavender: #c4baff;
+  --color-pill-idle: #263b45;
+  --color-pill-taken: #174d5e;
+  --color-pill-skipped: #5a3147;
+  --color-pill-unsure: #403861;
+  --shadow-soft: 0 10px 24px rgba(0, 0, 0, 0.28);
+  background:
+    radial-gradient(circle at top left, rgba(255, 155, 216, 0.16), transparent 30rem),
+    radial-gradient(circle at bottom right, rgba(131, 226, 255, 0.18), transparent 34rem),
+    #0d1820;
+  color: var(--color-ink);
+}
+
+body.theme-dark input,
+body.theme-dark textarea,
+body.theme-dark select {
+  background: #0f2028 !important;
+  color: var(--color-ink);
+}
+
+body.theme-dark input::placeholder,
+body.theme-dark textarea::placeholder {
+  color: var(--color-muted);
+}
+
+body.theme-dark a,
+body.theme-dark a:visited {
+  color: var(--color-ink);
+}
+
+body.theme-dark.theme-contrast button,
+body.theme-dark.theme-contrast select,
+body.theme-dark.theme-contrast input,
+body.theme-dark.theme-contrast textarea {
+  border-color: var(--color-ink);
+}
+
+body.reduce-motion *,
+body.reduce-motion *::before,
+body.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:visited {
+  color: inherit;
+  text-decoration: none;
+}

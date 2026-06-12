@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import LoginForm from './components/NavBar/LoginFormModal/LoginForm.js';
 import NavBar from './components/NavBar/NavBar';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import UsersList from './components/UsersList';
-import User from './components/User';
 import { authenticate } from './store/session';
 import SignUpForm from './components/NavBar/SignupFormModal/SignUpForm';
 import MedsListForm from './components/MedsList/MedsListForm';
 import Dashboard from './components/Dashboard/Dashboard';
+import Calendar from './components/Calendar/Calendar';
+import LearningHub from './components/LearningHub/LearningHub';
 // import * as MedsListActions from './store/meds_list'
 import MedsListData from './components/CurrentMedsModal/MedsListData.js';
 import Footer from './components/Footer/index.js';
@@ -21,6 +21,7 @@ import TaskListData from './components/TaskList/TaskListData.js';
 function App() {
   const [loaded, setLoaded] = useState(false);
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.session.user);
 
   useEffect(() => {
     (async() => {
@@ -38,36 +39,39 @@ function App() {
     <BrowserRouter>
       <NavBar />
       <Switch>
+        <Route path='/' exact={true}>
+          <Redirect to={user ? '/dashboard' : '/login'} />
+        </Route>
         <Route path='/login' exact={true}>
-          <LoginForm />
+          {user ? <Redirect to='/dashboard' /> : <LoginForm />}
         </Route>
-        <Route path='/dashboard/meds/new' exact={true}>
+        <ProtectedRoute path='/dashboard/meds/new' exact={true}>
           <MedsListForm />
-        </Route>
-        <Route path='/dashboard/tasks/new' exact={true}>
+        </ProtectedRoute>
+        <ProtectedRoute path='/dashboard/tasks/new' exact={true}>
           <TaskListForm />
-        </Route>
-        <Route path='/dashboard' exact={true}>
+        </ProtectedRoute>
+        <ProtectedRoute path='/dashboard' exact={true}>
           <Dashboard />
-        </Route>
-        <Route path='/dashboard/current_meds' exact={true}>
+        </ProtectedRoute>
+        <ProtectedRoute path='/dashboard/current_meds' exact={true}>
           <MedsListData />
-        </Route>
-        <Route path='/dashboard/task_list' exact={true}>
+        </ProtectedRoute>
+        <ProtectedRoute path='/dashboard/task_list' exact={true}>
           <TaskListData />
-        </Route>
+        </ProtectedRoute>
+        <ProtectedRoute path='/dashboard/calendar' exact={true}>
+          <Calendar />
+        </ProtectedRoute>
+        <ProtectedRoute path='/dashboard/school' exact={true}>
+          <LearningHub />
+        </ProtectedRoute>
+        <ProtectedRoute path='/dashboard/learning' exact={true}>
+          <Redirect to='/dashboard/school' />
+        </ProtectedRoute>
         <Route path='/sign-up' exact={true}>
-          <SignUpForm />
+          {user ? <Redirect to='/dashboard' /> : <SignUpForm />}
         </Route>
-        {/* <ProtectedRoute path='/users' exact={true} >
-          <UsersList/>
-        </ProtectedRoute>
-        <ProtectedRoute path='/users/:userId' exact={true} >
-          <User />
-        </ProtectedRoute>
-        <ProtectedRoute path='/' exact={true} >
-          <h1 >Squirrel!</h1>
-        </ProtectedRoute> */}
       </Switch>
       <Footer />
     </BrowserRouter>

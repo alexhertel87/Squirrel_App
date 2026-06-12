@@ -5,6 +5,9 @@ import { login } from '../../../store/session';
 import Button from '../../Button';
 import styles from '../ModalForms.module.css';
 
+const DEMO_EMAIL = 'demo@squirrel.app';
+const DEMO_PASSWORD = 'SquirrelDemo2026!';
+
 const LoginForm = () => {
   const [errors, setErrors] = useState([]);
   const [email, setEmail] = useState('');
@@ -24,7 +27,7 @@ const LoginForm = () => {
 
   const demoLogin = async (e) => {
     e.preventDefault();
-    const data = await dispatch(login("demo@aa.io", "password"));
+    const data = await dispatch(login(DEMO_EMAIL, DEMO_PASSWORD));
     if (data) {
       setErrors(data);
     }
@@ -44,57 +47,57 @@ const LoginForm = () => {
   }
 
   return (
-    <div className={styles.formContainer}>
-      <form className={ styles.form } onSubmit={onLogin}>
-        <div className={styles.inputRow}>
-          {errors.map((error, ind) => (
-            <div key={ind}>{error}</div>
-          ))}
-        </div>
-        <div>
-          <label htmlFor='email' className={ styles.placeholder}>Email</label>
-          <input
-            className={styles.inputField}
-            name='email'
-            type='text'
-            placeholder='Email'
-            value={email}
-            onChange={updateEmail}
-          />
-        </div>
-        <div className={styles.inputRow}>
-          <label htmlFor='password' className={ styles.placeholder}>Password</label>
-          <input
-            className={styles.inputField}
-            name='password'
-            type='password'
-            placeholder='Password'
-            value={password}
-            onChange={updatePassword}
-          />
-          <div className={styles.buttonContainer}>
-            <div>
-              <button type='submit'>
-                <Button
-                  text={"Log In"}
-                  action={onLogin}
-                  width={100} />
-
-              </button>
+    <main className={styles.authPage}>
+      <div className={styles.formContainer}>
+        <form className={ styles.form } onSubmit={onLogin}>
+          <div className={styles.inputRow}>
+            {errors.map((error, ind) => (
+              <div key={ind}>{error}</div>
+            ))}
+          </div>
+          <div>
+            <label htmlFor='email' className={ styles.placeholder}>Email</label>
+            <input
+              className={styles.inputField}
+              name='email'
+              type='text'
+              placeholder='Email'
+              value={email}
+              onChange={updateEmail}
+            />
+          </div>
+          <div className={styles.inputRow}>
+            <label htmlFor='password' className={ styles.placeholder}>Password</label>
+            <input
+              className={styles.inputField}
+              name='password'
+              type='password'
+              placeholder='Password'
+              value={password}
+              onChange={updatePassword}
+            />
+            <div className={styles.buttonContainer}>
+              <Button text={"Log In"} type="submit" />
+              <Button text={"Demo User Login"} action={demoLogin} />
             </div>
-            <div>
-              <button type='submit'>
-                <Button
-                  text={"Demo User Login"}
-                  action={demoLogin}
-                  width={180} />
-              </button>
-            </div>
-            </div>
-          {/* <button type='submit'>Login</button> */}
-        </div>
-      </form>
-    </div>
+            {/* <button type='submit'>Login</button> */}
+          </div>
+          <section className={styles.demoCredentials} aria-label="Demo account credentials">
+            <p className={styles.demoTitle}>Demo Account</p>
+            <dl className={styles.demoCredentialList}>
+              <div className={styles.demoCredentialItem}>
+                <dt>Email</dt>
+                <dd>{DEMO_EMAIL}</dd>
+              </div>
+              <div className={styles.demoCredentialItem}>
+                <dt>Password</dt>
+                <dd>{DEMO_PASSWORD}</dd>
+              </div>
+            </dl>
+          </section>
+        </form>
+      </div>
+    </main>
   );
 };
 

@@ -14,6 +14,8 @@ class User(db.Model, UserMixin):
 
     meds_list = db.relationship("Meds_List", back_populates="user")
     active_tasks = db.relationship("Active_Tasks", back_populates="user")
+    support_state = db.relationship(
+        "UserSupportState", back_populates="user", uselist=False)
 
     @property
     def password(self):

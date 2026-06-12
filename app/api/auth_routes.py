@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, session, request
 from app.models import User, db
+from app.demo_account import DEMO_EMAIL, ensure_demo_user
 from app.forms import LoginForm
 from app.forms import SignUpForm
 from flask_login import current_user, login_user, logout_user, login_required
@@ -33,6 +34,18 @@ def login():
     """
     Logs a user in
     """
+    data = request.get_json(silent=True)
+    if data:
+        email = (data.get('email') or '').strip()
+        user = ensure_demo_user() if email.lower() == DEMO_EMAIL else User.query.filter(
+            User.email == email
+        ).first()
+
+        if user and user.check_password(data.get('password', '')):
+            login_user(user)
+            return user.to_dict()
+        return {'errors': ['Email or password was incorrect.']}, 401
+
     form = LoginForm()
     # Get the csrf_token from the request cookie and put it into the
     # form manually to validate_on_submit can be used
@@ -59,6 +72,24 @@ def sign_up():
     """
     Creates a new user and logs them in
     """
+    data = request.get_json(silent=True)
+    if data:
+        email = data.get('email')
+        username = data.get('username')
+        password = data.get('password')
+        if not username or not email or not password:
+            return {'errors': ['Username, email, and password are required.']}, 401
+        if User.query.filter(User.username == username).first():
+            return {'errors': ['Username is already in use.']}, 401
+        if User.query.filter(User.email == email).first():
+            return {'errors': ['Email address is already in use.']}, 401
+
+        user = User(username=username, email=email, password=password)
+        db.session.add(user)
+        db.session.commit()
+        login_user(user)
+        return user.to_dict()
+
     form = SignUpForm()
     form['csrf_token'].data = request.cookies['csrf_token']
     if form.validate_on_submit():

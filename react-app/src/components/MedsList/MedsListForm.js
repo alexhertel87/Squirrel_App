@@ -120,14 +120,8 @@ export const MedsListForm = ({setShowModal}) => {
                             ></textarea>
                         </div>
                     </label >
-                        <div>
-                        <button
-                            type="submit"
-                            className={styles.submit_button}>
-                            <Button
-                                text={"Add New Medication"}
-                                action={onSubmit} />
-                            </button>
+                        <div className={styles.buttonRow}>
+                            <Button text={"Add New Medication"} type="submit" />
                         </div>
                         <div className={styles.errorsContainer}>
                         {errors?.map((error, ind) => (

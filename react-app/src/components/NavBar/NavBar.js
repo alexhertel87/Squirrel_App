@@ -1,17 +1,17 @@
 
 import React from 'react';
-import { NavLink, Link, Redirect, useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { NavLink, Link } from 'react-router-dom';
 import LogoutButton from './LogoutButton/LogoutButton';
 import './Navbar.css'
-import LoginFormModal from "./LoginFormModal";
 // import SignupFormModal from "./SignupFormModal";
 // import SignUpForm from './SignupFormModal/SignUpForm';
 import logo from '../../assets/squirrel_logo.png';
-import Button from "../Button";
 import styles from './Navbar.module.css';
 
 
 const NavBar = () => {
+  const user = useSelector((state) => state.session.user);
 
   // let userRender = (
   //   <>
@@ -24,30 +24,42 @@ const NavBar = () => {
     <nav className={styles.navContainer}>
       <div className={styles.nav_leftside}>
         <div className="nav-logo">
-          <div className={styles.logoDiv}>Squirrel!
-              <Link to="/dashboard">
-                <img className="logo-pic" src={logo} alt="squirrel_logo"></img>
-              </Link>
-            </div>
+          <div className={styles.logoDiv}>
+            <span className={styles.logoText}>Squirrel!</span>
+            <Link to={user ? '/dashboard' : '/login'}>
+              <img className="logo-pic" src={logo} alt="squirrel_logo"></img>
+            </Link>
+          </div>
         </div>
       </div>
       <div className={styles.nav_right}>
         <ul className={styles.linkDiv}>
-          <li>
-            <NavLink to='/dashboard' exact={true} activeClassName='active'>
-              Dashboard
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to='/login' exact={true} activeClassName='active'>
-              Login
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to='/sign-up' exact={true} activeClassName='active'>
-              Sign Up
-            </NavLink>
-          </li>
+          {user && (
+            <>
+              <li>
+                <NavLink to='/dashboard' exact={true} activeClassName='active'>
+                  Dashboard
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to='/dashboard/calendar' exact={true} activeClassName='active'>
+                  Calendar
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to='/dashboard/school' exact={true} activeClassName='active'>
+                  School
+                </NavLink>
+              </li>
+            </>
+          )}
+          {!user && (
+            <li>
+              <NavLink to='/sign-up' exact={true} activeClassName='active'>
+                Sign Up
+              </NavLink>
+            </li>
+          )}
           {/* <li>
             <NavLink to='/users' exact={true} activeClassName='active'>
               Users

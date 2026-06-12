@@ -1,37 +1,35 @@
 from app.models import db, User
+from app.demo_account import ensure_demo_user
 
 
 # Adds a demo user, you can add other users here if you want
 def seed_users():
-    demo = User(
-        username='Demo',
-        email='demo@aa.io',
-        password='password'
-        )
+    ensure_demo_user()
+    users = [
+        {
+            'username': 'marnie',
+            'email': 'marnie@aa.io',
+            'password': 'password',
+        },
+        {
+            'username': 'bobbie',
+            'email': 'bobbie@aa.io',
+            'password': 'password',
+        },
+        {
+            'username': 'ahertel87',
+            'email': 'alex.hertel87@gmail.com',
+            'password': 'password',
+        },
+    ]
 
-    marnie = User(
-        username='marnie',
-        email='marnie@aa.io',
-        password='password'
-        )
-
-    bobbie = User(
-        username='bobbie',
-        email='bobbie@aa.io',
-        password='password'
-        )
-
-    Alex = User(
-        username='ahertel87',
-        email='alex.hertel87@gmail.com',
-        password='password'
-        )
-
-
-    db.session.add(demo)
-    db.session.add(marnie)
-    db.session.add(bobbie)
-    db.session.add(Alex)
+    for user_data in users:
+        user = User.query.filter(User.email == user_data['email']).first()
+        if user:
+            user.username = user_data['username']
+            user.password = user_data['password']
+        else:
+            db.session.add(User(**user_data))
 
     db.session.commit()
 

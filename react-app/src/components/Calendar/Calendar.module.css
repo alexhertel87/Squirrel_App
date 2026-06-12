@@ -1,0 +1,237 @@
+.page {
+  width: min(1180px, calc(100vw - 32px));
+  margin: 96px auto calc(var(--footer-height) + 24px);
+  color: var(--color-ink);
+}
+
+.hero,
+.panel,
+.providerCard {
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.hero {
+  padding: 32px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 215, 236, 0.5), transparent 24rem),
+    radial-gradient(circle at bottom right, rgba(213, 248, 255, 0.62), transparent 26rem),
+    var(--color-surface);
+}
+
+.hero h1,
+.panel h2,
+.providerCard h2 {
+  margin: 4px 0 0;
+  line-height: 1.1;
+}
+
+.hero h1 {
+  max-width: 760px;
+  font-size: 44px;
+}
+
+.hero p:not(.eyebrow),
+.providerCard p:not(.eyebrow),
+.note {
+  max-width: 720px;
+  color: var(--color-muted);
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.eyebrow {
+  color: var(--color-accent-lavender);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.status {
+  margin: 16px 0 0;
+  padding: 14px 16px;
+  border-radius: var(--control-radius);
+  background: var(--color-pill-unsure);
+  color: var(--color-ink);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.layout,
+.providerGrid {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.layout {
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
+}
+
+.providerGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.panel,
+.providerCard {
+  padding: 22px;
+}
+
+.panelHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.eventCount,
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  min-width: 76px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--color-pill-taken);
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+.feedBox {
+  overflow: auto;
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+}
+
+.feedBox code {
+  color: var(--color-ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.buttonGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--control-gap);
+}
+
+.buttonGrid button,
+.buttonGrid a,
+.providerCard a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height);
+  padding: var(--button-label-pad-top) 14px var(--button-label-pad-bottom);
+  border-radius: var(--control-radius);
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: var(--button-label-line-height);
+  text-align: center;
+}
+
+.buttonGrid button:nth-child(3) {
+  background: var(--color-secondary);
+  color: var(--color-ink);
+}
+
+.buttonGrid button:disabled,
+.buttonGrid a[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.note {
+  margin-top: 14px;
+  font-size: 16px;
+}
+
+.includeList {
+  display: grid;
+  gap: var(--control-gap);
+  margin-top: 16px;
+}
+
+.includeItem {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 68px;
+  padding: 14px;
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+}
+
+.includeItem strong,
+.includeItem span {
+  display: block;
+}
+
+.includeItem strong {
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.includeItem span:not(.count) {
+  margin-top: 3px;
+  color: var(--color-muted);
+  font-size: 15px;
+}
+
+.providerCard {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.providerCard p:not(.eyebrow) {
+  margin: 0;
+  font-size: 16px;
+}
+
+.providerCard a {
+  margin-top: auto;
+}
+
+@media (max-width: 900px) {
+  .layout,
+  .providerGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 560px) {
+  .page {
+    width: min(100% - 24px, 1180px);
+    margin-top: 82px;
+  }
+
+  .hero,
+  .panel,
+  .providerCard {
+    padding: 18px;
+  }
+
+  .panelHeader,
+  .buttonGrid {
+    grid-template-columns: 1fr;
+  }
+}

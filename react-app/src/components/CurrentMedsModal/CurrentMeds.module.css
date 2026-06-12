@@ -1,70 +1,196 @@
-.TableDiv {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-size: 24px;
-    margin-top: 30px;
-    margin-left: 250px;
-    margin-right: 250px;
-    border-radius: 15px;
-    min-width: 1150px;
-    padding: 20px;
-    box-shadow: 0px 1px 18px rgb(72, 217, 236);
-    box-shadow: 0px 1px 15px rgba(14, 13, 13, 0.486);
+.page {
+  width: min(1120px, calc(100vw - 32px));
+  margin: 96px auto calc(var(--footer-height) + 24px);
+  color: var(--color-ink);
 }
 
-.TableHeader{
-    /* display: flex; */
-    margin-left: 20px;
-    margin-right: 20px;
-    text-decoration: underline;
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 220px);
+  align-items: end;
+  gap: 24px;
+  margin-bottom: 18px;
+  padding: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--color-panel);
 }
 
-.ColumnNames {
-    font-weight: 900;
-    font-size: 26px;
-    margin-left: 25px;
-    padding-right: 30px;
-    padding-left: 30px;
+.header h1 {
+  margin: 4px 0 8px;
+  font-size: 38px;
+  line-height: 1.1;
+  text-align: left;
 }
 
-.TableBody{
-    /* display: list-item; */
+.header p,
+.notes,
+.time,
+.emptyState p {
+  color: var(--color-muted);
+  font-size: 18px;
+  line-height: 1.4;
 }
 
-.MedInfo {
-    font-size: 25px;
+.header button {
+  width: 100%;
 }
 
-.med_btns {
-    background-color: rgba(228, 43, 52, 0.596);
-    border: none;
-    border-radius: 15px;
-    font-family: 'Dosis', sans-serif;
-    font-size: 22px;
-    margin-top: 4px;
-    margin-bottom: 4px;
-    /* margin-left: 44px; */
+.eyebrow {
+  color: var(--color-accent-lavender);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.med_btns:hover {
-    box-shadow: 0px 1px 5px rgba(14, 13, 13, 0.486);
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
 }
 
-.medData {
-    /* font-size: 204; */
-    text-align: center;
-    z-index: 1;
+.card,
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
 }
 
-.meds_data{
-    font-size: 24px;
+.cardHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
 }
 
-.meds_header {
-    text-align: center;
-    font-size: 30px;
-    font-weight: 900;
-    text-decoration: underline;
-    margin-top: 85px;
+.cardHeader h2,
+.emptyState h2 {
+  margin: 0 0 4px;
+  font-size: 26px;
+  line-height: 1.15;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  min-width: 88px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--color-pill-idle);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.taken {
+  background: var(--color-pill-taken);
+}
+
+.skipped {
+  background: var(--color-pill-skipped);
+}
+
+.unsure {
+  background: var(--color-pill-unsure);
+}
+
+.idle {
+  background: var(--color-pill-idle);
+}
+
+.notes {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+}
+
+.time {
+  margin-top: 10px;
+}
+
+.checkins,
+.cardActions {
+  display: grid;
+  align-items: stretch;
+  gap: var(--control-gap);
+  margin-top: 16px;
+}
+
+.checkins {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cardActions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.cardActions > * {
+  min-width: 0;
+}
+
+.checkins button,
+.cardActions button,
+.deleteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--control-height);
+  padding: var(--button-label-pad-top) 14px var(--button-label-pad-bottom);
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: var(--button-label-line-height);
+  text-align: center;
+}
+
+.checkins .activeCheckin {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.deleteButton {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+@media (max-width: 720px) {
+  .page {
+    width: min(100% - 24px, 1120px);
+    margin-top: 82px;
+  }
+
+  .header,
+  .cardHeader,
+  .cardActions {
+    grid-template-columns: 1fr;
+  }
+
+  .header,
+  .card,
+  .emptyState {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  .checkins {
+    grid-template-columns: 1fr;
+  }
 }

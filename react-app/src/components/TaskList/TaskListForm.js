@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
-import * as sessionActions from '../../store/session';
+import { useHistory } from 'react-router-dom';
 import * as userActions from '../../store/task_list';
+import {
+    getLocalSupportState,
+    normalizeSupportState,
+    persistSupportState,
+} from '../../utils/neuroSupport';
 import styles from './TaskList.module.css';
 
-export const TaskListForm = ({ setShowModal }) => {
+export const TaskListForm = ({
+    makeCurrentDefault = false,
+    onTaskCreated,
+    setShowModal,
+}) => {
     const dispatch = useDispatch();
-    const params = useParams();
     const user = useSelector(state => state.session.user);
 
     const [errors, setErrors] = useState([]);
     const [taskName, setTaskName] = useState('');
     const [dueDate1, setDueDate1] = useState('');
     const [dueDate2, setDueDate2] = useState('');
+    const [makeCurrentTask, setMakeCurrentTask] = useState(makeCurrentDefault);
     // const [completed, setCompleted] = useState(false);
     // const [completedAt, setCompletedAt] = useState('');
     const history = useHistory();
@@ -29,7 +37,22 @@ export const TaskListForm = ({ setShowModal }) => {
                 due_date_1: dueDate1,
                 due_date_2: dueDate2
             };
-            dispatch(userActions.new_task_item(task))
+            const createdTask = await dispatch(userActions.new_task_item(task));
+            if (createdTask?.id && makeCurrentTask) {
+                const currentSupport = getLocalSupportState();
+                const nextSupport = normalizeSupportState({
+                    ...currentSupport,
+                    currentTaskId: createdTask.id,
+                    routines: {
+                        ...currentSupport.routines,
+                        'reset:Pick Next Task': true,
+                    },
+                });
+                persistSupportState(nextSupport);
+                if (onTaskCreated) onTaskCreated(createdTask, nextSupport);
+            } else if (onTaskCreated) {
+                onTaskCreated(createdTask);
+            }
             setShowModal(false);
             history.push('/dashboard/task_list');
         }
@@ -45,6 +68,13 @@ export const TaskListForm = ({ setShowModal }) => {
         <div className={ styles.task_form_container}>
             <h1 className={styles.h1}>Add a New Task to Your To-Do List</h1>
             <h2 className={styles.h2}>(The Anti-Procrastination Station)</h2>
+            {!!errors.length && (
+                <ul className={styles.formErrors}>
+                    {errors.map((error) => (
+                        <li key={error}>{error}</li>
+                    ))}
+                </ul>
+            )}
             <form onSubmit={onSubmit} className={styles.task_form}>
                 <div className={styles.task_form_row}>
                     <label htmlFor="task_name">Task Name</label>
@@ -110,6 +140,16 @@ export const TaskListForm = ({ setShowModal }) => {
                         ></input>
                     </div>
                 </div> */}
+                <div className={styles.task_form_row}>
+                    <label className={styles.checkboxRow}>
+                        <input
+                            checked={makeCurrentTask}
+                            onChange={(e) => setMakeCurrentTask(e.target.checked)}
+                            type="checkbox"
+                        />
+                        Make this my current task
+                    </label>
+                </div>
                 <div className={styles.task_form_row}>
                     <button type="submit" className={styles.task_form_button}>
                         Add Task

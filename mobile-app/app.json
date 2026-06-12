@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Squirrel",
+    "slug": "squirrel-mobile",
+    "version": "0.1.0",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "scheme": "squirrel",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.alexhertel.squirrel"
+    },
+    "android": {
+      "package": "com.alexhertel.squirrel",
+      "adaptiveIcon": {
+        "backgroundColor": "#f2f8ef"
+      }
+    },
+    "extra": {
+      "apiBaseUrl": "http://localhost:5000"
+    }
+  }
+}

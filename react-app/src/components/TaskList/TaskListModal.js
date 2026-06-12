@@ -5,7 +5,11 @@ import styles from './TaskList.module.css'
 // import classes from '../../Dashboard/Dashboard.module.css'
 
 
-export const TaskListModal = () => {
+export const TaskListModal = ({
+    buttonLabel = 'Add a New Task',
+    makeCurrentDefault = false,
+    onTaskCreated,
+} = {}) => {
     const [showModal, setShowModal] = useState(false);
 
     return (
@@ -13,11 +17,15 @@ export const TaskListModal = () => {
             <button
                 className={styles.dash_task_button}
                 onClick={() => setShowModal(true)}>
-                Add a New Task
+                {buttonLabel}
             </button>
             {showModal && (
                 <Modal onClose={() => setShowModal(false)}>
-                    <TaskListForm setShowModal={setShowModal}/>
+                    <TaskListForm
+                        makeCurrentDefault={makeCurrentDefault}
+                        onTaskCreated={onTaskCreated}
+                        setShowModal={setShowModal}
+                    />
                 </Modal>
             )
         }
