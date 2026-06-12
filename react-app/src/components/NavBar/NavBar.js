@@ -24,11 +24,12 @@ const NavBar = () => {
     <nav className={styles.navContainer}>
       <div className={styles.nav_leftside}>
         <div className="nav-logo">
-          <div className={styles.logoDiv}>Squirrel!
-              <Link to={user ? '/dashboard' : '/login'}>
-                <img className="logo-pic" src={logo} alt="squirrel_logo"></img>
-              </Link>
-            </div>
+          <div className={styles.logoDiv}>
+            <span className={styles.logoText}>Squirrel!</span>
+            <Link to={user ? '/dashboard' : '/login'}>
+              <img className="logo-pic" src={logo} alt="squirrel_logo"></img>
+            </Link>
+          </div>
         </div>
       </div>
       <div className={styles.nav_right}>
