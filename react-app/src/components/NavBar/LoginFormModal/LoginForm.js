@@ -44,42 +44,44 @@ const LoginForm = () => {
   }
 
   return (
-    <div className={styles.formContainer}>
-      <form className={ styles.form } onSubmit={onLogin}>
-        <div className={styles.inputRow}>
-          {errors.map((error, ind) => (
-            <div key={ind}>{error}</div>
-          ))}
-        </div>
-        <div>
-          <label htmlFor='email' className={ styles.placeholder}>Email</label>
-          <input
-            className={styles.inputField}
-            name='email'
-            type='text'
-            placeholder='Email'
-            value={email}
-            onChange={updateEmail}
-          />
-        </div>
-        <div className={styles.inputRow}>
-          <label htmlFor='password' className={ styles.placeholder}>Password</label>
-          <input
-            className={styles.inputField}
-            name='password'
-            type='password'
-            placeholder='Password'
-            value={password}
-            onChange={updatePassword}
-          />
-          <div className={styles.buttonContainer}>
-            <Button text={"Log In"} type="submit" />
-            <Button text={"Demo User Login"} action={demoLogin} />
+    <main className={styles.authPage}>
+      <div className={styles.formContainer}>
+        <form className={ styles.form } onSubmit={onLogin}>
+          <div className={styles.inputRow}>
+            {errors.map((error, ind) => (
+              <div key={ind}>{error}</div>
+            ))}
           </div>
-          {/* <button type='submit'>Login</button> */}
-        </div>
-      </form>
-    </div>
+          <div>
+            <label htmlFor='email' className={ styles.placeholder}>Email</label>
+            <input
+              className={styles.inputField}
+              name='email'
+              type='text'
+              placeholder='Email'
+              value={email}
+              onChange={updateEmail}
+            />
+          </div>
+          <div className={styles.inputRow}>
+            <label htmlFor='password' className={ styles.placeholder}>Password</label>
+            <input
+              className={styles.inputField}
+              name='password'
+              type='password'
+              placeholder='Password'
+              value={password}
+              onChange={updatePassword}
+            />
+            <div className={styles.buttonContainer}>
+              <Button text={"Log In"} type="submit" />
+              <Button text={"Demo User Login"} action={demoLogin} />
+            </div>
+            {/* <button type='submit'>Login</button> */}
+          </div>
+        </form>
+      </div>
+    </main>
   );
 };
 

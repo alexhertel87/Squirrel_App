@@ -7,7 +7,10 @@
   display: flex;
   align-items: center;
   gap: 24px;
-  min-height: 54px;
+  height: var(--footer-height);
+  min-height: var(--footer-height);
+  overflow-x: auto;
+  overflow-y: hidden;
   padding: 0 32px;
   border-top: 1px solid var(--color-border);
   background: var(--color-surface);
@@ -17,12 +20,16 @@
 }
 
 .footer-text {
+  flex: 0 0 auto;
   font-size: 20px;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .footer-element,
 .footerIcon {
+  flex: 0 0 auto;
+  white-space: nowrap;
   color: var(--color-ink);
   font-size: 18px;
   text-decoration: none;
