@@ -13,6 +13,7 @@ from .api.meds_log_routes import meds_log_routes
 from .api.task_list_routes import task_list_routes
 from .api.support_state_routes import support_state_routes
 from .api.calendar_routes import calendar_routes
+from .api.learning_routes import learning_routes
 
 from .seeds import seed_commands
 
@@ -48,6 +49,7 @@ app.register_blueprint(meds_list_routes, url_prefix='/api/meds_list')
 app.register_blueprint(task_list_routes, url_prefix='/api/tasks')
 app.register_blueprint(support_state_routes, url_prefix='/api/support_state')
 app.register_blueprint(calendar_routes, url_prefix='/api/calendar')
+app.register_blueprint(learning_routes, url_prefix='/api/learning')
 # app.register_blueprint(completed_tasks_route, url_prefix='/api/completed_tasks')
 db.init_app(app)
 migrate = Migrate(app, db, compare_type=True)

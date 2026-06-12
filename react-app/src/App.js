@@ -9,6 +9,7 @@ import SignUpForm from './components/NavBar/SignupFormModal/SignUpForm';
 import MedsListForm from './components/MedsList/MedsListForm';
 import Dashboard from './components/Dashboard/Dashboard';
 import Calendar from './components/Calendar/Calendar';
+import LearningHub from './components/LearningHub/LearningHub';
 // import * as MedsListActions from './store/meds_list'
 import MedsListData from './components/CurrentMedsModal/MedsListData.js';
 import Footer from './components/Footer/index.js';
@@ -61,6 +62,12 @@ function App() {
         </ProtectedRoute>
         <ProtectedRoute path='/dashboard/calendar' exact={true}>
           <Calendar />
+        </ProtectedRoute>
+        <ProtectedRoute path='/dashboard/school' exact={true}>
+          <LearningHub />
+        </ProtectedRoute>
+        <ProtectedRoute path='/dashboard/learning' exact={true}>
+          <Redirect to='/dashboard/school' />
         </ProtectedRoute>
         <Route path='/sign-up' exact={true}>
           {user ? <Redirect to='/dashboard' /> : <SignUpForm />}

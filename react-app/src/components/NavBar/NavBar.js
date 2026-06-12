@@ -46,6 +46,11 @@ const NavBar = () => {
                   Calendar
                 </NavLink>
               </li>
+              <li>
+                <NavLink to='/dashboard/school' exact={true} activeClassName='active'>
+                  School
+                </NavLink>
+              </li>
             </>
           )}
           {!user && (

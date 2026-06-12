@@ -164,6 +164,7 @@ export const Dashboard = () => {
   const [calendarEventsStatus, setCalendarEventsStatus] = useState('');
   const medCheckins = getMedCheckins(support);
   const routineState = support.routines;
+  const learningState = support.learning || { areas: [], planner: [], materials: [] };
   const currentTask = taskArray.find((task) => String(task.id) === String(support.currentTaskId));
   const selectedBreathingTechnique = breathingTechniques.find((technique) => technique.id === breathingTechniqueId);
   const breathingRunning = breathingSecondsLeft > 0;
@@ -272,6 +273,7 @@ export const Dashboard = () => {
   }, [breathingComplete, routineState]);
 
   const medsTaken = medsArray.filter((med) => medCheckins[med.id]?.status === 'taken').length;
+  const openLearningItems = (learningState.planner || []).filter((item) => item.status !== 'done');
   const quickWins = taskArray.filter((task) => ['low', 'quick'].includes(getEnergy(task.id, support)));
   const nextTasks = quickWins.length ? quickWins.slice(0, 3) : taskArray.slice(0, 3);
   const calendarDayEvents = calendarEvents.filter((event) => !event.category?.startsWith('task'));
@@ -398,6 +400,12 @@ export const Dashboard = () => {
           <strong>Sync</strong>
           <p>Send tasks and med reminders to your calendar.</p>
           <Link to="/dashboard/calendar" className={styles.textLink}>Open Calendar</Link>
+        </article>
+        <article className={styles.summaryCard}>
+          <span className={styles.cardLabel}>School</span>
+          <strong>{openLearningItems.length}</strong>
+          <p>{(learningState.materials || []).length} course material{(learningState.materials || []).length === 1 ? '' : 's'} organized.</p>
+          <Link to="/dashboard/school" className={styles.textLink}>Open School</Link>
         </article>
       </section>
 

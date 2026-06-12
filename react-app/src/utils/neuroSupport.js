@@ -14,6 +14,11 @@ export const defaultSupportState = {
     includeRoutines: false,
     feedToken: '',
   },
+  learning: {
+    areas: [],
+    planner: [],
+    materials: [],
+  },
   comfort: {
     calm: false,
     highContrast: false,
@@ -59,6 +64,13 @@ export const normalizeSupportState = (data = {}) => ({
     ...defaultSupportState.calendar,
     ...(data.calendar || {}),
   },
+  learning: {
+    ...defaultSupportState.learning,
+    ...(data.learning || {}),
+    areas: (data.learning || {}).areas || defaultSupportState.learning.areas,
+    planner: (data.learning || {}).planner || defaultSupportState.learning.planner,
+    materials: (data.learning || {}).materials || defaultSupportState.learning.materials,
+  },
   comfort: {
     ...defaultSupportState.comfort,
     ...(data.comfort || {}),
@@ -99,6 +111,9 @@ const mergeSupportState = (...states) => states.reduce((merged, state) => {
       ...merged.calendar,
       ...normalized.calendar,
     },
+    learning: Object.prototype.hasOwnProperty.call(state || {}, 'learning')
+      ? normalized.learning
+      : merged.learning,
     comfort: {
       ...merged.comfort,
       ...normalized.comfort,
@@ -115,6 +130,7 @@ const getLegacySupportState = () => ({
   routines: loadJson('squirrel-routine-progress', {}),
   currentTaskId: loadJson('squirrel-current-task', ''),
   calendar: loadJson('squirrel-calendar-settings', defaultSupportState.calendar),
+  learning: loadJson('squirrel-learning-settings', defaultSupportState.learning),
   comfort: loadJson('squirrel-comfort-settings', defaultSupportState.comfort),
 });
 
@@ -137,6 +153,7 @@ export const saveSupportStateLocal = (supportState) => {
   saveJson('squirrel-routine-progress', normalized.routines);
   saveJson('squirrel-current-task', normalized.currentTaskId);
   saveJson('squirrel-calendar-settings', normalized.calendar);
+  saveJson('squirrel-learning-settings', normalized.learning);
   saveJson('squirrel-comfort-settings', normalized.comfort);
   return normalized;
 };
