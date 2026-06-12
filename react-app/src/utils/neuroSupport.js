@@ -19,6 +19,11 @@ export const defaultSupportState = {
     planner: [],
     materials: [],
   },
+  sidePanel: {
+    displayMode: 'search',
+    factTopic: 'Science',
+    preferredFactTopics: ['Science', 'Politics', 'World History', 'Ancient History', 'Technology', 'Psychology'],
+  },
   comfort: {
     calm: false,
     highContrast: false,
@@ -71,6 +76,11 @@ export const normalizeSupportState = (data = {}) => ({
     planner: (data.learning || {}).planner || defaultSupportState.learning.planner,
     materials: (data.learning || {}).materials || defaultSupportState.learning.materials,
   },
+  sidePanel: {
+    ...defaultSupportState.sidePanel,
+    ...(data.sidePanel || {}),
+    preferredFactTopics: (data.sidePanel || {}).preferredFactTopics || defaultSupportState.sidePanel.preferredFactTopics,
+  },
   comfort: {
     ...defaultSupportState.comfort,
     ...(data.comfort || {}),
@@ -114,6 +124,13 @@ const mergeSupportState = (...states) => states.reduce((merged, state) => {
     learning: Object.prototype.hasOwnProperty.call(state || {}, 'learning')
       ? normalized.learning
       : merged.learning,
+    sidePanel: Object.prototype.hasOwnProperty.call(state || {}, 'sidePanel')
+      ? {
+        ...merged.sidePanel,
+        ...normalized.sidePanel,
+        preferredFactTopics: normalized.sidePanel.preferredFactTopics,
+      }
+      : merged.sidePanel,
     comfort: {
       ...merged.comfort,
       ...normalized.comfort,
@@ -131,6 +148,7 @@ const getLegacySupportState = () => ({
   currentTaskId: loadJson('squirrel-current-task', ''),
   calendar: loadJson('squirrel-calendar-settings', defaultSupportState.calendar),
   learning: loadJson('squirrel-learning-settings', defaultSupportState.learning),
+  sidePanel: loadJson('squirrel-side-panel-settings', defaultSupportState.sidePanel),
   comfort: loadJson('squirrel-comfort-settings', defaultSupportState.comfort),
 });
 
@@ -154,6 +172,7 @@ export const saveSupportStateLocal = (supportState) => {
   saveJson('squirrel-current-task', normalized.currentTaskId);
   saveJson('squirrel-calendar-settings', normalized.calendar);
   saveJson('squirrel-learning-settings', normalized.learning);
+  saveJson('squirrel-side-panel-settings', normalized.sidePanel);
   saveJson('squirrel-comfort-settings', normalized.comfort);
   return normalized;
 };

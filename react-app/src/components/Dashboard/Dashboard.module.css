@@ -1,7 +1,18 @@
 .page {
-  width: min(1180px, calc(100vw - 32px));
+  width: min(1460px, calc(100vw - 32px));
   margin: 96px auto calc(var(--footer-height) + 24px);
   color: var(--color-ink);
+}
+
+.dashboardShell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(284px, 340px);
+  align-items: start;
+  gap: 16px;
+}
+
+.dashboardContent {
+  min-width: 0;
 }
 
 .hero {
@@ -114,12 +125,218 @@
 }
 
 .summaryCard,
-.panel {
+.panel,
+.searchPanel {
   padding: 22px;
   border: 1px solid var(--color-border);
   border-radius: var(--control-radius);
   background: var(--color-surface);
   box-shadow: var(--shadow-soft);
+}
+
+.searchPanel {
+  position: sticky;
+  top: 96px;
+  display: grid;
+  gap: 12px;
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+}
+
+.searchHeader h2 {
+  margin: 4px 0 6px;
+  font-size: 26px;
+  line-height: 1.15;
+}
+
+.searchHeader p,
+.searchPrivacy,
+.searchEmpty,
+.searchStatus {
+  color: var(--color-muted);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.searchField,
+.displayField {
+  display: grid;
+  gap: 6px;
+}
+
+.searchField span,
+.displayField span {
+  color: var(--color-ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.searchField input,
+.displayField select,
+.topicForm input {
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 0 12px;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  font-size: 16px;
+}
+
+.topicForm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(72px, auto);
+  gap: var(--control-gap);
+}
+
+.topicForm button,
+.sideCard a,
+.sideCard button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height);
+  padding: var(--button-label-pad-top) 12px var(--button-label-pad-bottom);
+  border-radius: var(--control-radius);
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: var(--button-label-line-height);
+  text-align: center;
+  text-decoration: none;
+}
+
+.suggestionList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.suggestionList button {
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.searchPrivacy,
+.searchStatus,
+.searchEmpty {
+  padding: 12px;
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+}
+
+.searchStatus {
+  background: var(--color-pill-unsure);
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+.searchResults {
+  display: grid;
+  gap: var(--control-gap);
+}
+
+.searchResult {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.searchResult:hover {
+  border-color: var(--color-primary);
+}
+
+.searchResult span {
+  justify-self: start;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--color-pill-taken);
+  color: var(--color-ink);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.searchResult strong {
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.searchResult small,
+.searchResult p {
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.sideCard {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--control-radius);
+  background:
+    radial-gradient(circle at top left, rgba(255, 215, 236, 0.36), transparent 14rem),
+    radial-gradient(circle at bottom right, rgba(213, 248, 255, 0.52), transparent 16rem),
+    var(--color-surface-soft);
+}
+
+.sideCard span {
+  color: var(--color-accent-lavender);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.sideCard strong {
+  font-size: 20px;
+  line-height: 1.22;
+}
+
+.sideCard p {
+  color: var(--color-muted);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.sideActions {
+  display: grid;
+  gap: var(--control-gap);
+}
+
+.sideActions a,
+.sideActions button {
+  width: 100%;
+}
+
+.sideActions a:nth-child(2) {
+  background: var(--color-secondary);
+  color: var(--color-ink);
+}
+
+.sideActions a:nth-child(3) {
+  background: var(--color-surface);
+  color: var(--color-ink);
 }
 
 .summaryCard {
@@ -678,6 +895,18 @@
   color: var(--color-ink);
 }
 
+@media (max-width: 1180px) {
+  .dashboardShell {
+    grid-template-columns: 1fr;
+  }
+
+  .searchPanel {
+    position: static;
+    order: -1;
+    max-height: none;
+  }
+}
+
 @media (max-width: 1040px) {
   .summaryGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -709,13 +938,15 @@
 
   .hero,
   .summaryCard,
-  .panel {
+  .panel,
+  .searchPanel {
     padding: 18px;
   }
 
   .panelHeader,
   .summaryGrid,
   .listItem,
+  .topicForm,
   .timerActions,
   .breathingHeader,
   .breathingOptions,

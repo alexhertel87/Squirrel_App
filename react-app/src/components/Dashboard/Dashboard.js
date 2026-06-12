@@ -6,6 +6,7 @@ import TaskListModal from '../TaskList/TaskListModal';
 import * as MedsListActions from '../../store/meds_list';
 import * as TaskListActions from '../../store/task_list';
 import {
+  defaultSupportState,
   formatDate,
   fetchSupportState,
   getEnergy,
@@ -73,6 +74,64 @@ const breathingTechniques = [
     ],
   },
 ];
+
+const sidePanelModes = [
+  { value: 'search', label: 'Search' },
+  { value: 'affirmation', label: 'Daily Affirmation' },
+  { value: 'fact', label: 'Daily Fact' },
+  { value: 'focus', label: 'Focus Prompt' },
+  { value: 'reset', label: 'Quick Reset' },
+];
+
+const dailyAffirmations = [
+  'You can begin without having the whole plan solved.',
+  'One small next step counts as real progress.',
+  'You are allowed to make the task easier before you start it.',
+  'A reset is not a failure. It is part of the system.',
+  'Done imperfectly still gives future-you something to stand on.',
+  'You do not need momentum to begin. You can build it after the first step.',
+  'Your pace can be kind and still be productive.',
+];
+
+const defaultFactTopics = ['Science', 'Politics', 'World History', 'Ancient History', 'Technology', 'Psychology'];
+
+const dailyFactsByTopic = {
+  Science: [
+    'Water expands when it freezes, which is why ice is less dense than liquid water.',
+    'A day on Venus is longer than a Venus year because the planet rotates so slowly.',
+    'Sound travels faster through water than through air because water is denser and less compressible.',
+  ],
+  Politics: [
+    'The word senate comes from the Latin senex, meaning old man or elder.',
+    'Many modern legislatures use committees so smaller groups can study issues before the whole body votes.',
+    'Written constitutions often define both government powers and limits on those powers.',
+  ],
+  'World History': [
+    'The Silk Roads moved ideas, technologies, religions, and foods as much as trade goods.',
+    'The printing press helped books become cheaper and ideas travel faster across Europe.',
+    'Paper money was used in China centuries before it became common in Europe.',
+  ],
+  'Ancient History': [
+    'Ancient Mesopotamian scribes wrote on clay tablets with wedge-shaped marks called cuneiform.',
+    'The Library of Alexandria was part of a larger research institution known as the Mouseion.',
+    'Roman roads were built in layers, which helped some routes remain visible for centuries.',
+  ],
+  Technology: [
+    'The word debugging became popular in early computing as engineers tracked down hardware and software faults.',
+    'QR codes were invented in Japan to track automotive parts more quickly than barcodes.',
+    'The @ symbol was chosen for email because it was already on keyboards and meant at.',
+  ],
+  Psychology: [
+    'Working memory has limited capacity, which is why external notes and reminders can reduce mental load.',
+    'Implementation intentions pair a cue with an action, such as after coffee, open the planner.',
+    'Breaking tasks into visible next actions can reduce the friction of starting.',
+  ],
+};
+
+const dailyIndex = (dateKey, length) => {
+  if (!length) return 0;
+  return dateKey.split('').reduce((total, character) => total + character.charCodeAt(0), 0) % length;
+};
 
 const getBreathingPhase = (technique, elapsedSeconds) => {
   if (!technique) return { label: 'Choose a technique', seconds: 0, phaseSecondsLeft: 0 };
@@ -162,6 +221,12 @@ export const Dashboard = () => {
   const [now, setNow] = useState(() => new Date());
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [calendarEventsStatus, setCalendarEventsStatus] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [searchStatus, setSearchStatus] = useState('');
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [customFactTopic, setCustomFactTopic] = useState('');
   const medCheckins = getMedCheckins(support);
   const routineState = support.routines;
   const learningState = support.learning || { areas: [], planner: [], materials: [] };
@@ -250,6 +315,41 @@ export const Dashboard = () => {
   }, [todayKey]);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const query = searchQuery.trim();
+
+    setSearchLoading(Boolean(query));
+    const timer = setTimeout(() => {
+      fetch(`/api/search/?q=${encodeURIComponent(query)}`, { signal: controller.signal })
+        .then((response) => response.json().then((payload) => ({ response, payload })))
+        .then(({ response, payload }) => {
+          if (!isMounted) return;
+          if (!response.ok) throw new Error(payload.errors?.join(' ') || 'Search is not available yet.');
+
+          setSearchResults(payload.results || []);
+          setSearchSuggestions(payload.suggestions || []);
+          setSearchStatus(payload.message || '');
+        })
+        .catch((error) => {
+          if (!isMounted || error.name === 'AbortError') return;
+          setSearchResults([]);
+          setSearchSuggestions([]);
+          setSearchStatus(error.message);
+        })
+        .finally(() => {
+          if (isMounted) setSearchLoading(false);
+        });
+    }, query ? 180 : 0);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [searchQuery]);
+
+  useEffect(() => {
     if (!breathingSecondsLeft) return undefined;
 
     const timer = setInterval(() => {
@@ -317,6 +417,50 @@ export const Dashboard = () => {
     hour: 'numeric',
     minute: '2-digit',
   });
+  const hasSearchQuery = Boolean(searchQuery.trim());
+  const sidePanelState = {
+    ...defaultSupportState.sidePanel,
+    ...(support.sidePanel || {}),
+  };
+  const activeSidePanelMode = sidePanelModes.some((mode) => mode.value === sidePanelState.displayMode)
+    ? sidePanelState.displayMode
+    : 'search';
+  const preferredFactTopics = Array.from(new Set([
+    ...defaultFactTopics,
+    ...(sidePanelState.preferredFactTopics || []),
+  ].filter(Boolean)));
+  const selectedFactTopic = preferredFactTopics.includes(sidePanelState.factTopic)
+    ? sidePanelState.factTopic
+    : preferredFactTopics[0];
+  const dailyAffirmation = dailyAffirmations[dailyIndex(todayKey, dailyAffirmations.length)];
+  const topicFacts = dailyFactsByTopic[selectedFactTopic] || [
+    `${selectedFactTopic} is saved as a preferred topic. Add a fact pack for this subject next.`,
+  ];
+  const dailyFact = topicFacts[dailyIndex(`${todayKey}-${selectedFactTopic}`, topicFacts.length)];
+
+  const updateSidePanel = (updates) => {
+    updateSupport((current) => ({
+      ...current,
+      sidePanel: {
+        ...defaultSupportState.sidePanel,
+        ...(current.sidePanel || {}),
+        ...updates,
+      },
+    }));
+  };
+
+  const addPreferredFactTopic = (event) => {
+    event.preventDefault();
+    const topic = customFactTopic.trim();
+    if (!topic) return;
+
+    updateSidePanel({
+      displayMode: 'fact',
+      factTopic: topic,
+      preferredFactTopics: Array.from(new Set([...preferredFactTopics, topic])),
+    });
+    setCustomFactTopic('');
+  };
 
   const toggleRoutineStep = (routineId, step) => {
     const key = `${routineId}:${step}`;
@@ -362,6 +506,8 @@ export const Dashboard = () => {
 
   return (
     <main className={styles.page}>
+      <div className={styles.dashboardShell}>
+        <div className={styles.dashboardContent}>
       <section className={styles.hero}>
         <div>
           <p className={styles.eyebrow}>Gentle daily support</p>
@@ -625,6 +771,152 @@ export const Dashboard = () => {
           </div>
         </div>
       </section>
+        </div>
+
+        <aside className={styles.searchPanel} aria-label="Dashboard side display">
+          <div className={styles.searchHeader}>
+            <p className={styles.eyebrow}>Display</p>
+            <h2>Sidebox</h2>
+            <p>
+              Keep one helpful tool pinned here while the rest of the dashboard scrolls.
+            </p>
+          </div>
+
+          <label className={styles.displayField}>
+            <span>Show</span>
+            <select
+              aria-label="Choose sidebox display"
+              onChange={(event) => updateSidePanel({ displayMode: event.target.value })}
+              value={activeSidePanelMode}
+            >
+              {sidePanelModes.map((mode) => (
+                <option key={mode.value} value={mode.value}>{mode.label}</option>
+              ))}
+            </select>
+          </label>
+
+          {activeSidePanelMode === 'search' && (
+            <>
+              <label className={styles.searchField}>
+                <span>Search Squirrel</span>
+                <input
+                  aria-label="Search Squirrel"
+                  list="dashboard-search-suggestions"
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder='Ask "What dosage was I on last year?"'
+                  type="search"
+                  value={searchQuery}
+                />
+              </label>
+              <datalist id="dashboard-search-suggestions">
+                {searchSuggestions.map((suggestion) => (
+                  <option key={suggestion} value={suggestion} />
+                ))}
+              </datalist>
+
+              {searchSuggestions.length > 0 && (
+                <div className={styles.suggestionList} aria-label="Search suggestions">
+                  {searchSuggestions.slice(0, 5).map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      onClick={() => setSearchQuery(suggestion)}
+                      type="button"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <p className={styles.searchPrivacy}>
+                Sensitive financial identifiers, account numbers, routing numbers, tokens, and
+                internal IDs are excluded from the search index.
+              </p>
+
+              {searchLoading && <p className={styles.searchStatus}>Searching...</p>}
+              {searchStatus && <p className={styles.searchStatus}>{searchStatus}</p>}
+
+              <div className={styles.searchResults}>
+                {hasSearchQuery && searchResults.length ? searchResults.map((result) => (
+                  <Link className={styles.searchResult} key={result.id} to={result.url || '/dashboard'}>
+                    <span>{result.type}</span>
+                    <strong>{result.title}</strong>
+                    {result.detail && <small>{result.detail}</small>}
+                    {result.matchedText && <p>{result.matchedText}</p>}
+                  </Link>
+                )) : (
+                  <p className={styles.searchEmpty}>
+                    {hasSearchQuery ? 'No matches yet. Try a simpler word, like dosage, exam, or deadline.' : 'Start typing to search across your Squirrel notes.'}
+                  </p>
+                )}
+              </div>
+            </>
+          )}
+
+          {activeSidePanelMode === 'affirmation' && (
+            <section className={styles.sideCard} aria-label="Daily affirmation">
+              <span>Today</span>
+              <strong>{dailyAffirmation}</strong>
+              <p>Small, steady, and visible beats perfect-but-hidden.</p>
+            </section>
+          )}
+
+          {activeSidePanelMode === 'fact' && (
+            <>
+              <label className={styles.displayField}>
+                <span>Fact Topic</span>
+                <select
+                  aria-label="Choose daily fact topic"
+                  onChange={(event) => updateSidePanel({ factTopic: event.target.value })}
+                  value={selectedFactTopic}
+                >
+                  {preferredFactTopics.map((topic) => (
+                    <option key={topic} value={topic}>{topic}</option>
+                  ))}
+                </select>
+              </label>
+
+              <form className={styles.topicForm} onSubmit={addPreferredFactTopic}>
+                <input
+                  aria-label="Add preferred fact topic"
+                  onChange={(event) => setCustomFactTopic(event.target.value)}
+                  placeholder="Add topic"
+                  value={customFactTopic}
+                />
+                <button type="submit">Add</button>
+              </form>
+
+              <section className={styles.sideCard} aria-label="Daily fact">
+                <span>{selectedFactTopic}</span>
+                <strong>{dailyFact}</strong>
+                <p>Topic preferences are saved for this sidebox.</p>
+              </section>
+            </>
+          )}
+
+          {activeSidePanelMode === 'focus' && (
+            <section className={styles.sideCard} aria-label="Focus prompt">
+              <span>Focus Prompt</span>
+              <strong>{selectedTaskName}</strong>
+              <p>What is the smallest visible action you can take on this in the next two minutes?</p>
+              <Link to="/dashboard/task_list?pick=current">Choose Current Task</Link>
+            </section>
+          )}
+
+          {activeSidePanelMode === 'reset' && (
+            <section className={styles.sideCard} aria-label="Quick reset">
+              <span>Quick Reset</span>
+              <strong>Pick one gentle reset.</strong>
+              <p>Use this when the dashboard starts feeling like too many choices at once.</p>
+              <div className={styles.sideActions}>
+                <button onClick={openBreathingCoach} type="button">Breathe</button>
+                <Link to="/dashboard/task_list?pick=current">Pick Next Task</Link>
+                <Link to="/dashboard/calendar">Open Calendar</Link>
+              </div>
+            </section>
+          )}
+        </aside>
+      </div>
 
       {breathingOpen && (
         <div className={styles.breathingOverlay} role="presentation">
