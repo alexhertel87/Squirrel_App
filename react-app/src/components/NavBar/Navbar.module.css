@@ -33,10 +33,10 @@
 
 .logoText {
   display: inline-block;
-  color: var(--color-primary);
+  color: #ef515e;
   text-shadow:
-    0 2px 8px rgba(54, 189, 232, 0.16),
-    0 1px 6px rgba(209, 90, 173, 0.18);
+    0 2px 8px rgba(239, 81, 94, 0.12),
+    0 1px 6px rgba(47, 187, 228, 0.18);
 }
 
 .logoDiv a {
@@ -45,20 +45,25 @@
 }
 
 :global(body.theme-dark) .logoText {
-  color: var(--color-accent-blue);
+  color: #ef515e;
   text-shadow:
-    0 2px 10px rgba(131, 226, 255, 0.2),
-    0 1px 8px rgba(255, 155, 216, 0.2);
+    0 2px 10px rgba(239, 81, 94, 0.18),
+    0 1px 8px rgba(47, 187, 228, 0.24);
 }
 
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
   .logoText {
+    /* Stops sampled from squirrel_logo.png, top-to-bottom, then mapped left-to-right. */
     background: linear-gradient(
-      92deg,
-      var(--color-primary) 0%,
-      var(--color-accent-blue) 28%,
-      var(--color-accent-pink) 66%,
-      var(--color-accent-lavender) 100%
+      90deg,
+      #ef515e 0%,
+      #e35b84 16%,
+      #d664a7 31%,
+      #c770d4 46%,
+      #a582e6 61%,
+      #7d95e6 74%,
+      #4dade5 87%,
+      #2fbbe4 100%
     );
     background-clip: text;
     -webkit-background-clip: text;
@@ -67,11 +72,15 @@
 
   :global(body.theme-dark) .logoText {
     background: linear-gradient(
-      92deg,
-      var(--color-accent-blue) 0%,
-      var(--color-primary) 34%,
-      var(--color-accent-pink) 72%,
-      var(--color-accent-lavender) 100%
+      90deg,
+      #ef515e 0%,
+      #e35b84 16%,
+      #d664a7 31%,
+      #c770d4 46%,
+      #a582e6 61%,
+      #7d95e6 74%,
+      #4dade5 87%,
+      #2fbbe4 100%
     );
     background-clip: text;
     -webkit-background-clip: text;
