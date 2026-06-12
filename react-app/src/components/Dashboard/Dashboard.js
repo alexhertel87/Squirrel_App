@@ -94,6 +94,56 @@ const getBreathingPhase = (technique, elapsedSeconds) => {
   return { ...technique.pattern[0], phaseSecondsLeft: technique.pattern[0].seconds };
 };
 
+const weekDayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+const padDatePart = (value) => String(value).padStart(2, '0');
+
+const getLocalDateKey = (date) => (
+  `${date.getFullYear()}-${padDatePart(date.getMonth() + 1)}-${padDatePart(date.getDate())}`
+);
+
+const getModelDateKey = (value) => {
+  if (!value) return '';
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value)) return value.slice(0, 10);
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return '';
+
+  return `${parsed.getUTCFullYear()}-${padDatePart(parsed.getUTCMonth() + 1)}-${padDatePart(parsed.getUTCDate())}`;
+};
+
+const parseDateKey = (dateKey) => {
+  const [year, month, day] = dateKey.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const formatAgendaDate = (dateKey, todayKey) => {
+  if (dateKey === todayKey) return 'Today';
+
+  return parseDateKey(dateKey).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
+const buildCalendarDays = (year, month, todayKey) => {
+  const firstOfMonth = new Date(year, month, 1);
+  const startDate = new Date(year, month, 1 - firstOfMonth.getDay());
+
+  return Array.from({ length: 42 }, (_, index) => {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + index);
+    const dateKey = getLocalDateKey(date);
+
+    return {
+      dateKey,
+      day: date.getDate(),
+      isCurrentMonth: date.getMonth() === month,
+      isToday: dateKey === todayKey,
+    };
+  });
+};
+
 export const Dashboard = () => {
   const dispatch = useDispatch();
   const meds = useSelector((state) => state.active_meds);
@@ -110,6 +160,8 @@ export const Dashboard = () => {
   const [breathingSecondsLeft, setBreathingSecondsLeft] = useState(0);
   const [breathingElapsed, setBreathingElapsed] = useState(0);
   const [now, setNow] = useState(() => new Date());
+  const [calendarEvents, setCalendarEvents] = useState([]);
+  const [calendarEventsStatus, setCalendarEventsStatus] = useState('');
   const medCheckins = getMedCheckins(support);
   const routineState = support.routines;
   const currentTask = taskArray.find((task) => String(task.id) === String(support.currentTaskId));
@@ -120,6 +172,17 @@ export const Dashboard = () => {
     ? { label: 'Done', phaseSecondsLeft: 0 }
     : getBreathingPhase(selectedBreathingTechnique, breathingElapsed);
   const breathingProgress = breathingDuration ? Math.min(100, (breathingElapsed / breathingDuration) * 100) : 0;
+  const todayKey = getLocalDateKey(now);
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const calendarDays = useMemo(
+    () => buildCalendarDays(currentYear, currentMonth, todayKey),
+    [currentMonth, currentYear, todayKey]
+  );
+  const calendarMonthLabel = now.toLocaleDateString(undefined, {
+    month: 'long',
+    year: 'numeric',
+  });
 
   const updateSupport = (updater) => {
     setSupport((current) => {
@@ -164,6 +227,28 @@ export const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
+
+    setCalendarEventsStatus('');
+    fetch(`/api/calendar/events?date=${todayKey}`)
+      .then((response) => response.json().then((payload) => ({ response, payload })))
+      .then(({ response, payload }) => {
+        if (!isMounted) return;
+        if (!response.ok) throw new Error(payload.errors?.join(' ') || 'Calendar events are not available yet.');
+        setCalendarEvents(payload.events || []);
+      })
+      .catch((error) => {
+        if (!isMounted) return;
+        setCalendarEvents([]);
+        setCalendarEventsStatus(error.message);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [todayKey]);
+
+  useEffect(() => {
     if (!breathingSecondsLeft) return undefined;
 
     const timer = setInterval(() => {
@@ -189,6 +274,35 @@ export const Dashboard = () => {
   const medsTaken = medsArray.filter((med) => medCheckins[med.id]?.status === 'taken').length;
   const quickWins = taskArray.filter((task) => ['low', 'quick'].includes(getEnergy(task.id, support)));
   const nextTasks = quickWins.length ? quickWins.slice(0, 3) : taskArray.slice(0, 3);
+  const calendarDayEvents = calendarEvents.filter((event) => !event.category?.startsWith('task'));
+  const taskDeadlines = taskArray.flatMap((task) => {
+    const goalDate = getModelDateKey(task.due_date_1);
+    const latestDate = getModelDateKey(task.due_date_2);
+    const deadlines = [];
+
+    if (goalDate) {
+      deadlines.push({
+        id: `${task.id}-goal`,
+        dateKey: goalDate,
+        label: 'Goal Date',
+        title: task.task_name,
+      });
+    }
+
+    if (latestDate && latestDate !== goalDate) {
+      deadlines.push({
+        id: `${task.id}-latest`,
+        dateKey: latestDate,
+        label: 'Final Deadline',
+        title: task.task_name,
+      });
+    }
+
+    return deadlines;
+  }).sort((left, right) => left.dateKey.localeCompare(right.dateKey));
+  const todayDeadlines = taskDeadlines.filter((deadline) => deadline.dateKey === todayKey);
+  const upcomingDeadlines = taskDeadlines.filter((deadline) => deadline.dateKey >= todayKey).slice(0, 5);
+  const displayedDeadlines = todayDeadlines.length ? todayDeadlines : upcomingDeadlines;
   const selectedTaskName = selectedTask || currentTask?.task_name || nextTasks[0]?.task_name || taskArray[0]?.task_name || 'one kind next step';
   const focusTime = `${String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:${String(secondsLeft % 60).padStart(2, '0')}`;
   const todayDate = now.toLocaleDateString(undefined, {
@@ -297,6 +411,84 @@ export const Dashboard = () => {
           <Link to="/dashboard/task_list?pick=current" className={styles.secondaryButton}>Change Task</Link>
         </section>
       )}
+
+      <section className={`${styles.layout} ${styles.calendarLayout}`} aria-label="Calendar and schedule">
+        <div className={`${styles.panel} ${styles.calendarPanel}`}>
+          <div className={styles.panelHeader}>
+            <div>
+              <p className={styles.eyebrow}>Calendar</p>
+              <h2>{calendarMonthLabel}</h2>
+            </div>
+            <Link to="/dashboard/calendar" className={styles.secondaryButton}>Sync</Link>
+          </div>
+          <div className={styles.calendarGrid} aria-label={`${calendarMonthLabel} calendar`}>
+            {weekDayLabels.map((label, index) => (
+              <span className={styles.calendarWeekday} key={`${label}-${index}`}>{label}</span>
+            ))}
+            {calendarDays.map((day) => (
+              <div
+                aria-current={day.isToday ? 'date' : undefined}
+                className={[
+                  styles.calendarDay,
+                  day.isCurrentMonth ? '' : styles.calendarDayMuted,
+                  day.isToday ? styles.calendarToday : '',
+                ].filter(Boolean).join(' ')}
+                key={day.dateKey}
+              >
+                <span>{day.day}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className={`${styles.panel} ${styles.agendaPanel}`}>
+          <div className={styles.panelHeader}>
+            <div>
+              <p className={styles.eyebrow}>Today</p>
+              <h2>Schedule & Deadlines</h2>
+            </div>
+            <span className={styles.statusPill}>{calendarDayEvents.length + todayDeadlines.length}</span>
+          </div>
+
+          {calendarEventsStatus && <p className={styles.calendarStatus}>{calendarEventsStatus}</p>}
+
+          <div className={styles.agendaSections}>
+            <section className={styles.agendaGroup}>
+              <h3>Calendar Events</h3>
+              <div className={styles.agendaList}>
+                {calendarDayEvents.length ? calendarDayEvents.map((event) => (
+                  <div className={styles.agendaItem} key={event.id}>
+                    <span className={styles.agendaTime}>{event.timeLabel}</span>
+                    <div>
+                      <strong>{event.title}</strong>
+                      <span>{event.description}</span>
+                    </div>
+                  </div>
+                )) : (
+                  <p className={styles.agendaEmpty}>No synced calendar events for today.</p>
+                )}
+              </div>
+            </section>
+
+            <section className={styles.agendaGroup}>
+              <h3>{todayDeadlines.length ? 'Due Today' : 'Upcoming Deadlines'}</h3>
+              <div className={styles.agendaList}>
+                {displayedDeadlines.length ? displayedDeadlines.map((deadline) => (
+                  <div className={styles.agendaItem} key={deadline.id}>
+                    <span className={styles.agendaTime}>{formatAgendaDate(deadline.dateKey, todayKey)}</span>
+                    <div>
+                      <strong>{deadline.title}</strong>
+                      <span>{deadline.label}</span>
+                    </div>
+                  </div>
+                )) : (
+                  <p className={styles.agendaEmpty}>No deadlines on deck yet.</p>
+                )}
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
 
       <section className={styles.layout}>
         <div className={styles.panel}>

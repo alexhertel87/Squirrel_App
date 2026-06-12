@@ -176,7 +176,21 @@ def event_lines(uid, summary, description, start, end=None, all_day=False, rrule
     return lines
 
 
-def build_calendar_events(user, support_data, calendar_settings):
+def calendar_event(uid, summary, description, start, end=None, all_day=False, rrule=None, alarm=False, category='event'):
+    return {
+        'uid': uid,
+        'summary': summary,
+        'description': description,
+        'start': start,
+        'end': end,
+        'all_day': all_day,
+        'rrule': rrule,
+        'alarm': alarm,
+        'category': category,
+    }
+
+
+def build_calendar_event_data(user, support_data, calendar_settings):
     events = []
     today = date.today()
 
@@ -196,21 +210,23 @@ def build_calendar_events(user, support_data, calendar_settings):
             )
 
             if goal_date:
-                events.append(event_lines(
+                events.append(calendar_event(
                     f'squirrel-task-{task.id}-goal@squirrel-app',
                     f'Squirrel Task: {task.task_name}',
                     description,
                     goal_date,
                     all_day=True,
+                    category='task-goal',
                 ))
 
             if latest_date and latest_date != goal_date:
-                events.append(event_lines(
+                events.append(calendar_event(
                     f'squirrel-task-{task.id}-latest@squirrel-app',
                     f'Latest: {task.task_name}',
                     description,
                     latest_date,
                     all_day=True,
+                    category='task-latest',
                 ))
 
     if calendar_settings.get('includeMeds'):
@@ -218,7 +234,7 @@ def build_calendar_events(user, support_data, calendar_settings):
             start_at = datetime.combine(today, med_start_time(med.frequency))
             dosage = f' {med.dosage_mg}mg' if med.dosage_mg else ''
             description = f'{med.frequency}. {med.med_info or "Medication reminder from Squirrel."}'
-            events.append(event_lines(
+            events.append(calendar_event(
                 f'squirrel-med-{med.id}@squirrel-app',
                 f'Take {med.med_name}{dosage}',
                 description,
@@ -226,21 +242,39 @@ def build_calendar_events(user, support_data, calendar_settings):
                 start_at + timedelta(minutes=15),
                 rrule='FREQ=DAILY;COUNT=90',
                 alarm=True,
+                category='medication',
             ))
 
     if calendar_settings.get('includeRoutines'):
         for routine_id, label, start_time, minutes in ROUTINE_EVENTS:
             start_at = datetime.combine(today, start_time)
-            events.append(event_lines(
+            events.append(calendar_event(
                 f'squirrel-routine-{routine_id}@squirrel-app',
                 f'Squirrel: {label}',
                 'Gentle routine anchor from Squirrel.',
                 start_at,
                 start_at + timedelta(minutes=minutes),
                 rrule='FREQ=DAILY;COUNT=90',
+                category='routine',
             ))
 
     return events
+
+
+def build_calendar_events(user, support_data, calendar_settings):
+    return [
+        event_lines(
+            event['uid'],
+            event['summary'],
+            event['description'],
+            event['start'],
+            event.get('end'),
+            event.get('all_day', False),
+            event.get('rrule'),
+            event.get('alarm', False),
+        )
+        for event in build_calendar_event_data(user, support_data, calendar_settings)
+    ]
 
 
 def render_ics_calendar(user, support_data, calendar_settings):
@@ -311,12 +345,112 @@ def feed_metadata(user, support_data, calendar_settings, token):
     }
 
 
+def parse_query_date(value):
+    if not value:
+        return date.today()
+
+    try:
+        return datetime.fromisoformat(value).date()
+    except ValueError:
+        return date.today()
+
+
+def recurrence_count(rrule):
+    for part in (rrule or '').split(';'):
+        if part.startswith('COUNT='):
+            try:
+                return int(part.replace('COUNT=', '', 1))
+            except ValueError:
+                return None
+
+    return None
+
+
+def event_occurs_on(event, target_date):
+    start = event['start']
+    start_date = start if isinstance(start, date) and not isinstance(start, datetime) else start.date()
+
+    if event.get('all_day'):
+        end = event.get('end') or (start_date + timedelta(days=1))
+        end_date = end if isinstance(end, date) and not isinstance(end, datetime) else end.date()
+        return start_date <= target_date < end_date
+
+    if event.get('rrule', '').startswith('FREQ=DAILY'):
+        count = recurrence_count(event.get('rrule'))
+        if count is None:
+            return target_date >= start_date
+        return start_date <= target_date < start_date + timedelta(days=count)
+
+    return start_date == target_date
+
+
+def format_time_label(value):
+    if not value:
+        return 'All Day'
+    return value.strftime('%I:%M %p').lstrip('0')
+
+
+def serialize_dashboard_event(event, target_date):
+    start = event['start']
+    end = event.get('end')
+
+    if event.get('all_day'):
+        event_date = start if isinstance(start, date) and not isinstance(start, datetime) else start.date()
+        return {
+            'id': event['uid'],
+            'title': event['summary'],
+            'description': event['description'],
+            'category': event.get('category', 'event'),
+            'date': event_date.isoformat(),
+            'timeLabel': 'All Day',
+            'allDay': True,
+            'sortKey': f'{event_date.isoformat()}-00:00-{event["uid"]}',
+        }
+
+    if event.get('rrule'):
+        original_start = start
+        duration = (end or (start + timedelta(minutes=15))) - start
+        start = datetime.combine(target_date, original_start.time())
+        end = start + duration
+
+    return {
+        'id': event['uid'],
+        'title': event['summary'],
+        'description': event['description'],
+        'category': event.get('category', 'event'),
+        'date': start.date().isoformat(),
+        'start': start.isoformat(),
+        'end': (end or (start + timedelta(minutes=15))).isoformat(),
+        'timeLabel': format_time_label(start),
+        'allDay': False,
+        'sortKey': start.isoformat(),
+    }
+
+
 @calendar_routes.route('/feed', methods=['GET'])
 @login_required
 def get_calendar_feed():
     support_state = get_or_create_support_state_for_user(current_user)
     support_data, calendar_settings = ensure_calendar_settings(support_state)
     return feed_metadata(current_user, support_data, calendar_settings, calendar_settings['feedToken'])
+
+
+@calendar_routes.route('/events', methods=['GET'])
+@login_required
+def get_calendar_events():
+    target_date = parse_query_date(request.args.get('date'))
+    support_state = get_or_create_support_state_for_user(current_user)
+    support_data, calendar_settings = ensure_calendar_settings(support_state)
+    events = [
+        serialize_dashboard_event(event, target_date)
+        for event in build_calendar_event_data(current_user, support_data, calendar_settings)
+        if event_occurs_on(event, target_date)
+    ]
+
+    return {
+        'date': target_date.isoformat(),
+        'events': sorted(events, key=lambda event: event['sortKey']),
+    }
 
 
 @calendar_routes.route('/feed/reset', methods=['POST'])
