@@ -122,6 +122,11 @@ export const getLocalSupportState = () => mergeSupportState(
   loadJson(supportStorageKey, {})
 );
 
+export const preserveLatestComfort = (supportState) => normalizeSupportState({
+  ...supportState,
+  comfort: getLocalSupportState().comfort,
+});
+
 export const saveSupportStateLocal = (supportState) => {
   const normalized = normalizeSupportState(supportState);
   saveJson(supportStorageKey, normalized);

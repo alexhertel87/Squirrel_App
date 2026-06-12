@@ -10,6 +10,7 @@ import {
   formatDate,
   getLocalSupportState,
   normalizeSupportState,
+  preserveLatestComfort,
   persistSupportState,
 } from '../../utils/neuroSupport';
 
@@ -54,7 +55,9 @@ const TaskListData = () => {
 
   const updateSupport = (updater) => {
     setSupport((current) => {
-      const nextSupport = normalizeSupportState(typeof updater === 'function' ? updater(current) : updater);
+      const nextSupport = preserveLatestComfort(
+        normalizeSupportState(typeof updater === 'function' ? updater(current) : updater)
+      );
       persistSupportState(nextSupport);
       return nextSupport;
     });

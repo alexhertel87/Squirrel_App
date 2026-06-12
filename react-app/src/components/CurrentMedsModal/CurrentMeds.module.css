@@ -1,6 +1,6 @@
 .page {
   width: min(1120px, calc(100vw - 32px));
-  margin: 96px auto 64px;
+  margin: 96px auto calc(var(--footer-height) + 24px);
   color: var(--color-ink);
 }
 

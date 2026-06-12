@@ -14,6 +14,7 @@ import {
   getTaskSteps,
   medStatusLabel,
   normalizeSupportState,
+  preserveLatestComfort,
   persistSupportState,
 } from '../../utils/neuroSupport';
 import styles from './Dashboard.module.css';
@@ -111,7 +112,6 @@ export const Dashboard = () => {
   const [now, setNow] = useState(() => new Date());
   const medCheckins = getMedCheckins(support);
   const routineState = support.routines;
-  const comfort = support.comfort;
   const currentTask = taskArray.find((task) => String(task.id) === String(support.currentTaskId));
   const selectedBreathingTechnique = breathingTechniques.find((technique) => technique.id === breathingTechniqueId);
   const breathingRunning = breathingSecondsLeft > 0;
@@ -123,7 +123,9 @@ export const Dashboard = () => {
 
   const updateSupport = (updater) => {
     setSupport((current) => {
-      const nextSupport = normalizeSupportState(typeof updater === 'function' ? updater(current) : updater);
+      const nextSupport = preserveLatestComfort(
+        normalizeSupportState(typeof updater === 'function' ? updater(current) : updater)
+      );
       persistSupportState(nextSupport);
       return nextSupport;
     });
@@ -145,12 +147,6 @@ export const Dashboard = () => {
       isMounted = false;
     };
   }, []);
-
-  useEffect(() => {
-    document.body.classList.toggle('theme-calm', comfort.calm);
-    document.body.classList.toggle('theme-contrast', comfort.highContrast);
-    document.body.classList.toggle('reduce-motion', comfort.reducedMotion);
-  }, [comfort]);
 
   useEffect(() => {
     if (!secondsLeft) return undefined;
@@ -427,16 +423,6 @@ export const Dashboard = () => {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className={styles.panel}>
-        <p className={styles.eyebrow}>Sensory-friendly settings</p>
-        <h2>Make the app easier to sit with</h2>
-        <div className={styles.toggleRow}>
-          <label><input checked={comfort.calm} onChange={() => updateSupport((current) => ({ ...current, comfort: { ...current.comfort, calm: !current.comfort.calm } }))} type="checkbox" /> Calm colors</label>
-          <label><input checked={comfort.highContrast} onChange={() => updateSupport((current) => ({ ...current, comfort: { ...current.comfort, highContrast: !current.comfort.highContrast } }))} type="checkbox" /> Higher contrast</label>
-          <label><input checked={comfort.reducedMotion} onChange={() => updateSupport((current) => ({ ...current, comfort: { ...current.comfort, reducedMotion: !current.comfort.reducedMotion } }))} type="checkbox" /> Reduced motion</label>
         </div>
       </section>
 

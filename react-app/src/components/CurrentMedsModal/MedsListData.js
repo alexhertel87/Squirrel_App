@@ -10,6 +10,7 @@ import {
   getMedCheckins,
   medStatusLabel,
   normalizeSupportState,
+  preserveLatestComfort,
   persistSupportState,
   todayKey,
 } from '../../utils/neuroSupport';
@@ -46,7 +47,9 @@ export const MedsListData = () => {
 
   const updateSupport = (updater) => {
     setSupport((current) => {
-      const nextSupport = normalizeSupportState(typeof updater === 'function' ? updater(current) : updater);
+      const nextSupport = preserveLatestComfort(
+        normalizeSupportState(typeof updater === 'function' ? updater(current) : updater)
+      );
       persistSupportState(nextSupport);
       return nextSupport;
     });
