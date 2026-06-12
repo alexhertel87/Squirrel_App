@@ -102,12 +102,12 @@
   align-items: center;
   justify-content: center;
   min-height: var(--control-height);
-  padding: 0 12px;
+  padding: var(--button-label-pad-top) 12px var(--button-label-pad-bottom);
   border-radius: var(--control-radius);
   color: var(--color-ink);
   font-size: 18px;
   font-weight: 700;
-  line-height: 1;
+  line-height: var(--button-label-line-height);
 }
 
 .linkDiv a:hover {

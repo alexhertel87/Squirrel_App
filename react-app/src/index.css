@@ -23,6 +23,9 @@
   --control-height: 44px;
   --control-radius: 8px;
   --control-gap: 10px;
+  --button-label-line-height: 1.12;
+  --button-label-pad-top: 2px;
+  --button-label-pad-bottom: 0;
   --footer-height: 64px;
   --page-gutter: 16px;
   --shadow-soft: 0 10px 24px rgba(31, 56, 68, 0.1);
@@ -87,7 +90,7 @@ textarea {
 }
 
 button {
-  line-height: 1;
+  line-height: var(--button-label-line-height);
 }
 
 button,

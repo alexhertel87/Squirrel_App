@@ -148,7 +148,7 @@
   justify-content: center;
   width: 100%;
   min-height: var(--control-height);
-  padding: 0 14px;
+  padding: var(--button-label-pad-top) 14px var(--button-label-pad-bottom);
   border-radius: var(--control-radius);
   background: var(--color-surface-soft);
   color: var(--color-ink);
@@ -156,7 +156,7 @@
   font-family: var(--font-ui);
   font-size: 17px;
   font-weight: 700;
-  line-height: 1;
+  line-height: var(--button-label-line-height);
   text-align: center;
 }
 

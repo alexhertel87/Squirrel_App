@@ -4,7 +4,7 @@
   justify-content: center;
   min-height: var(--control-height);
   min-width: 112px;
-  padding: 0 18px;
+  padding: var(--button-label-pad-top) 18px var(--button-label-pad-bottom);
   border-radius: var(--control-radius);
   background: var(--color-primary);
   color: #ffffff;
@@ -12,7 +12,7 @@
   font-family: var(--font-ui);
   font-size: 17px;
   font-weight: 700;
-  line-height: 1;
+  line-height: var(--button-label-line-height);
   text-align: center;
   transition: background-color 0.18s ease, box-shadow 0.18s ease;
   white-space: nowrap;
