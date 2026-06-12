@@ -232,7 +232,7 @@ export default function LearningHub() {
       <section className={styles.hero}>
         <div>
           <p className={styles.eyebrow}>School</p>
-          <h1>One calm home for classes, homework, and course materials.</h1>
+          <h1>One calm home for classes, documents, and deadlines.</h1>
           <p>
             Keep courses, lecture files, syllabi, assignments, and deadlines in one
             organized place without turning school into a scavenger hunt.
