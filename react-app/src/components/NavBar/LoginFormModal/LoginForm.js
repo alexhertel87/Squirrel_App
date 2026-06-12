@@ -5,6 +5,9 @@ import { login } from '../../../store/session';
 import Button from '../../Button';
 import styles from '../ModalForms.module.css';
 
+const DEMO_EMAIL = 'demo@squirrel.app';
+const DEMO_PASSWORD = 'SquirrelDemo2026!';
+
 const LoginForm = () => {
   const [errors, setErrors] = useState([]);
   const [email, setEmail] = useState('');
@@ -24,7 +27,7 @@ const LoginForm = () => {
 
   const demoLogin = async (e) => {
     e.preventDefault();
-    const data = await dispatch(login("demo@aa.io", "password"));
+    const data = await dispatch(login(DEMO_EMAIL, DEMO_PASSWORD));
     if (data) {
       setErrors(data);
     }
@@ -79,6 +82,19 @@ const LoginForm = () => {
             </div>
             {/* <button type='submit'>Login</button> */}
           </div>
+          <section className={styles.demoCredentials} aria-label="Demo account credentials">
+            <p className={styles.demoTitle}>Demo Account</p>
+            <dl className={styles.demoCredentialList}>
+              <div className={styles.demoCredentialItem}>
+                <dt>Email</dt>
+                <dd>{DEMO_EMAIL}</dd>
+              </div>
+              <div className={styles.demoCredentialItem}>
+                <dt>Password</dt>
+                <dd>{DEMO_PASSWORD}</dd>
+              </div>
+            </dl>
+          </section>
         </form>
       </div>
     </main>

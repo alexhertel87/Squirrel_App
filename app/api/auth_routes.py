@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, session, request
 from app.models import User, db
+from app.demo_account import DEMO_EMAIL, ensure_demo_user
 from app.forms import LoginForm
 from app.forms import SignUpForm
 from flask_login import current_user, login_user, logout_user, login_required
@@ -35,7 +36,11 @@ def login():
     """
     data = request.get_json(silent=True)
     if data:
-        user = User.query.filter(User.email == data.get('email')).first()
+        email = (data.get('email') or '').strip()
+        user = ensure_demo_user() if email.lower() == DEMO_EMAIL else User.query.filter(
+            User.email == email
+        ).first()
+
         if user and user.check_password(data.get('password', '')):
             login_user(user)
             return user.to_dict()

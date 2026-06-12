@@ -48,6 +48,10 @@ const defaultRoutines = [
 const tabs = ['Dashboard', 'Meds', 'Tasks', 'Focus', 'Calendar', 'Settings'];
 const energyOptions = ['low', 'medium', 'high', 'quick'];
 const focusDurations = [10, 15, 25];
+const demoAccount = {
+  email: 'demo@squirrel.app',
+  password: 'SquirrelDemo2026!',
+};
 const breathingDurations = [
   { seconds: 30, label: '30 Sec Reset' },
   { seconds: 60, label: '1 Min Starter' },
@@ -344,6 +348,24 @@ export default function SquirrelMobileApp() {
       const authUser = authMode === 'login'
         ? await api.login(authForm.email, authForm.password)
         : await api.signup(authForm.username, authForm.email, authForm.password);
+      setUser(authUser);
+      setAuthForm({ username: '', email: '', password: '' });
+      await loadEverything();
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loginWithDemoAccount = async () => {
+    setLoading(true);
+    setMessage('');
+    setAuthMode('login');
+    setAuthForm({ username: '', email: demoAccount.email, password: demoAccount.password });
+
+    try {
+      const authUser = await api.login(demoAccount.email, demoAccount.password);
       setUser(authUser);
       setAuthForm({ username: '', email: '', password: '' });
       await loadEverything();
@@ -658,6 +680,16 @@ export default function SquirrelMobileApp() {
               <AppButton disabled={loading} onPress={submitAuth}>
                 {loading ? 'Working...' : authMode === 'login' ? 'Log In' : 'Create Account'}
               </AppButton>
+              {authMode === 'login' && (
+                <View style={styles.demoCredentials}>
+                  <Text style={styles.demoTitle}>Demo Account</Text>
+                  <Text selectable style={styles.demoCredential}>Email: {demoAccount.email}</Text>
+                  <Text selectable style={styles.demoCredential}>Password: {demoAccount.password}</Text>
+                  <AppButton disabled={loading} tone="secondary" onPress={loginWithDemoAccount}>
+                    Use Demo Account
+                  </AppButton>
+                </View>
+              )}
             </Card>
 
             {!!message && <Text style={styles.message}>{message}</Text>}
@@ -1374,6 +1406,25 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontSize: 13,
     lineHeight: 18,
+  },
+  demoCredentials: {
+    gap: 8,
+    padding: 12,
+    borderColor: colors.border,
+    borderRadius: radii.control,
+    borderWidth: 1,
+    backgroundColor: colors.soft,
+  },
+  demoTitle: {
+    color: colors.ink,
+    fontSize: 16,
+    fontWeight: '700',
+    lineHeight: 20,
+  },
+  demoCredential: {
+    color: colors.ink,
+    fontSize: 14,
+    lineHeight: 19,
   },
   button: {
     alignItems: 'center',

@@ -15,9 +15,19 @@ Expo/React Native companion app for Squirrel. This scaffold targets iPhone, iPad
 - Shared support-state sync through `/api/support_state/`
 - Tablet-aware iPad layout with wider content, two-column panels, and rotation support
 
+## Demo Account
+
+- Email: `demo@squirrel.app`
+- Password: `SquirrelDemo2026!`
+
 ## Run locally
 
-1. Start the Flask backend from the repo root.
+1. Start the Flask backend from the repo root:
+
+   ```bash
+   flask run --port 5001
+   ```
+
 2. Install mobile dependencies:
 
    ```bash
@@ -31,18 +41,18 @@ Expo/React Native companion app for Squirrel. This scaffold targets iPhone, iPad
    npm start
    ```
 
-For the iOS simulator, `http://localhost:5000` should reach the Mac host backend.
+For the iOS simulator, `http://localhost:5001` should reach the Mac host backend.
 
 For Android emulator, use:
 
 ```bash
-EXPO_PUBLIC_API_BASE_URL=http://10.0.2.2:5000 npm start
+EXPO_PUBLIC_API_BASE_URL=http://10.0.2.2:5001 npm start
 ```
 
 For a physical phone, replace the API base URL with your MacBook's LAN IP, for example:
 
 ```bash
-EXPO_PUBLIC_API_BASE_URL=http://192.168.1.25:5000 npm start
+EXPO_PUBLIC_API_BASE_URL=http://192.168.1.25:5001 npm start
 ```
 
 ## Store-readiness notes
