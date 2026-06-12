@@ -32,8 +32,11 @@
 }
 
 .logoText {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  height: 58px;
   color: #ef515e;
+  line-height: 1;
   text-shadow:
     0 2px 8px rgba(239, 81, 94, 0.12),
     0 1px 6px rgba(47, 187, 228, 0.18);
