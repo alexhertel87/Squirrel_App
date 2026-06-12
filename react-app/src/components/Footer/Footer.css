@@ -51,8 +51,8 @@
   align-items: center;
   justify-content: center;
   min-height: 36px;
-  min-width: 66px;
-  padding: 0 12px;
+  min-width: 58px;
+  padding: 0 10px;
   border: 1px solid var(--color-border);
   border-radius: 999px;
   background: var(--color-surface-soft);
@@ -96,4 +96,34 @@
   color: var(--color-ink);
   font-size: 16px;
   text-decoration: none;
+}
+
+.footerIcon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 560px) {
+  .footer {
+    padding: 8px 16px;
+  }
+
+  .footerControlLabel {
+    display: none;
+  }
+
+  .footerControls {
+    gap: 0;
+  }
+
+  .footerMeta {
+    gap: 16px;
+  }
+
+  .footerToggle {
+    min-width: 54px;
+    padding: 0 9px;
+    font-size: 13px;
+  }
 }

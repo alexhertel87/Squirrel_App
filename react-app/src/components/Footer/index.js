@@ -11,6 +11,7 @@ const comfortOptions = [
     { key: 'calm', label: 'Calm', ariaLabel: 'Calm colors' },
     { key: 'highContrast', label: 'Contrast', ariaLabel: 'Higher contrast' },
     { key: 'reducedMotion', label: 'Motion', ariaLabel: 'Reduced motion' },
+    { key: 'darkMode', label: 'Dark', ariaLabel: 'Dark mode' },
 ];
 
 export default function Footer() {
@@ -33,6 +34,7 @@ export default function Footer() {
         document.body.classList.toggle('theme-calm', comfort.calm);
         document.body.classList.toggle('theme-contrast', comfort.highContrast);
         document.body.classList.toggle('reduce-motion', comfort.reducedMotion);
+        document.body.classList.toggle('theme-dark', comfort.darkMode);
     }, [comfort]);
 
     const toggleComfort = (key) => {
@@ -79,7 +81,7 @@ export default function Footer() {
                 <div className='footer-element'>
                     <a className='footerIcon' href='https://www.github.com/alexhertel87'>
                         <i className='fab fa-github'></i>
-                        GitHub
+                        <span>GitHub</span>
                     </a>
                 </div>
             </div>

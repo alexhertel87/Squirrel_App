@@ -23,7 +23,7 @@
   align-items: center;
   gap: 10px;
   color: var(--color-ink);
-  font-family: Gulim, var(--font-ui);
+  font-family: var(--font-ui);
   font-size: 46px;
   font-weight: 700;
   line-height: 1;

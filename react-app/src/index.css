@@ -1,5 +1,33 @@
+@font-face {
+  font-display: swap;
+  font-family: "Squirrel Grandview";
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local("Grandview"),
+    local("Grandview Regular"),
+    local("Grandview-Regular"),
+    local("Grandview Text"),
+    local("Grandview Text Regular"),
+    local("Grandview Display"),
+    local("GrandviewDisplay");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Squirrel Grandview";
+  font-style: normal;
+  font-weight: 700;
+  src:
+    local("Grandview Bold"),
+    local("Grandview-Bold"),
+    local("Grandview Text Bold"),
+    local("Grandview Display Bold"),
+    local("Grandview");
+}
+
 :root {
-  --font-ui: Grandview, "Grandview", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-ui: Grandview, "Grandview", "Grandview Regular", "Grandview-Regular", "Grandview Text", "Grandview Display", GrandviewDisplay, "Squirrel Grandview", Aptos, "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --color-ink: #273640;
   --color-muted: #5e6e76;
   --color-surface: #ffffff;
@@ -66,6 +94,7 @@ nav {
   border: 0;
   padding: 0;
   font-family: var(--font-ui);
+  font-synthesis: none;
   font-size: 1rem;
   list-style: none;
 }
@@ -123,6 +152,59 @@ body.theme-contrast select,
 body.theme-contrast input,
 body.theme-contrast textarea {
   border: 2px solid #111111;
+}
+
+body.theme-dark {
+  --color-ink: #f3fbfd;
+  --color-muted: #c2d2db;
+  --color-surface: #14242c;
+  --color-surface-soft: #203640;
+  --color-panel: linear-gradient(135deg, #241f35 0%, #12313c 100%);
+  --color-border: #3d5965;
+  --color-primary: #7bdaf4;
+  --color-primary-hover: #a9e9f8;
+  --color-secondary: #4a2943;
+  --color-secondary-hover: #603456;
+  --color-danger: #ff8fb0;
+  --color-warning: #b9a8ff;
+  --color-input-border: #56727f;
+  --color-accent-pink: #ff9bd8;
+  --color-accent-blue: #83e2ff;
+  --color-accent-lavender: #c4baff;
+  --color-pill-idle: #263b45;
+  --color-pill-taken: #174d5e;
+  --color-pill-skipped: #5a3147;
+  --color-pill-unsure: #403861;
+  --shadow-soft: 0 10px 24px rgba(0, 0, 0, 0.28);
+  background:
+    radial-gradient(circle at top left, rgba(255, 155, 216, 0.16), transparent 30rem),
+    radial-gradient(circle at bottom right, rgba(131, 226, 255, 0.18), transparent 34rem),
+    #0d1820;
+  color: var(--color-ink);
+}
+
+body.theme-dark input,
+body.theme-dark textarea,
+body.theme-dark select {
+  background: #0f2028 !important;
+  color: var(--color-ink);
+}
+
+body.theme-dark input::placeholder,
+body.theme-dark textarea::placeholder {
+  color: var(--color-muted);
+}
+
+body.theme-dark a,
+body.theme-dark a:visited {
+  color: var(--color-ink);
+}
+
+body.theme-dark.theme-contrast button,
+body.theme-dark.theme-contrast select,
+body.theme-dark.theme-contrast input,
+body.theme-dark.theme-contrast textarea {
+  border-color: var(--color-ink);
 }
 
 body.reduce-motion *,

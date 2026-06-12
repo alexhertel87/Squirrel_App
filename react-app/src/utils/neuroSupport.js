@@ -18,6 +18,7 @@ export const defaultSupportState = {
     calm: false,
     highContrast: false,
     reducedMotion: false,
+    darkMode: false,
   },
 };
 
