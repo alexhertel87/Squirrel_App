@@ -127,7 +127,7 @@
 
 .error {
   color: var(--color-danger);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-ui);
 }
 
 @media (max-width: 420px) {
