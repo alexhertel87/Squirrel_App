@@ -7,9 +7,10 @@ Squirrel! is a medication log and tracker, as well as a to-do/task list that is 
 
 To run the project locally, follow the instructions below.
 1. Clone the repo.
-2. Run `flask run --port 5001` in the root directory after having run "pipenv shell" to enter the virtual environment.
-3. Run `npm start`  in the frontend 'react-app' folder to launch the front-end server.
-4. Navigate to http://localhost:3000/ and begin using the app!
+2. Run `flask db upgrade` in the root directory after having run "pipenv shell" to enter the virtual environment.
+3. Run `flask run --port 5001`.
+4. Run `npm start` in the frontend 'react-app' folder to launch the front-end server.
+5. Navigate to http://localhost:3000/ and begin using the app!
 
 ## Demo Account
 
