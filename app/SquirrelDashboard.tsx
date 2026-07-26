@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 import { CSSProperties, FormEvent, useEffect, useMemo, useState } from "react";
 
 type DisplayMode = "search" | "affirmation" | "fact" | "focus" | "reset" | "checklist";
@@ -191,7 +191,7 @@ function matchesRecord(record: SearchRecord, query: string) {
 }
 
 export function SquirrelDashboard() {
-  const [now, setNow] = useState(() => new Date());
+  const [now, setNow] = useState<Date | null>(null);
   const [displayMode, setDisplayMode] = useState<DisplayMode>("search");
   const [searchQuery, setSearchQuery] = useState("");
   const [factTopics, setFactTopics] = useState(Object.keys(factText));
@@ -203,7 +203,10 @@ export function SquirrelDashboard() {
   const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
-    const timer = window.setInterval(() => setNow(new Date()), 30000);
+    const updateNow = () => setNow(new Date());
+
+    updateNow();
+    const timer = window.setInterval(updateNow, 30000);
     return () => window.clearInterval(timer);
   }, []);
 
@@ -218,18 +221,24 @@ export function SquirrelDashboard() {
   }, [darkMode, highContrast, reducedMotion]);
 
   const currentTask = tasks.find((task) => task.id === currentTaskId) ?? tasks[0];
-  const calendarDays = useMemo(() => buildCalendarDays(now), [now]);
-  const monthLabel = now.toLocaleDateString(undefined, { month: "long", year: "numeric" });
-  const todayLabel = now.toLocaleDateString(undefined, {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-  const timeLabel = now.toLocaleTimeString(undefined, {
-    hour: "numeric",
-    minute: "2-digit",
-  });
+  const calendarDays = useMemo(() => (now ? buildCalendarDays(now) : []), [now]);
+  const monthLabel = now
+    ? now.toLocaleDateString(undefined, { month: "long", year: "numeric" })
+    : "This Month";
+  const todayLabel = now
+    ? now.toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "Loading Local Date";
+  const timeLabel = now
+    ? now.toLocaleTimeString(undefined, {
+        hour: "numeric",
+        minute: "2-digit",
+      })
+    : "Loading Local Time";
 
   const searchableRecords = useMemo(
     () => searchRecords.filter((record) => !record.sensitive),
@@ -271,14 +280,7 @@ export function SquirrelDashboard() {
     >
       <header className="topBar">
         <a className="brand" href="#dashboard" aria-label="Squirrel dashboard home">
-          <Image
-            src="/squirrel_logo.png"
-            alt=""
-            className="brandLogo"
-            width={58}
-            height={58}
-            priority
-          />
+          <img src="/squirrel_logo.png" alt="" className="brandLogo" />
           <span className="brandName">Squirrel!</span>
         </a>
 
@@ -599,7 +601,7 @@ export function SquirrelDashboard() {
           {displayMode === "affirmation" && (
             <section className="sideCard">
               <span>Today</span>
-              <strong>{affirmations[now.getDate() % affirmations.length]}</strong>
+              <strong>{affirmations[(now?.getDate() ?? 0) % affirmations.length]}</strong>
               <p>Short, steady language for the moment before action.</p>
             </section>
           )}
