@@ -28,10 +28,10 @@ test("server-renders the public Squirrel welcome page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Squirrel! Dashboard<\/title>/i);
-  assert.match(html, /Your day does not have to live entirely in your head\./);
+  assert.match(html, /<title>Squirrel!<\/title>/i);
+  assert.match(html, /Your brain has enough tabs open\./);
   assert.match(html, /Sign in to Squirrel/);
-  assert.match(html, /Private by default/);
+  assert.match(html, /Your acorns stay yours/);
   assert.doesNotMatch(html, /Demo Mode/);
 });
 
@@ -52,7 +52,7 @@ test("server-renders the protected Squirrel dashboard for a signed-in user", asy
   assert.match(html, /Connect Google Calendar/);
   assert.match(html, /Coming Up/);
   assert.match(html, /Sidebox/);
-  assert.match(html, /Courses, assignments, and lecture files—actually findable\./);
+  assert.match(html, /School stuff, minus the digital junk drawer\./);
   assert.match(html, /ADHD &amp; RSD Tips/);
   assert.doesNotMatch(html, /react-loading-skeleton|codex-preview|Your site is taking shape/i);
   assert.doesNotMatch(html, /Demo Mode/);

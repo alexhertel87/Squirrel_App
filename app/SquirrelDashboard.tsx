@@ -148,12 +148,12 @@ const checklist = ["Drink Water", "Check Calendar", "Pick Next Task", "Open Note
 const adhdTips: Record<TipCategory, { title: string; body: string; nudge: string }[]> = {
   daily: [
     { title: "Put the finish line where you can see it.", body: "Define what 'done enough' looks like before starting. An open-ended task is an invitation for the brain to wander.", nudge: "Write one sentence that begins: Done means…" },
-    { title: "Borrow momentum from something easy.", body: "One tiny completed action can make the next action feel more available. This is activation support, not cheating.", nudge: "Do the two-minute piece first." },
+    { title: "Do the embarrassingly easy part first.", body: "One tiny finished thing can make the next thing easier to start. This is not cheating. There is no productivity police.", nudge: "Do the two-minute piece first." },
     { title: "Make the reminder impossible to admire and ignore.", body: "Put the needed object in the path of your future self—by the door, on the keyboard, or beside the coffee.", nudge: "Move one reminder into your path." },
   ],
   momentum: [
     { title: "Shrink it until your brain stops arguing.", body: "If the task still feels heavy, the first step is still too large. 'Open the document' is a legitimate task.", nudge: "Name a step that takes under two minutes." },
-    { title: "Use a body double—even a quiet one.", body: "Working near another person, on video, or beside a focus stream can give your attention a gentle rail to run on.", nudge: "Invite someone or start a quiet focus session." },
+    { title: "Borrow another person’s ability to stay in one place.", body: "Work near someone, keep a video call open, or put on a quiet work stream. Their presence can make wandering off slightly less tempting.", nudge: "Invite someone or start a quiet work session." },
     { title: "Race the kettle, not the whole project.", body: "A short playful sprint can bypass the pressure of committing to a massive work block.", nudge: "Set a seven-minute timer and see what happens." },
   ],
   rsd: [
@@ -329,12 +329,12 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
         <section className="dashboardContent" aria-label="Squirrel dashboard preview">
           <section className="heroPanel">
             <div>
-              <p className="eyebrow">Gentle daily support</p>
+              <p className="eyebrow">External brain. Zero moralizing.</p>
               <h1>Acorns first. Side quest later.</h1>
               <p className="heroSubtagline">Because “I’ll remember” is how we got here.</p>
               <p>
-                Meds, routines, school, tasks, and reminders in one calmer place,
-                with search and sensory controls close at hand.
+                Meds, classes, tasks, and all the tiny obligations currently forming a union.
+                One place, fewer tabs, less archaeological work.
               </p>
             </div>
 
@@ -355,7 +355,7 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
             <article className="summaryCard">
               <span>Tasks</span>
               <strong>5</strong>
-              <p>waiting without judgment</p>
+              <p>currently plotting against your free time</p>
             </article>
             <article className="summaryCard">
               <span>Today</span>
@@ -365,7 +365,7 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
             <article className="summaryCard">
               <span>Calendar</span>
               <strong>Google</strong>
-              <p>See, create, and gently adjust events you own.</p>
+              <p>Make and move plans without opening another tiny browser tab.</p>
             </article>
           </section>
 
@@ -380,7 +380,7 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
               <div className="panelHeader">
                 <div>
                   <p className="eyebrow">Meds Check-In</p>
-                  <h2>Memory support, not pressure</h2>
+                  <h2>Did you take it, or merely think about taking it?</h2>
                 </div>
                 <button type="button">Manage</button>
               </div>
@@ -402,7 +402,7 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
               <div className="panelHeader">
                 <div>
                   <p className="eyebrow">Start Here</p>
-                  <h2>Low-friction next tasks</h2>
+                  <h2>Things Future You would like handled</h2>
                 </div>
                 <button type="button">Details</button>
               </div>
@@ -428,10 +428,10 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
 
           <SchoolWorkspace />
 
-          <section className="settingsPanel" id="settings" aria-label="Sensory-friendly settings">
+          <section className="settingsPanel" id="settings" aria-label="Display settings">
             <div>
-              <p className="eyebrow">Sensory-Friendly Settings</p>
-              <h2>Adjust the display without leaving the dashboard.</h2>
+              <p className="eyebrow">Make it stop yelling</p>
+              <h2>Adjust the dashboard until your eyeballs stop filing complaints.</h2>
             </div>
 
             <div className="settingsGrid">
@@ -453,9 +453,9 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
 
         <aside className="sidebox" aria-label="Pinned side display">
           <div className="sideboxHeader">
-            <p className="eyebrow">Display</p>
+            <p className="eyebrow">Useful little corner</p>
             <h2>Sidebox</h2>
-            <p>Keep one helpful tool pinned here while the rest of the dashboard scrolls.</p>
+            <p>Pin one thing here so the rest of the dashboard can mind its business.</p>
           </div>
 
           <label className="field">
@@ -468,7 +468,7 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
               <option value="tip">ADHD & RSD Tips</option>
               <option value="focus">Focus Prompt</option>
               <option value="reset">Quick Reset</option>
-              <option value="checklist">Gentle Checklist</option>
+              <option value="checklist">Four-item checklist</option>
             </select>
           </label>
 
@@ -514,10 +514,10 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
 
               <div className="searchResults">
                 {searchQuery.trim() && searchResults.length === 0 && (
-                  <p className="emptyResult">No matches yet. Try dosage, deadline, lecture, or routine.</p>
+                  <p className="emptyResult">Nothing. Either it wandered off or the search term needs fewer syllables.</p>
                 )}
                 {!searchQuery.trim() && (
-                  <p className="emptyResult">Start typing to search across notes, reminders, tasks, and documents.</p>
+                  <p className="emptyResult">Type what you remember. Squirrel can handle the part where you forgot where you put it.</p>
                 )}
                 {searchResults.map((result) => (
                   <a className="searchResult" href={result.href} key={result.id}>
@@ -535,7 +535,7 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
             <section className="sideCard">
               <span>Today</span>
               <strong>{affirmations[(now?.getDate() ?? 0) % affirmations.length]}</strong>
-              <p>Short, steady language for the moment before action.</p>
+              <p>For when your internal narrator needs to take a union-mandated break.</p>
             </section>
           )}
 
@@ -563,7 +563,7 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
               <section className="sideCard">
                 <span>{factTopic}</span>
                 <strong>{fact}</strong>
-                <p>Topic preferences are saved in this preview session.</p>
+                <p>A tiny fact break. Educational procrastination, but with boundaries.</p>
               </section>
             </section>
           )}
@@ -599,8 +599,8 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
           {displayMode === "reset" && (
             <section className="sideCard" id="reset">
               <span>Quick Reset</span>
-              <strong>Pick one gentle reset.</strong>
-              <p>Use this when the dashboard starts feeling like too many choices at once.</p>
+              <strong>Too many tabs, but in your skull.</strong>
+              <p>Pick one reset. We are not turning recovery into another project.</p>
               <div className="sideActions">
                 <button type="button">Breathe</button>
                 <button type="button">Pick Next Task</button>
@@ -611,8 +611,8 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
 
           {displayMode === "checklist" && (
             <section className="sideCard">
-              <span>Gentle Checklist</span>
-              <strong>A short visible anchor.</strong>
+              <span>Four-item checklist</span>
+              <strong>Four things. No heroic montage required.</strong>
               <div className="checklist">
                 {checklist.map((item) => (
                   <label key={item}>

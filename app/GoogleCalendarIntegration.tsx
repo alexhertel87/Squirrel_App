@@ -426,7 +426,7 @@ export function GoogleCalendarIntegration({
               {connected && !busy && events.length === 0 && (
                 <div className="calendarEmptyState">
                   <strong>No events in the next 30 days.</strong>
-                  <p>That can be breathing room. Add one only if it helps.</p>
+                  <p>Either peaceful or deeply suspicious. Enjoy it while it lasts.</p>
                   <button type="button" onClick={openNewEvent}>Add an event</button>
                 </div>
               )}

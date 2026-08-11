@@ -121,7 +121,7 @@ export function DashboardTools() {
       <form className="squirrelCapture" onSubmit={submitCapture}>
         <label><span className="eyebrow">Squirrel this</span><input value={capture} onChange={(event) => setCapture(event.target.value)} placeholder="Buy toothpaste, exam Friday, ask Lee about dinner…" /></label>
         <button type="submit">Squirrel it away</button>
-        <small>Capture first. Organize later. Squirrel will make a best guess.</small>
+        <small>Drop it here. Future You can fight with the filing system.</small>
       </form>
       {message && <p className="brainMessage" role="status">{message}</p>}
 
@@ -133,7 +133,7 @@ export function DashboardTools() {
           <p>{minimumDay ? "Keep-the-ship-afloat mode: this is enough to count as forward motion." : "One acorn. The rest can wait outside."}</p>
         </div>
         <div className="doNextActions"><button type="button" onClick={() => startFocus()}>Start Squirrel Mode</button><button className="stuckButton" type="button" onClick={() => setStuck("start")}>I’m stuck</button><button className="quietButton" type="button" onClick={() => setSuggestionIndex((value) => (value + 1) % candidates.length)}>Not now</button><button className="quietButton" type="button" onClick={easier}>Give me something easier</button></div>
-        <label className="minimumDayToggle"><input type="checkbox" checked={minimumDay} onChange={(event) => setMinimumDay(event.target.checked)} /><span>Minimum Viable Day</span><small>Let everything else recede.</small></label>
+        <label className="minimumDayToggle"><input type="checkbox" checked={minimumDay} onChange={(event) => setMinimumDay(event.target.checked)} /><span>Minimum Viable Day</span><small>The rest can be tomorrow’s nonsense.</small></label>
       </article>
 
       <div className="acornPileHeader"><button type="button" onClick={() => setPileOpen((value) => !value)} aria-expanded={pileOpen}><span>Acorn Pile</span><strong>{acorns.filter((item) => !["complete", "released"].includes(item.status)).length} loose acorns</strong><small>{pileOpen ? "Hide the pile" : "No organizing required right now"}</small></button></div>

@@ -108,25 +108,25 @@ export function SchoolWorkspace() {
     try {
       const result = await readResponse(await fetch(`/api/academic/files/search?q=${encodeURIComponent(fileQuery.trim())}`, { cache: "no-store" }));
       setFileMatches(result.matches);
-      if (!result.matches.length) setMessage("No filenames or document contents matched that search.");
+      if (!result.matches.length) setMessage("No match. The file may be hiding under a deeply unhelpful name.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "The repository could not be searched.");
     } finally { setSearchingFiles(false); }
   };
 
-  if (loading) return <section className="panel schoolWorkspace" id="school"><p className="eyebrow">School & Documents</p><h2>Courses, assignments, and lecture files—actually findable.</h2><p>Opening your private school workspace…</p></section>;
+  if (loading) return <section className="panel schoolWorkspace" id="school"><p className="eyebrow">School & Documents</p><h2>School stuff, minus the digital junk drawer.</h2><p>Opening the school drawer…</p></section>;
 
   return (
     <section className="panel schoolWorkspace" id="school" aria-label="Editable school workspace">
       <header className="schoolWorkspaceHeader">
-        <div><p className="eyebrow">School & Documents</p><h2>Courses, assignments, and lecture files—actually findable.</h2><p>Organize each term your way. Everything here is editable and private to your account.</p></div>
+        <div><p className="eyebrow">School & Documents</p><h2>School stuff, minus the digital junk drawer.</h2><p>Terms, courses, assignments, and lecture files live here. Everything is editable; nothing requires a color-coded binder unless you are into that.</p></div>
         <button type="button" onClick={() => setEditor({ kind: "term" })}>+ New term</button>
       </header>
 
       {message && <p className="schoolMessage" role="status">{message}</p>}
 
       {data.terms.length === 0 ? (
-        <div className="schoolEmpty"><strong>Start with your current term.</strong><p>Add a term, then its courses, assignments, and lecture files. You can change every detail later.</p><button type="button" onClick={() => setEditor({ kind: "term" })}>Add my first term</button></div>
+        <div className="schoolEmpty"><strong>Start with the term you are currently surviving.</strong><p>Add courses when you are ready. Future You may even find them again.</p><button type="button" onClick={() => setEditor({ kind: "term" })}>Add my first term</button></div>
       ) : (
         <>
           <div className="termToolbar">
@@ -136,7 +136,7 @@ export function SchoolWorkspace() {
 
           <div className="courseSectionHeading"><div><h3>{selectedTerm?.name}</h3><p>{selectedTerm?.startDate || selectedTerm?.endDate ? `${selectedTerm.startDate || "Open"} – ${selectedTerm.endDate || "Open"}` : "Dates optional"}</p></div><button type="button" onClick={() => setEditor({ kind: "course" })}>+ Add course</button></div>
           {termCourses.length === 0 ? (
-            <div className="schoolEmpty compact"><strong>No courses here yet.</strong><button type="button" onClick={() => setEditor({ kind: "course" })}>Add a course</button></div>
+            <div className="schoolEmpty compact"><strong>No courses here. Suspicious, but easily fixed.</strong><button type="button" onClick={() => setEditor({ kind: "course" })}>Add a course</button></div>
           ) : (
             <div className="courseCards">{termCourses.map((course) => (
               <button className={course.id === activeCourseId ? "selected" : ""} key={course.id} type="button" onClick={() => setSelectedCourseId(course.id)} style={{ "--course-color": course.color } as React.CSSProperties}>
@@ -151,14 +151,14 @@ export function SchoolWorkspace() {
               <div className="schoolTabs" role="tablist"><button className={tab === "assignments" ? "active" : ""} type="button" onClick={() => setTab("assignments")}>Assignments <span>{courseAssignments.length}</span></button><button className={tab === "files" ? "active" : ""} type="button" onClick={() => setTab("files")}>Lecture files <span>{courseFiles.length}</span></button></div>
 
               {tab === "assignments" ? (
-                <div className="academicList"><div className="listHeading"><div><h4>Assignments</h4><p>Small steps still count.</p></div><button type="button" onClick={() => setEditor({ kind: "assignment" })}>+ Add assignment</button></div>
-                  {courseAssignments.length === 0 ? <p className="emptyResult">Nothing due here yet.</p> : courseAssignments.map((assignment) => <article className="academicRow" key={assignment.id}><div><strong>{assignment.title}</strong><small>{assignment.dueAt ? `Due ${new Date(assignment.dueAt).toLocaleString()}` : "No due date"}{assignment.notes ? ` · ${assignment.notes}` : ""}</small></div><span data-status={assignment.status}>{statusNames[assignment.status] || assignment.status}</span><div><button type="button" onClick={() => setEditor({ kind: "assignment", id: assignment.id })}>Edit</button><button className="dangerButton" type="button" onClick={() => remove("assignment", assignment.id, assignment.title)}>Remove</button></div></article>)}</div>
+                <div className="academicList"><div className="listHeading"><div><h4>Assignments</h4><p>The list. Tragically, it exists.</p></div><button type="button" onClick={() => setEditor({ kind: "assignment" })}>+ Add assignment</button></div>
+                  {courseAssignments.length === 0 ? <p className="emptyResult">Suspiciously quiet. Enjoy it.</p> : courseAssignments.map((assignment) => <article className="academicRow" key={assignment.id}><div><strong>{assignment.title}</strong><small>{assignment.dueAt ? `Due ${new Date(assignment.dueAt).toLocaleString()}` : "No due date"}{assignment.notes ? ` · ${assignment.notes}` : ""}</small></div><span data-status={assignment.status}>{statusNames[assignment.status] || assignment.status}</span><div><button type="button" onClick={() => setEditor({ kind: "assignment", id: assignment.id })}>Edit</button><button className="dangerButton" type="button" onClick={() => remove("assignment", assignment.id, assignment.title)}>Remove</button></div></article>)}</div>
               ) : (
                 <div className="academicList"><div className="listHeading"><div><h4>Lecture repository</h4><p>PDF and PPTX, up to 25 MB each.</p></div></div>
-                  <form className="repositorySearch" onSubmit={searchFiles}><label className="field"><span>Search every lecture file</span><input type="search" value={fileQuery} onChange={(event) => setFileQuery(event.target.value)} placeholder="Filename or words inside the document" /></label><button type="submit" disabled={searchingFiles}>{searchingFiles ? "Searching…" : "Search files"}</button></form>
+                  <form className="repositorySearch" onSubmit={searchFiles}><label className="field"><span>Search filenames and the words hiding inside the files</span><input type="search" value={fileQuery} onChange={(event) => setFileQuery(event.target.value)} placeholder="Filename or words inside the document" /></label><button type="submit" disabled={searchingFiles}>{searchingFiles ? "Searching…" : "Search files"}</button></form>
                   {fileQuery.trim().length >= 2 && fileMatches.length > 0 && <section className="repositoryResults" aria-label="Repository search results"><div className="listHeading"><div><h4>Search results</h4><p>{fileMatches.length} private file{fileMatches.length === 1 ? "" : "s"} matched by filename or contents.</p></div><button className="quietButton" type="button" onClick={() => { setFileQuery(""); setFileMatches([]); }}>Clear</button></div>{fileMatches.map((file) => <article className="academicRow searchFileRow" key={file.id}><div><strong>{file.fileName}</strong><small>{file.courseCode || file.courseName} · {file.excerpt}</small></div><div className="fileRowActions"><button type="button" onClick={() => setViewer(file)}>View</button><a href={`/api/academic/files/${encodeURIComponent(file.id)}`} download={file.fileName}>Download</a></div></article>)}</section>}
                   <form className="uploadForm" onSubmit={upload}><label><span>Choose a lecture file</span><input name="file" type="file" accept=".pdf,.pptx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" required /></label><button type="submit" disabled={uploading}>{uploading ? "Uploading…" : "Upload privately"}</button></form>
-                  {courseFiles.length === 0 ? <p className="emptyResult">No lecture files uploaded yet.</p> : courseFiles.map((file) => <article className="academicRow fileRow" key={file.id}><div><strong>{file.fileName}</strong><small>{file.contentType === "application/pdf" ? "PDF" : "PowerPoint"} · {(file.sizeBytes / 1024 / 1024).toFixed(1)} MB</small></div><div className="fileRowActions"><button type="button" onClick={() => setViewer(file)}>View</button><a href={`/api/academic/files/${encodeURIComponent(file.id)}`} download={file.fileName}>Download</a><button className="dangerButton" type="button" onClick={() => removeFile(file)}>Remove</button></div></article>)}</div>
+                  {courseFiles.length === 0 ? <p className="emptyResult">No lecture files yet. Either impressively organized or hiding in Downloads.</p> : courseFiles.map((file) => <article className="academicRow fileRow" key={file.id}><div><strong>{file.fileName}</strong><small>{file.contentType === "application/pdf" ? "PDF" : "PowerPoint"} · {(file.sizeBytes / 1024 / 1024).toFixed(1)} MB</small></div><div className="fileRowActions"><button type="button" onClick={() => setViewer(file)}>View</button><a href={`/api/academic/files/${encodeURIComponent(file.id)}`} download={file.fileName}>Download</a><button className="dangerButton" type="button" onClick={() => removeFile(file)}>Remove</button></div></article>)}</div>
               )}
             </section>
           )}
