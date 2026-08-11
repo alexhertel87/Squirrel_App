@@ -121,18 +121,28 @@ export function DashboardTools() {
       <form className="squirrelCapture" onSubmit={submitCapture}>
         <label><span className="eyebrow">Stash it before it escapes</span><input id="squirrelly-capture" value={capture} onChange={(event) => setCapture(event.target.value)} placeholder="Buy toothpaste, exam Friday, ask Lee about dinner…" /></label>
         <button type="submit">Stash it</button>
-        <small>Before the thought wanders off and leaves you staring into the open refrigerator for answers.</small>
+        <small><strong>Your one trusted inbox.</strong> Everything lands in the Acorn Pile—before the thought wanders off and leaves you staring into the open refrigerator for answers.</small>
       </form>
       {message && <p className="brainMessage" role="status">{message}</p>}
 
-      <article className="doNextCard">
+      <article className="doNextCard" id="do-this-next">
         <div className="doNextCopy">
           <div className="doNextLabel"><span className="liveDot" />Do this next</div>
           <h2>{suggestion.content}</h2>
           <div className="activationPills"><span>{suggestion.energy} energy</span><span>{suggestion.estimatedMinutes} min</span><span>Brain: {suggestion.brainLoad === "unfortunately_yes" ? "unfortunately yes" : suggestion.brainLoad}</span></div>
           <p>{minimumDay ? "Keep-the-ship-afloat mode: this is enough to count as forward motion." : "One acorn. The rest can wait outside."}</p>
         </div>
-        <div className="doNextActions"><button type="button" onClick={() => startFocus()}>Start Squirrel! Mode</button><button className="stuckButton" type="button" onClick={() => setStuck("start")}>I’m stuck</button><button className="quietButton" type="button" onClick={() => setSuggestionIndex((value) => (value + 1) % candidates.length)}>Not now</button><button className="quietButton" type="button" onClick={easier}>Give me something easier</button></div>
+        <div className="doNextActions">
+          <div className="doNextPrimaryActions">
+            <button type="button" aria-describedby="squirrel-mode-help" onClick={() => startFocus()}>Start Squirrel! Mode</button>
+            <small id="squirrel-mode-help">25-minute focus timer + everything else hidden.</small>
+            <button className="stuckButton" type="button" onClick={() => setStuck("start")}>I’m stuck</button>
+          </div>
+          <div className="doNextSecondaryActions">
+            <button className="quietButton" type="button" onClick={() => setSuggestionIndex((value) => (value + 1) % candidates.length)}>Not now</button>
+            <button className="quietButton" type="button" onClick={easier}>Something easier</button>
+          </div>
+        </div>
         <label className="minimumDayToggle"><input type="checkbox" checked={minimumDay} onChange={(event) => setMinimumDay(event.target.checked)} /><span>Minimum Viable Day</span><small>The rest can be tomorrow’s nonsense.</small></label>
       </article>
 

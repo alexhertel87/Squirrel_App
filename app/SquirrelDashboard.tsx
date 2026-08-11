@@ -228,6 +228,11 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
     setReducedMotion(preferences.reducedMotion);
   }, []);
 
+  const scrollToCapture = () => {
+    document.querySelector<HTMLElement>("#get-squirrelly")?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
+    window.setTimeout(() => document.querySelector<HTMLInputElement>("#squirrelly-capture")?.focus(), reducedMotion ? 0 : 450);
+  };
+
   useEffect(() => {
     const updateNow = () => setNow(new Date());
 
@@ -322,11 +327,10 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
             className="active"
             onClick={(event) => {
               event.preventDefault();
-              document.querySelector<HTMLElement>("#get-squirrelly")?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
-              window.setTimeout(() => document.querySelector<HTMLInputElement>("#squirrelly-capture")?.focus(), reducedMotion ? 0 : 450);
+              scrollToCapture();
             }}
           >
-            Let’s get squirrelly
+            <span>Let&apos;s get </span><em>Squirrelly!</em>
           </a>
           <a href="#calendar">Calendar</a>
           <a href="#school">School</a>
@@ -349,8 +353,8 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
             </div>
 
             <div className="heroActions">
-              <button type="button">New Medication</button>
-              <button type="button">Add A New Task</button>
+              <button className="heroPrimaryAction" type="button" onClick={scrollToCapture}>Stash something</button>
+              <button className="heroSecondaryAction" type="button" onClick={() => document.querySelector<HTMLElement>("#meds")?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" })}>Manage medications</button>
             </div>
           </section>
 
@@ -485,9 +489,9 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
 
           {displayMode === "now" && (
             <section className="sideCard nowNextCard">
-              <span>Now / Next</span>
-              <strong>{currentTask.title}</strong>
-              <p>{currentTask.meta}. If that feels like too much, use “Give me something easier” in the Do This Next card.</p>
+              <span>📌 Mirrors Do This Next</span>
+              <strong>One acorn. Shown twice on purpose.</strong>
+              <p>This pin points to the same priority card—not a second task pretending to be urgent.</p>
               <div className="nowNextSteps"><small>Now</small><p>Make one visible move.</p><small>Then</small><p>Check the calendar before choosing another acorn.</p></div>
             </section>
           )}

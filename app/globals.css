@@ -3,7 +3,7 @@
 :root {
   --font-ui: Gulim, "Apple SD Gothic Neo", "Malgun Gothic", "Helvetica Neue", Arial, sans-serif;
   --color-ink: #273640;
-  --color-muted: #60717a;
+  --color-muted: #52656f;
   --color-surface: #ffffff;
   --color-surface-soft: #f2fbfd;
   --color-panel: linear-gradient(135deg, #fff8fd 0%, #eefbff 100%);
@@ -234,6 +234,12 @@ h3 {
   background: var(--color-surface-soft);
 }
 
+.appNav a em {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 850;
+}
+
 .loginButton,
 .heroActions button:first-child,
 .panelHeader button,
@@ -342,6 +348,17 @@ h3 {
 
 .heroActions button {
   width: 100%;
+}
+
+.heroActions .heroPrimaryAction {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.heroActions .heroSecondaryAction {
+  border: 1px solid var(--color-input-border);
+  background: transparent;
+  color: var(--color-ink);
 }
 
 .summaryGrid,
@@ -1246,7 +1263,8 @@ button:disabled {
 .squirrelCapture label { display: grid; gap: 7px; }
 .squirrelCapture input { width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid var(--color-input-border); border-radius: var(--control-radius); background: var(--color-surface-soft); color: var(--color-ink); font-size: 1.02rem; }
 .squirrelCapture button, .doNextActions button, .acornPileHeader button, .acornRow button, .stuckModal button { min-height: 44px; padding: 3px 14px 1px; border-radius: var(--control-radius); background: var(--color-primary); color: #fff; cursor: pointer; font-weight: 800; }
-.squirrelCapture > small { grid-column: 1 / -1; color: var(--color-muted); }
+.squirrelCapture > small { grid-column: 1 / -1; color: var(--color-muted); line-height: 1.4; }
+.squirrelCapture > small strong { color: var(--color-ink); }
 .brainMessage { padding: 10px 13px; border-radius: var(--control-radius); background: linear-gradient(135deg, rgba(255, 215, 236, 0.45), rgba(213, 248, 255, 0.58)); color: var(--color-ink); }
 .doNextCard { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(210px, 280px); gap: 24px; min-height: 320px; padding: clamp(28px, 4vw, 44px); overflow: hidden; border: 1px solid rgba(54, 189, 232, 0.45); border-radius: 20px; background: radial-gradient(circle at 95% 10%, rgba(255, 215, 236, 0.74), transparent 23rem), radial-gradient(circle at 5% 90%, rgba(213, 248, 255, 0.9), transparent 27rem), var(--color-surface); box-shadow: 0 24px 54px rgba(31, 56, 68, 0.16); }
 .doNextCard::after { content: "🐿️"; position: absolute; right: 28px; bottom: -22px; font-size: 6.2rem; opacity: 0.12; rotate: -8deg; pointer-events: none; }
@@ -1257,8 +1275,12 @@ button:disabled {
 .doNextCard p { margin-top: 14px; color: var(--color-muted); font-size: 1.02rem; }
 .activationPills { display: flex; flex-wrap: wrap; gap: 7px; }
 .activationPills span { padding: 6px 9px; border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent); border-radius: 99px; background: color-mix(in srgb, var(--color-surface) 72%, transparent); color: var(--color-ink); font-size: 0.82rem; font-weight: 750; text-transform: capitalize; }
-.doNextActions { display: grid; align-content: center; gap: 8px; z-index: 1; }
-.doNextActions .stuckButton { background: var(--color-accent-pink); }
+.doNextActions { display: grid; align-content: center; gap: 12px; z-index: 1; }
+.doNextPrimaryActions { display: grid; gap: 8px; }
+.doNextPrimaryActions > small { margin: -2px 3px 2px; color: var(--color-muted); font-size: 0.8rem; line-height: 1.35; text-align: center; }
+.doNextActions .stuckButton { border: 1px solid var(--color-input-border); background: var(--color-surface); color: var(--color-ink); }
+.doNextSecondaryActions { display: flex; justify-content: center; gap: 4px 12px; }
+.doNextSecondaryActions button { min-height: 32px; padding: 2px 4px 0; border: 0; background: transparent; color: var(--color-muted); font-size: 0.78rem; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .doNextActions .quietButton, .acornRow .quietButton, .stuckModal .quietButton { border: 1px solid var(--color-border); background: color-mix(in srgb, var(--color-surface) 82%, transparent); color: var(--color-ink); }
 .minimumDayToggle { position: absolute; left: clamp(28px, 4vw, 44px); bottom: 18px; display: flex; align-items: center; gap: 7px; color: var(--color-ink); font-weight: 750; }
 .minimumDayToggle small { color: var(--color-muted); font-weight: 400; }

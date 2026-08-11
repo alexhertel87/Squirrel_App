@@ -46,11 +46,15 @@ test("server-renders the protected Squirrel dashboard for a signed-in user", asy
   assert.match(html, /Acorns first\. Side quest later\./);
   assert.match(html, /Because “I’ll remember” is how we got here\./);
   assert.match(html, /For brains with 27 pages open, zero memory, and one song on repeat in a tab you’ll never find\./);
-  assert.match(html, /Let’s get squirrelly/);
+  assert.match(html, /Let&#x27;s get/);
+  assert.match(html, /<em>Squirrelly!<\/em>/);
   assert.match(html, /You bring the genius, Squirrel! handles the rest\./);
   assert.match(html, /Stash it before it escapes/);
+  assert.match(html, /Your one trusted inbox\./);
   assert.match(html, /staring into the open refrigerator for answers\./);
   assert.match(html, /Do this next/);
+  assert.match(html, /25-minute focus timer \+ everything else hidden\./);
+  assert.match(html, /Mirrors Do This Next/);
   assert.match(html, /Things already sneaking up on you/);
   assert.match(html, /I’m stuck/);
   assert.match(html, /Acorn Pile/);
