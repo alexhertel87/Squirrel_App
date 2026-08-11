@@ -1,4 +1,4 @@
-# Squirrel! Dashboard
+# Squirrel!
 
 Squirrel is a calm, sensory-friendly dashboard for tasks, medications, school,
 search, and daily planning. Its Google Calendar integration can show upcoming
