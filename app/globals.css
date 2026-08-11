@@ -1499,6 +1499,10 @@ button:disabled {
     align-items: flex-start;
   }
 
+  .welcomeNav .brand {
+    min-width: 0;
+  }
+
   .brandCopy { max-width: calc(100% - 58px); }
 
   .brandTagline {
