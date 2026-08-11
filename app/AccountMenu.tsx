@@ -106,7 +106,7 @@ export function AccountMenu({ user, signOutPath, preferences, onPreferences }: P
         }}>
           <section className="profileModal" role="dialog" aria-modal="true" aria-labelledby="profile-heading">
             <div className="modalHeading">
-              <div><p className="eyebrow">Your Squirrel</p><h2 id="profile-heading">Profile & settings</h2></div>
+              <div><p className="eyebrow">Your Squirrel!</p><h2 id="profile-heading">Profile & settings</h2></div>
               <button className="iconButton" type="button" aria-label="Close" onClick={() => setEditing(false)}>×</button>
             </div>
             <form className="profileForm" onSubmit={saveProfile}>

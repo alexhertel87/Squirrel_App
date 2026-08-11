@@ -301,8 +301,14 @@ h3 {
 }
 
 .heroPanel .heroSubtagline {
-  margin: -2px 0 12px;
-  color: var(--color-accent-lavender);
+  display: inline-block;
+  width: fit-content;
+  margin: -2px 0 14px;
+  padding: 6px 10px;
+  border: 1px solid color-mix(in srgb, var(--color-accent-lavender) 28%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-accent-lavender) 10%, var(--color-surface));
+  color: color-mix(in srgb, var(--color-accent-lavender) 78%, var(--color-ink));
   font-size: 1.02rem;
   font-style: italic;
   font-weight: 500;
@@ -1256,7 +1262,43 @@ button:disabled {
 .sideQuestCapture input { min-height: 46px; padding: 0 12px; border: 1px solid var(--color-input-border); border-radius: var(--control-radius); background: var(--color-surface); color: var(--color-ink); }
 .sideQuestCapture button { background: var(--color-accent-pink); color: #fff; }
 
-.externalBrain + .summaryGrid .summaryCard { min-height: 132px; box-shadow: 0 6px 16px rgba(31,56,68,.07); }
+.externalBrain + .summaryGrid .summaryCard,
+.attentionDeck + .summaryGrid .summaryCard { min-height: 132px; box-shadow: 0 6px 16px rgba(31,56,68,.07); }
+
+/* Deadlines and calendar warnings */
+.attentionDeck { display: grid; gap: 16px; padding: 24px; border: 1px solid color-mix(in srgb, var(--color-accent-pink) 40%, var(--color-border)); border-radius: 18px; background: linear-gradient(145deg, color-mix(in srgb, #fff2f6 78%, var(--color-surface)), var(--color-surface) 45%); box-shadow: var(--shadow-soft); }
+.attentionHeader { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.attentionHeader h2 { margin-top: 7px; font-size: clamp(1.65rem, 2.5vw, 2.3rem); }
+.attentionHeader p:not(.eyebrow) { max-width: 650px; margin-top: 7px; color: var(--color-muted); line-height: 1.45; }
+.attentionActions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.attentionActions button, .syllabusSuggestions button { min-height: 42px; padding: 3px 13px 1px; border-radius: var(--control-radius); background: var(--color-primary); color: #fff; cursor: pointer; font-weight: 800; }
+.attentionActions .quietButton, .syllabusSuggestions .quietButton { border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-ink); }
+.attentionCounts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+.attentionCounts article { display: grid; gap: 4px; min-height: 88px; padding: 14px; border: 1px solid var(--color-border); border-radius: 12px; background: color-mix(in srgb, var(--color-surface) 88%, transparent); }
+.attentionCounts article[data-alert="true"] { border-color: #e07280; background: #fff0f2; }
+.attentionCounts span { color: var(--color-muted); font-size: 0.86rem; font-weight: 750; }
+.attentionCounts strong { font-size: 2rem; line-height: 1; }
+.attentionNote { padding: 10px 12px; border-left: 4px solid var(--color-accent-lavender); background: color-mix(in srgb, var(--color-surface) 70%, transparent); color: var(--color-muted); }
+.attentionList { display: grid; gap: 8px; }
+.attentionItem { display: grid; grid-template-columns: 82px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 64px; padding: 10px 12px; border: 1px solid var(--color-border); border-left: 5px solid var(--color-accent-blue); border-radius: 10px; background: var(--color-surface); color: var(--color-ink); }
+.attentionItem[data-kind="late"], .attentionItem[data-kind="conflict"] { border-left-color: #d84f62; }
+.attentionItem[data-kind="today"] { border-left-color: #ee8b3b; }
+.attentionItem > span { color: var(--color-accent-lavender); font-size: 0.78rem; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
+.attentionItem div { display: grid; gap: 4px; }
+.attentionItem small { color: var(--color-muted); }
+.attentionItem em { color: var(--color-primary); font-style: normal; font-weight: 800; }
+.attentionEmpty { padding: 18px; border: 1px dashed var(--color-border); border-radius: 12px; background: color-mix(in srgb, var(--color-surface-soft) 72%, transparent); }
+.attentionEmpty p { margin-top: 5px; color: var(--color-muted); }
+.syllabusModal { width: min(940px, 100%); max-height: calc(100vh - 36px); overflow: auto; padding: 24px; border: 1px solid var(--color-border); border-radius: 18px; background: var(--color-surface); box-shadow: 0 30px 80px rgba(0,0,0,.35); }
+.syllabusModal .modalHeading p:not(.eyebrow) { max-width: 700px; margin-top: 6px; color: var(--color-muted); line-height: 1.45; }
+.syllabusSuggestions { display: grid; gap: 10px; margin-top: 18px; }
+.syllabusSuggestions article { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 12px; padding: 14px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-surface-soft); }
+.syllabusSuggestions article > div:first-child { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(180px, 240px); gap: 7px; }
+.syllabusSuggestions article span, .syllabusSuggestions article small { grid-column: 1 / -1; }
+.syllabusSuggestions article span { color: var(--color-accent-lavender); font-size: 0.78rem; font-weight: 850; text-transform: uppercase; }
+.syllabusSuggestions article input { min-height: 42px; padding: 0 10px; border: 1px solid var(--color-input-border); border-radius: var(--control-radius); background: var(--color-surface); color: var(--color-ink); }
+.syllabusSuggestions article small { color: var(--color-muted); line-height: 1.4; }
+.syllabusSuggestions article > div:last-child { display: flex; gap: 7px; }
 
 @media (max-width: 1180px) {
   .topBar {
@@ -1329,6 +1371,11 @@ button:disabled {
   .squirrelCapture { grid-template-columns: 1fr; }
   .squirrelCapture > small { grid-column: auto; }
   .sideQuestCapture { grid-template-columns: 1fr; }
+  .attentionHeader { align-items: stretch; flex-direction: column; }
+  .attentionActions { justify-content: flex-start; }
+  .attentionCounts { grid-template-columns: 1fr; }
+  .syllabusSuggestions article, .syllabusSuggestions article > div:first-child { grid-template-columns: 1fr; }
+  .syllabusSuggestions article span, .syllabusSuggestions article small { grid-column: auto; }
 }
 
 @media (max-width: 540px) {
@@ -1390,6 +1437,8 @@ button:disabled {
   .acornPileHeader button, .acornRow { grid-template-columns: 1fr; }
   .acornRowActions { flex-wrap: wrap; }
   .acornEditor { grid-template-columns: 1fr; }
+  .attentionItem { grid-template-columns: 1fr; }
+  .attentionItem em { justify-self: start; }
   .focusTask { min-height: 520px; padding: 24px 14px; }
   .focusTask h1 { font-size: 3rem; }
 }

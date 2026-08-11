@@ -45,8 +45,9 @@ test("server-renders the protected Squirrel dashboard for a signed-in user", asy
   const html = await response.text();
   assert.match(html, /Acorns first\. Side quest later\./);
   assert.match(html, /Because “I’ll remember” is how we got here\./);
-  assert.match(html, /Squirrel this/);
+  assert.match(html, /Stash it before it escapes/);
   assert.match(html, /Do this next/);
+  assert.match(html, /Things already sneaking up on you/);
   assert.match(html, /I’m stuck/);
   assert.match(html, /Acorn Pile/);
   assert.match(html, /Connect Google Calendar/);
@@ -82,7 +83,7 @@ test("calendar API rejects an unsigned-in request", async () => {
 });
 
 test("academic and profile APIs reject unsigned-in requests", async () => {
-  for (const path of ["/api/academic", "/api/profile", "/api/acorns", "/api/academic/files/search?q=lecture"]) {
+  for (const path of ["/api/academic", "/api/profile", "/api/acorns", "/api/academic/files/search?q=lecture", "/api/academic/syllabus-suggestions"]) {
     const response = await render(path, { accept: "application/json" });
     assert.equal(response.status, 401);
     assert.equal((await response.json()).code, "squirrel_sign_in_required");

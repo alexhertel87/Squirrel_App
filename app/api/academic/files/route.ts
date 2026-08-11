@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       : lowered.endsWith(".pptx")
         ? PPTX_TYPE
         : null;
-    if (!contentType) throw new AppApiError("Squirrel currently accepts PDF and PPTX files.");
+    if (!contentType) throw new AppApiError("Squirrel! currently accepts PDF and PPTX files.");
     const course = await database.prepare("SELECT id FROM courses WHERE id = ? AND user_id = ?")
       .bind(courseId, user.id).first();
     if (!course) throw new AppApiError("That course was not found.", 404, "not_found");

@@ -42,7 +42,7 @@ export async function GET(request: Request) {
     const message =
       error instanceof Error
         ? error.message
-        : "Squirrel could not complete the calendar connection.";
+        : "Squirrel! could not complete the calendar connection.";
     return dashboardRedirect(request, "error", message);
   }
 }

@@ -29,9 +29,9 @@ export function appErrorResponse(error: unknown) {
   if (error instanceof AppApiError) {
     return appJson({ error: error.message, code: error.code }, error.status);
   }
-  console.error("Squirrel API route failed", error);
+  console.error("Squirrel! API route failed", error);
   return appJson(
-    { error: "Squirrel hit a snag. Nothing was lost—please try again.", code: "app_error" },
+    { error: "Squirrel! hit a snag. Nothing was lost—please try again.", code: "app_error" },
     500,
   );
 }

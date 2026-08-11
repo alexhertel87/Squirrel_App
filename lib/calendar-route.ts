@@ -5,7 +5,7 @@ export async function requireCalendarUser() {
   const user = await getChatGPTUser();
   if (!user) {
     throw new CalendarApiError(
-      "Sign in to Squirrel before connecting Google Calendar.",
+      "Sign in to Squirrel! before connecting Google Calendar.",
       401,
       "squirrel_sign_in_required",
     );
@@ -29,7 +29,7 @@ export function calendarErrorResponse(error: unknown) {
   }
   console.error("Calendar route failed", error);
   return calendarJson(
-    { error: "Squirrel could not reach Google Calendar just now.", code: "calendar_error" },
+    { error: "Squirrel! could not reach Google Calendar just now.", code: "calendar_error" },
     500,
   );
 }

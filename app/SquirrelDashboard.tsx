@@ -6,6 +6,7 @@ import { GoogleCalendarIntegration } from "./GoogleCalendarIntegration";
 import { AccountMenu, ProfilePreferences } from "./AccountMenu";
 import { SchoolWorkspace } from "./SchoolWorkspace";
 import { DashboardTools } from "./DashboardTools";
+import { AttentionDeck } from "./AttentionDeck";
 import type { ChatGPTUser } from "./chatgpt-auth";
 
 type DisplayMode = "now" | "search" | "affirmation" | "fact" | "tip" | "focus" | "reset" | "checklist";
@@ -310,7 +311,7 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
       style={{ "--logo-gradient": `linear-gradient(90deg, ${logoStops.join(", ")})` } as CSSProperties}
     >
       <header className="topBar">
-        <a className="brand" href="/dashboard" aria-label="Squirrel dashboard home">
+        <a className="brand" href="/dashboard" aria-label="Squirrel! dashboard home">
           <img src="/squirrel_logo.png" alt="" className="brandLogo" />
           <span className="brandName">Squirrel!</span>
         </a>
@@ -326,15 +327,15 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
       </header>
 
       <div className="dashboardShell" id="dashboard">
-        <section className="dashboardContent" aria-label="Squirrel dashboard preview">
+        <section className="dashboardContent" aria-label="Squirrel! dashboard preview">
           <section className="heroPanel">
             <div>
-              <p className="eyebrow">External brain. Zero moralizing.</p>
+              <p className="eyebrow">For brains running 27 tabs, zero memory, and one song on repeat in a tab you’ll never find.</p>
               <h1>Acorns first. Side quest later.</h1>
               <p className="heroSubtagline">Because “I’ll remember” is how we got here.</p>
               <p>
-                Meds, classes, tasks, and all the tiny obligations currently forming a union.
-                One place, fewer tabs, less archaeological work.
+                Meds, classes, tasks, and the thoughts that vanish somewhere between the couch
+                and the kitchen. Squirrel! keeps track so you don’t have to.
               </p>
             </div>
 
@@ -345,6 +346,8 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
           </section>
 
           <DashboardTools />
+
+          <AttentionDeck />
 
           <section className="summaryGrid" aria-label="Today summary">
             <article className="summaryCard">
@@ -484,7 +487,7 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
           {displayMode === "search" && (
             <section className="sideboxMode">
               <label className="field">
-                <span>Search Squirrel</span>
+                <span>Search Squirrel!</span>
                 <input
                   list="search-suggestions"
                   onChange={(event) => setSearchQuery(event.target.value)}
@@ -517,7 +520,7 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
                   <p className="emptyResult">Nothing. Either it wandered off or the search term needs fewer syllables.</p>
                 )}
                 {!searchQuery.trim() && (
-                  <p className="emptyResult">Type what you remember. Squirrel can handle the part where you forgot where you put it.</p>
+                  <p className="emptyResult">Type what you remember. Squirrel! can handle the part where you forgot where you put it.</p>
                 )}
                 {searchResults.map((result) => (
                   <a className="searchResult" href={result.href} key={result.id}>

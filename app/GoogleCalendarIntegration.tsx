@@ -114,7 +114,7 @@ function eventPayload(form: EventForm) {
 async function responseJson<T>(response: Response): Promise<T> {
   const result = (await response.json()) as T & { error?: string };
   if (!response.ok) {
-    throw new Error(result.error || "Squirrel could not update Google Calendar.");
+    throw new Error(result.error || "Squirrel! could not update Google Calendar.");
   }
   return result;
 }
@@ -298,7 +298,7 @@ export function GoogleCalendarIntegration({
             </strong>
             <p>
               {connected
-                ? "Squirrel can view and coordinate events on calendars you own."
+                ? "Squirrel! can view and coordinate events on calendars you own."
                 : configured
                   ? "Connect once to see upcoming events and add or adjust plans here."
                   : "The dashboard is built, but the Google client ID and secret still need to be added."}
