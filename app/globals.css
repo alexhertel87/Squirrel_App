@@ -79,13 +79,15 @@ body.reduce-motion *::after {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
 button,
 select,
-input {
+input,
+textarea {
   border: 0;
 }
 
@@ -98,6 +100,7 @@ button,
 button:focus-visible,
 select:focus-visible,
 input:focus-visible,
+textarea:focus-visible,
 a:focus-visible {
   outline: 3px solid var(--color-accent-lavender);
   outline-offset: 3px;
@@ -385,6 +388,7 @@ h3 {
 .currentTaskBanner select,
 .field select,
 .field input,
+.field textarea,
 .topicForm input {
   width: 100%;
   min-height: var(--control-height);
@@ -394,6 +398,12 @@ h3 {
   background: var(--color-surface);
   color: var(--color-ink);
   line-height: 1.2;
+}
+
+.field textarea {
+  min-height: 88px;
+  padding-block: 10px;
+  resize: vertical;
 }
 
 .twoColumn {
@@ -430,6 +440,78 @@ h3 {
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 6px;
   margin-top: 16px;
+}
+
+.calendarConnection {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+}
+
+.calendarConnection p,
+.calendarMessage,
+.calendarEmptyState p,
+.calendarLoading {
+  margin-top: 4px;
+  color: var(--color-muted);
+  font-size: 0.92rem;
+  line-height: 1.38;
+}
+
+.connectionDot {
+  width: 11px;
+  height: 11px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: #e0a632;
+  box-shadow: 0 0 0 4px rgba(224, 166, 50, 0.15);
+}
+
+.calendarConnection[data-connected="true"] .connectionDot {
+  background: #2e9d78;
+  box-shadow: 0 0 0 4px rgba(46, 157, 120, 0.15);
+}
+
+.calendarActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.calendarActions button,
+.agendaSectionHeading button,
+.calendarEmptyState button,
+.calendarEventForm button {
+  min-height: 38px;
+  padding: 3px 12px 1px;
+  border-radius: var(--control-radius);
+  background: var(--color-primary);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.quietButton,
+.calendarActions .quietButton,
+.calendarEventForm .quietButton {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.compactButton {
+  min-height: 34px !important;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.6;
 }
 
 .weekday,
@@ -490,6 +572,102 @@ h3 {
   margin-bottom: 8px;
   font-size: 1.08rem;
   line-height: 1.2;
+}
+
+.agendaSectionHeading,
+.editorHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.agendaSectionHeading h3 {
+  margin-bottom: 0;
+}
+
+.agendaSectionHeading button {
+  min-height: 34px;
+  background: var(--color-secondary);
+  color: var(--color-ink);
+  font-size: 0.9rem;
+}
+
+.calendarAgendaItem {
+  grid-template-columns: minmax(76px, auto) minmax(0, 1fr) auto;
+}
+
+.editEventButton {
+  min-height: 34px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.calendarMessage {
+  margin: -3px 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: linear-gradient(135deg, rgba(255, 215, 236, 0.32), rgba(213, 248, 255, 0.5));
+  color: var(--color-ink);
+}
+
+.calendarEmptyState,
+.calendarLoading {
+  padding: 14px;
+  border: 1px dashed var(--color-input-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+}
+
+.calendarEmptyState button {
+  margin-top: 10px;
+}
+
+.calendarEventForm {
+  display: grid;
+  gap: 12px;
+}
+
+.editorHeading h3 {
+  margin-top: 5px;
+  font-size: 1.2rem;
+}
+
+.calendarEventForm .field {
+  min-width: 0;
+}
+
+.calendarEventForm .field > span small {
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+.eventTimeGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 0.9fr;
+  gap: 10px;
+}
+
+.allDayField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 10px;
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+  font-weight: 700;
+}
+
+.saveEventButton {
+  justify-self: start;
 }
 
 .agendaItem,
@@ -770,6 +948,10 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  .eventTimeGrid {
+    grid-template-columns: 1fr;
+  }
+
   .heroPanel,
   .panel,
   .sidebox,
@@ -808,6 +990,10 @@ h3 {
   .agendaItem,
   .listItem,
   .taskButton {
+    grid-template-columns: 1fr;
+  }
+
+  .calendarAgendaItem {
     grid-template-columns: 1fr;
   }
 

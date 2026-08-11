@@ -12,6 +12,10 @@ interface Env {
       };
     };
   };
+  GOOGLE_CLIENT_ID?: string;
+  GOOGLE_CLIENT_SECRET?: string;
+  GOOGLE_TOKEN_ENCRYPTION_KEY?: string;
+  GOOGLE_OAUTH_REDIRECT_URI?: string;
 }
 
 interface ExecutionContext {
@@ -27,6 +31,11 @@ interface ExecutionContext {
 
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    (
+      globalThis as typeof globalThis & {
+        __SQUIRREL_RUNTIME_ENV__?: Env;
+      }
+    ).__SQUIRREL_RUNTIME_ENV__ = env;
     const url = new URL(request.url);
 
     if (url.pathname === "/_vinext/image") {

@@ -2,6 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { CSSProperties, FormEvent, useEffect, useMemo, useState } from "react";
+import { GoogleCalendarIntegration } from "./GoogleCalendarIntegration";
 
 type DisplayMode = "search" | "affirmation" | "fact" | "focus" | "reset" | "checklist";
 
@@ -59,11 +60,6 @@ const meds = [
   { name: "Morning Focus Med", dose: "10mg", status: "Taken" },
   { name: "Vitamin D", dose: "2000 IU", status: "Later" },
   { name: "Sleep Support", dose: "5mg", status: "Tonight" },
-];
-
-const events = [
-  { time: "10:30 AM", title: "Therapy Check-In", detail: "Calendar event" },
-  { time: "2:00 PM", title: "Chemistry Study Block", detail: "Focus reminder" },
 ];
 
 const deadlines = [
@@ -330,8 +326,8 @@ export function SquirrelDashboard() {
             </article>
             <article className="summaryCard">
               <span>Calendar</span>
-              <strong>Sync</strong>
-              <p>Google, Outlook, and Apple calendar exports.</p>
+              <strong>Google</strong>
+              <p>See, create, and gently adjust events you own.</p>
             </article>
           </section>
 
@@ -351,74 +347,11 @@ export function SquirrelDashboard() {
             </label>
           </section>
 
-          <section className="twoColumn calendarLayout" id="calendar" aria-label="Calendar and deadlines">
-            <article className="panel">
-              <div className="panelHeader">
-                <div>
-                  <p className="eyebrow">Calendar</p>
-                  <h2>{monthLabel}</h2>
-                </div>
-                <button type="button">Sync</button>
-              </div>
-
-              <div className="calendarGrid" aria-label={`${monthLabel} calendar`}>
-                {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
-                  <span className="weekday" key={`${day}-${index}`}>{day}</span>
-                ))}
-                {calendarDays.map((day) => (
-                  <span
-                    key={day.key}
-                    className={[
-                      "calendarDay",
-                      day.isCurrentMonth ? "" : "mutedMonth",
-                      day.isToday ? "today" : "",
-                    ].filter(Boolean).join(" ")}
-                    aria-current={day.isToday ? "date" : undefined}
-                  >
-                    {day.day}
-                  </span>
-                ))}
-              </div>
-            </article>
-
-            <article className="panel" id="agenda">
-              <div className="panelHeader">
-                <div>
-                  <p className="eyebrow">Today</p>
-                  <h2>Schedule & Deadlines</h2>
-                </div>
-                <span className="countPill">{events.length + deadlines.length}</span>
-              </div>
-
-              <div className="agendaStack">
-                <section>
-                  <h3>Calendar Events</h3>
-                  {events.map((event) => (
-                    <div className="agendaItem" key={event.title}>
-                      <span>{event.time}</span>
-                      <div>
-                        <strong>{event.title}</strong>
-                        <small>{event.detail}</small>
-                      </div>
-                    </div>
-                  ))}
-                </section>
-
-                <section>
-                  <h3>Due Dates & Deadlines</h3>
-                  {deadlines.map((deadline) => (
-                    <div className="agendaItem" key={deadline.title}>
-                      <span>{deadline.due}</span>
-                      <div>
-                        <strong>{deadline.title}</strong>
-                        <small>{deadline.detail}</small>
-                      </div>
-                    </div>
-                  ))}
-                </section>
-              </div>
-            </article>
-          </section>
+          <GoogleCalendarIntegration
+            monthLabel={monthLabel}
+            calendarDays={calendarDays}
+            deadlines={deadlines}
+          />
 
           <section className="twoColumn" aria-label="Medication and tasks">
             <article className="panel" id="meds">
