@@ -301,18 +301,14 @@ h3 {
 }
 
 .heroPanel .heroSubtagline {
-  display: inline-block;
-  width: fit-content;
-  margin: -2px 0 14px;
-  padding: 6px 10px;
-  border: 1px solid color-mix(in srgb, var(--color-accent-lavender) 28%, transparent);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--color-accent-lavender) 10%, var(--color-surface));
+  margin: 0 0 16px;
   color: color-mix(in srgb, var(--color-accent-lavender) 78%, var(--color-ink));
-  font-size: 1.02rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.12rem;
   font-style: italic;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  line-height: 1.35;
 }
 
 .heroActions,
