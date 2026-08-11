@@ -313,11 +313,24 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
       <header className="topBar">
         <a className="brand" href="/dashboard" aria-label="Squirrel! dashboard home">
           <img src="/squirrel_logo.png" alt="" className="brandLogo" />
-          <span className="brandName">Squirrel!</span>
+          <span className="brandCopy">
+            <span className="brandName">Squirrel!</span>
+            <span className="brandTagline">For brains running 27 tabs, zero memory, and one song on repeat in a tab you’ll never find.</span>
+          </span>
         </a>
 
         <nav className="appNav" aria-label="Main navigation">
-          <a href="#dashboard" className="active">Dashboard</a>
+          <a
+            href="#get-squirrelly"
+            className="active"
+            onClick={(event) => {
+              event.preventDefault();
+              document.querySelector<HTMLElement>("#get-squirrelly")?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
+              window.setTimeout(() => document.querySelector<HTMLInputElement>("#squirrelly-capture")?.focus(), reducedMotion ? 0 : 450);
+            }}
+          >
+            Let’s get squirrelly
+          </a>
           <a href="#calendar">Calendar</a>
           <a href="#school">School</a>
           <a href="#settings">Sensory</a>
@@ -344,9 +357,8 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
             </div>
           </section>
 
-          <section className="tabStatusCallout" aria-label="Squirrel! brain status">
+          <section className="tabStatusCallout" aria-label="Squirrel! promise">
             <span className="tabStatusChrome" aria-hidden="true"><i /><i /><i /></span>
-            <p>For brains running 27 tabs, zero memory, and one song on repeat you’ll never find.</p>
             <strong>You bring the genius, Squirrel! handles the rest.</strong>
           </section>
 

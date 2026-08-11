@@ -117,11 +117,11 @@ export function DashboardTools() {
   };
 
   return (
-    <section className="externalBrain" aria-label="Do this next and quick capture">
+    <section className="externalBrain" id="get-squirrelly" aria-label="Do this next and quick capture">
       <form className="squirrelCapture" onSubmit={submitCapture}>
-        <label><span className="eyebrow">Stash it before it escapes</span><input value={capture} onChange={(event) => setCapture(event.target.value)} placeholder="Buy toothpaste, exam Friday, ask Lee about dinner…" /></label>
+        <label><span className="eyebrow">Stash it before it escapes</span><input id="squirrelly-capture" value={capture} onChange={(event) => setCapture(event.target.value)} placeholder="Buy toothpaste, exam Friday, ask Lee about dinner…" /></label>
         <button type="submit">Stash it</button>
-        <small>Before the thought wanders off and leaves you standing in the kitchen with no known objective.</small>
+        <small>Before the thought wanders off and leaves you staring into the open refrigerator for answers.</small>
       </form>
       {message && <p className="brainMessage" role="status">{message}</p>}
 

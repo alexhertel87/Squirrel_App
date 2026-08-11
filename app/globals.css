@@ -150,7 +150,13 @@ h3 {
 
 .brand {
   gap: 10px;
-  min-width: max-content;
+  min-width: min(490px, 42vw);
+}
+
+.brandCopy {
+  display: grid;
+  gap: 5px;
+  max-width: 420px;
 }
 
 .brandLogo {
@@ -178,6 +184,15 @@ h3 {
     0 2px 8px rgba(239, 81, 94, 0.12),
     0 1px 6px rgba(47, 187, 228, 0.18);
   white-space: nowrap;
+}
+
+.brandTagline {
+  max-width: 410px;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.025em;
+  line-height: 1.28;
 }
 
 .appNav {
@@ -302,7 +317,7 @@ h3 {
 
 .tabStatusCallout {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) minmax(240px, auto);
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 15px;
   padding: 15px 18px;
@@ -315,8 +330,7 @@ h3 {
 .tabStatusChrome i { width: 9px; height: 9px; border-radius: 50%; background: var(--color-accent-pink); }
 .tabStatusChrome i:nth-child(2) { background: #f0b54a; }
 .tabStatusChrome i:nth-child(3) { background: #58b99a; }
-.tabStatusCallout p { color: var(--color-muted); font-size: 1rem; line-height: 1.4; }
-.tabStatusCallout strong { color: color-mix(in srgb, var(--color-accent-pink) 72%, var(--color-ink)); font-size: 1.02rem; line-height: 1.35; }
+.tabStatusCallout strong { color: color-mix(in srgb, var(--color-accent-pink) 72%, var(--color-ink)); font-size: 1.02rem; line-height: 1.35; text-align: center; }
 
 .heroPanel .heroSubtagline {
   margin: 0 0 16px;
@@ -1315,6 +1329,8 @@ button:disabled {
 .syllabusSuggestions article > div:last-child { display: flex; gap: 7px; }
 
 @media (max-width: 1180px) {
+  .brand { min-width: min(490px, 68vw); }
+
   .topBar {
     align-items: flex-start;
     flex-wrap: wrap;
@@ -1394,6 +1410,18 @@ button:disabled {
 }
 
 @media (max-width: 540px) {
+  .brand {
+    min-width: 100%;
+    align-items: flex-start;
+  }
+
+  .brandCopy { max-width: calc(100% - 58px); }
+
+  .brandTagline {
+    font-size: 0.68rem;
+    line-height: 1.3;
+  }
+
   .brandLogo {
     width: 48px;
     height: 48px;
