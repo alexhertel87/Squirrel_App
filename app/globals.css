@@ -631,6 +631,24 @@ button:disabled {
   grid-template-columns: minmax(76px, auto) minmax(0, 1fr) auto;
 }
 
+.calendarManager > summary {
+  display: grid;
+  gap: 3px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--color-surface-soft);
+  cursor: pointer;
+  list-style: none;
+}
+
+.calendarManager > summary::-webkit-details-marker { display: none; }
+.calendarManager > summary::after { content: "+"; grid-column: 2; grid-row: 1 / span 2; align-self: center; color: var(--color-primary); font-size: 1.4rem; font-weight: 850; }
+.calendarManager[open] > summary::after { content: "−"; }
+.calendarManager > summary span { grid-column: 1; color: var(--color-ink); font-weight: 850; }
+.calendarManager > summary small { grid-column: 1; color: var(--color-muted); line-height: 1.35; }
+.calendarManager[open] > summary { margin-bottom: 14px; }
+
 .editEventButton {
   min-height: 34px;
   padding: 4px 10px;

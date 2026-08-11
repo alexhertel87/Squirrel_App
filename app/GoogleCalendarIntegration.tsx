@@ -9,8 +9,6 @@ type CalendarDay = {
   isToday: boolean;
 };
 
-type Deadline = { due: string; title: string; detail: string };
-
 type CalendarEvent = {
   id: string;
   summary: string;
@@ -137,11 +135,9 @@ function eventLabels(event: CalendarEvent) {
 export function GoogleCalendarIntegration({
   monthLabel,
   calendarDays,
-  deadlines,
 }: {
   monthLabel: string;
   calendarDays: CalendarDay[];
-  deadlines: Deadline[];
 }) {
   const [status, setStatus] = useState<CalendarStatus | null>(null);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -268,7 +264,7 @@ export function GoogleCalendarIntegration({
   const configured = status?.configured !== false;
 
   return (
-    <section className="twoColumn calendarLayout" id="calendar" aria-label="Google Calendar and deadlines">
+    <section className="twoColumn calendarLayout" id="calendar" aria-label="Google Calendar tools">
       <article className="panel">
         <div className="panelHeader">
           <div>
@@ -340,10 +336,9 @@ export function GoogleCalendarIntegration({
       <article className="panel" id="agenda">
         <div className="panelHeader">
           <div>
-            <p className="eyebrow">Coming Up</p>
-            <h2>Schedule & Deadlines</h2>
+            <p className="eyebrow">Calendar tools</p>
+            <h2>Add or change plans</h2>
           </div>
-          <span className="countPill">{events.length + deadlines.length}</span>
         </div>
 
         {message && <p className="calendarMessage" role="status">{message}</p>}
@@ -404,8 +399,13 @@ export function GoogleCalendarIntegration({
             </button>
           </form>
         ) : (
-          <div className="agendaStack">
-            <section>
+          <details className="calendarManager" open={!connected || events.length === 0}>
+            <summary>
+              <span>Manage Google Calendar events</span>
+              <small>{connected ? `${events.length} event${events.length === 1 ? "" : "s"} available to edit` : "Connect your calendar to add or edit plans"}</small>
+            </summary>
+            <div className="agendaStack">
+              <section>
               <div className="agendaSectionHeading">
                 <h3>Calendar Events</h3>
                 {connected && <button type="button" onClick={openNewEvent}>+ Add event</button>}
@@ -446,21 +446,9 @@ export function GoogleCalendarIntegration({
                   </div>
                 );
               })}
-            </section>
-
-            <section>
-              <h3>Due Dates & Deadlines</h3>
-              {deadlines.map((deadline) => (
-                <div className="agendaItem" key={deadline.title}>
-                  <span>{deadline.due}</span>
-                  <div>
-                    <strong>{deadline.title}</strong>
-                    <small>{deadline.detail}</small>
-                  </div>
-                </div>
-              ))}
-            </section>
-          </div>
+              </section>
+            </div>
+          </details>
         )}
       </article>
     </section>

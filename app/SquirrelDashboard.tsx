@@ -68,12 +68,6 @@ const meds = [
   { name: "Sleep Support", dose: "5mg", status: "Tonight" },
 ];
 
-const deadlines = [
-  { due: "Today", title: "Upload Lecture Notes", detail: "Course documents" },
-  { due: "Thu", title: "Statistics Problem Set", detail: "Homework planner" },
-  { due: "Fri", title: "Medication Refill", detail: "Reminder" },
-];
-
 const searchRecords: SearchRecord[] = [
   {
     id: "dose-2025",
@@ -390,7 +384,6 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
           <GoogleCalendarIntegration
             monthLabel={monthLabel}
             calendarDays={calendarDays}
-            deadlines={deadlines}
           />
 
           <section className="twoColumn" aria-label="Medication and tasks">

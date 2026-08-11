@@ -55,7 +55,9 @@ test("server-renders the protected Squirrel dashboard for a signed-in user", asy
   assert.match(html, /I’m stuck/);
   assert.match(html, /Acorn Pile/);
   assert.match(html, /Connect Google Calendar/);
-  assert.match(html, /Coming Up/);
+  assert.match(html, /Add or change plans/);
+  assert.match(html, /Manage Google Calendar events/);
+  assert.doesNotMatch(html, /Schedule &amp; Deadlines|Due Dates &amp; Deadlines/);
   assert.match(html, /Sidebox/);
   assert.match(html, /School stuff, minus the digital junk drawer\./);
   assert.match(html, /ADHD &amp; RSD Tips/);
