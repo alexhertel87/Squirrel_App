@@ -300,6 +300,24 @@ h3 {
   line-height: 1.45;
 }
 
+.tabStatusCallout {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(240px, auto);
+  align-items: center;
+  gap: 15px;
+  padding: 15px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--color-surface-soft) 82%, transparent), var(--color-surface));
+  box-shadow: var(--shadow-soft);
+}
+.tabStatusChrome { display: flex; gap: 5px; }
+.tabStatusChrome i { width: 9px; height: 9px; border-radius: 50%; background: var(--color-accent-pink); }
+.tabStatusChrome i:nth-child(2) { background: #f0b54a; }
+.tabStatusChrome i:nth-child(3) { background: #58b99a; }
+.tabStatusCallout p { color: var(--color-muted); font-size: 1rem; line-height: 1.4; }
+.tabStatusCallout strong { color: color-mix(in srgb, var(--color-accent-pink) 72%, var(--color-ink)); font-size: 1.02rem; line-height: 1.35; }
+
 .heroPanel .heroSubtagline {
   margin: 0 0 16px;
   color: color-mix(in srgb, var(--color-accent-lavender) 78%, var(--color-ink));
@@ -1367,6 +1385,7 @@ button:disabled {
   .squirrelCapture { grid-template-columns: 1fr; }
   .squirrelCapture > small { grid-column: auto; }
   .sideQuestCapture { grid-template-columns: 1fr; }
+  .tabStatusCallout { grid-template-columns: 1fr; }
   .attentionHeader { align-items: stretch; flex-direction: column; }
   .attentionActions { justify-content: flex-start; }
   .attentionCounts { grid-template-columns: 1fr; }

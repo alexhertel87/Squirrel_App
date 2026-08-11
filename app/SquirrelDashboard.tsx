@@ -330,7 +330,6 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
         <section className="dashboardContent" aria-label="Squirrel! dashboard preview">
           <section className="heroPanel">
             <div>
-              <p className="eyebrow">For brains running 27 tabs, zero memory, and one song on repeat in a tab you’ll never find.</p>
               <h1>Acorns first. Side quest later.</h1>
               <p className="heroSubtagline">Because “I’ll remember” is how we got here.</p>
               <p>
@@ -343,6 +342,12 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
               <button type="button">New Medication</button>
               <button type="button">Add A New Task</button>
             </div>
+          </section>
+
+          <section className="tabStatusCallout" aria-label="Squirrel! brain status">
+            <span className="tabStatusChrome" aria-hidden="true"><i /><i /><i /></span>
+            <p>For brains running 27 tabs, zero memory, and one song on repeat you’ll never find.</p>
+            <strong>You bring the genius, Squirrel! handles the rest.</strong>
           </section>
 
           <DashboardTools />
