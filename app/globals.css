@@ -235,6 +235,7 @@ h3 {
 }
 
 .appNav a em {
+  margin-left: 0.18em;
   font-family: Georgia, "Times New Roman", serif;
   font-style: italic;
   font-weight: 850;
@@ -355,10 +356,14 @@ h3 {
   color: #ffffff;
 }
 
-.heroActions .heroSecondaryAction {
+.heroActions button.heroSecondaryAction {
   border: 1px solid var(--color-input-border);
-  background: transparent;
+  background: var(--color-surface);
   color: var(--color-ink);
+}
+
+.heroActions button.heroSecondaryAction:hover {
+  background: var(--color-surface-soft);
 }
 
 .summaryGrid,
