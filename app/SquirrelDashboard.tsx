@@ -1,10 +1,15 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element */
-import { CSSProperties, FormEvent, useEffect, useMemo, useState } from "react";
+import { CSSProperties, FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { GoogleCalendarIntegration } from "./GoogleCalendarIntegration";
+import { AccountMenu, ProfilePreferences } from "./AccountMenu";
+import { SchoolWorkspace } from "./SchoolWorkspace";
+import { DashboardTools } from "./DashboardTools";
+import type { ChatGPTUser } from "./chatgpt-auth";
 
-type DisplayMode = "search" | "affirmation" | "fact" | "focus" | "reset" | "checklist";
+type DisplayMode = "now" | "search" | "affirmation" | "fact" | "tip" | "focus" | "reset" | "checklist";
+type TipCategory = "daily" | "momentum" | "rsd" | "rest";
 
 type SearchRecord = {
   id: string;
@@ -140,6 +145,29 @@ const affirmations = [
 
 const checklist = ["Drink Water", "Check Calendar", "Pick Next Task", "Open Notes"];
 
+const adhdTips: Record<TipCategory, { title: string; body: string; nudge: string }[]> = {
+  daily: [
+    { title: "Put the finish line where you can see it.", body: "Define what 'done enough' looks like before starting. An open-ended task is an invitation for the brain to wander.", nudge: "Write one sentence that begins: Done means…" },
+    { title: "Borrow momentum from something easy.", body: "One tiny completed action can make the next action feel more available. This is activation support, not cheating.", nudge: "Do the two-minute piece first." },
+    { title: "Make the reminder impossible to admire and ignore.", body: "Put the needed object in the path of your future self—by the door, on the keyboard, or beside the coffee.", nudge: "Move one reminder into your path." },
+  ],
+  momentum: [
+    { title: "Shrink it until your brain stops arguing.", body: "If the task still feels heavy, the first step is still too large. 'Open the document' is a legitimate task.", nudge: "Name a step that takes under two minutes." },
+    { title: "Use a body double—even a quiet one.", body: "Working near another person, on video, or beside a focus stream can give your attention a gentle rail to run on.", nudge: "Invite someone or start a quiet focus session." },
+    { title: "Race the kettle, not the whole project.", body: "A short playful sprint can bypass the pressure of committing to a massive work block.", nudge: "Set a seven-minute timer and see what happens." },
+  ],
+  rsd: [
+    { title: "A feeling can be loud without being a verdict.", body: "Rejection sensitivity can make uncertainty feel like proof. Pause before turning a delayed reply or neutral tone into a story about your worth.", nudge: "List two explanations that are not about you." },
+    { title: "Regulate first; interpret later.", body: "When the emotional alarm is blaring, analysis usually gets harsher. Give your nervous system ten minutes before rereading the message.", nudge: "Step away, breathe out longer than in, then return." },
+    { title: "Ask for the missing information.", body: "A clear, low-stakes question is kinder than making yourself solve ambiguity alone.", nudge: "Try: 'Could you clarify what you’d like changed?'" },
+  ],
+  rest: [
+    { title: "Zoning out can be the treat.", body: "You are allowed to let your brain idle on purpose. Rest does not need to become optimized, educational, or secretly productive.", nudge: "Take ten guilt-free minutes with no improvement goal." },
+    { title: "A raccoon break still counts as recovery.", body: "Snack, stare out the window, inspect a shiny object, or lie on the floor. The method can be silly if it helps your system settle.", nudge: "Pick the least impressive form of rest you want." },
+    { title: "Stop before empty when you can.", body: "Rest is easier to use when it arrives before total depletion. You do not have to earn the break by becoming nonfunctional.", nudge: "Schedule a pause while you still have 20% left." },
+  ],
+};
+
 function formatDateKey(date: Date) {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
@@ -186,9 +214,9 @@ function matchesRecord(record: SearchRecord, query: string) {
     .some((token) => haystack.includes(token));
 }
 
-export function SquirrelDashboard() {
+export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: ChatGPTUser; signOutPath: string }) {
   const [now, setNow] = useState<Date | null>(null);
-  const [displayMode, setDisplayMode] = useState<DisplayMode>("search");
+  const [displayMode, setDisplayMode] = useState<DisplayMode>("now");
   const [searchQuery, setSearchQuery] = useState("");
   const [factTopics, setFactTopics] = useState(Object.keys(factText));
   const [factTopic, setFactTopic] = useState("Science");
@@ -197,6 +225,13 @@ export function SquirrelDashboard() {
   const [darkMode, setDarkMode] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [tipCategory, setTipCategory] = useState<TipCategory>("daily");
+
+  const applyPreferences = useCallback((preferences: ProfilePreferences) => {
+    setDarkMode(preferences.darkMode);
+    setHighContrast(preferences.highContrast);
+    setReducedMotion(preferences.reducedMotion);
+  }, []);
 
   useEffect(() => {
     const updateNow = () => setNow(new Date());
@@ -275,7 +310,7 @@ export function SquirrelDashboard() {
       style={{ "--logo-gradient": `linear-gradient(90deg, ${logoStops.join(", ")})` } as CSSProperties}
     >
       <header className="topBar">
-        <a className="brand" href="#dashboard" aria-label="Squirrel dashboard home">
+        <a className="brand" href="/dashboard" aria-label="Squirrel dashboard home">
           <img src="/squirrel_logo.png" alt="" className="brandLogo" />
           <span className="brandName">Squirrel!</span>
         </a>
@@ -287,7 +322,7 @@ export function SquirrelDashboard() {
           <a href="#settings">Sensory</a>
         </nav>
 
-        <button className="loginButton" type="button">Demo Mode</button>
+        <AccountMenu user={initialUser} signOutPath={signOutPath} preferences={{ darkMode, highContrast, reducedMotion }} onPreferences={applyPreferences} />
       </header>
 
       <div className="dashboardShell" id="dashboard">
@@ -295,7 +330,8 @@ export function SquirrelDashboard() {
           <section className="heroPanel">
             <div>
               <p className="eyebrow">Gentle daily support</p>
-              <h1>Start with the next kind thing.</h1>
+              <h1>Acorns first. Side quest later.</h1>
+              <p className="heroSubtagline">Because “I’ll remember” is how we got here.</p>
               <p>
                 Meds, routines, school, tasks, and reminders in one calmer place,
                 with search and sensory controls close at hand.
@@ -307,6 +343,8 @@ export function SquirrelDashboard() {
               <button type="button">Add A New Task</button>
             </div>
           </section>
+
+          <DashboardTools />
 
           <section className="summaryGrid" aria-label="Today summary">
             <article className="summaryCard">
@@ -329,22 +367,6 @@ export function SquirrelDashboard() {
               <strong>Google</strong>
               <p>See, create, and gently adjust events you own.</p>
             </article>
-          </section>
-
-          <section className="currentTaskBanner" aria-label="Current task">
-            <div>
-              <p className="eyebrow">Current Task</p>
-              <strong>{currentTask.title}</strong>
-              <span>{currentTask.meta}</span>
-            </div>
-            <label>
-              <span className="visuallyHidden">Choose current task</span>
-              <select value={currentTaskId} onChange={(event) => setCurrentTaskId(event.target.value)}>
-                {tasks.map((task) => (
-                  <option key={task.id} value={task.id}>{task.title}</option>
-                ))}
-              </select>
-            </label>
           </section>
 
           <GoogleCalendarIntegration
@@ -404,40 +426,7 @@ export function SquirrelDashboard() {
             </article>
           </section>
 
-          <section className="panel schoolPanel" id="school" aria-label="School and documents">
-            <div>
-              <p className="eyebrow">School & Documents</p>
-              <h2>One calm home for classes, documents, and deadlines.</h2>
-              <p>
-                Keep courses, lecture files, syllabi, assignments, and deadlines in one
-                organized place without turning school into a scavenger hunt.
-              </p>
-            </div>
-
-            <div className="schoolGrid">
-              <div>
-                <span>Course</span>
-                <strong>Chemistry 201</strong>
-                <small>Spring 2026</small>
-              </div>
-              <div>
-                <span>Repository</span>
-                <strong>Lecture Slides</strong>
-                <small>Sorted by course, semester, and year</small>
-              </div>
-              <div>
-                <span>Planner</span>
-                <strong>3 Assignments</strong>
-                <small>Upcoming homework and exam prep</small>
-              </div>
-            </div>
-
-            <div className="schoolActions">
-              <button type="button">Upload Document</button>
-              <button type="button">Add Class</button>
-              <button type="button">Add Assignment</button>
-            </div>
-          </section>
+          <SchoolWorkspace />
 
           <section className="settingsPanel" id="settings" aria-label="Sensory-friendly settings">
             <div>
@@ -472,14 +461,25 @@ export function SquirrelDashboard() {
           <label className="field">
             <span>Show</span>
             <select value={displayMode} onChange={(event) => setDisplayMode(event.target.value as DisplayMode)}>
+              <option value="now">Now / Next</option>
               <option value="search">Search</option>
               <option value="affirmation">Daily Affirmation</option>
               <option value="fact">Daily Fact</option>
+              <option value="tip">ADHD & RSD Tips</option>
               <option value="focus">Focus Prompt</option>
               <option value="reset">Quick Reset</option>
               <option value="checklist">Gentle Checklist</option>
             </select>
           </label>
+
+          {displayMode === "now" && (
+            <section className="sideCard nowNextCard">
+              <span>Now / Next</span>
+              <strong>{currentTask.title}</strong>
+              <p>{currentTask.meta}. If that feels like too much, use “Give me something easier” in the Do This Next card.</p>
+              <div className="nowNextSteps"><small>Now</small><p>Make one visible move.</p><small>Then</small><p>Check the calendar before choosing another acorn.</p></div>
+            </section>
+          )}
 
           {displayMode === "search" && (
             <section className="sideboxMode">
@@ -565,6 +565,25 @@ export function SquirrelDashboard() {
                 <strong>{fact}</strong>
                 <p>Topic preferences are saved in this preview session.</p>
               </section>
+            </section>
+          )}
+
+          {displayMode === "tip" && (
+            <section className="sideboxMode">
+              <label className="field">
+                <span>What would help?</span>
+                <select value={tipCategory} onChange={(event) => setTipCategory(event.target.value as TipCategory)}>
+                  <option value="daily">Daily mix</option>
+                  <option value="momentum">Getting unstuck</option>
+                  <option value="rsd">RSD recovery</option>
+                  <option value="rest">Rest & zoning out</option>
+                </select>
+              </label>
+              {(() => {
+                const tips = adhdTips[tipCategory];
+                const tip = tips[(now?.getDate() ?? 0) % tips.length];
+                return <section className="sideCard tipCard"><span>{tipCategory === "daily" ? "Today’s brain-friendly tip" : tipCategory}</span><strong>{tip.title}</strong><p>{tip.body}</p><div className="tipNudge"><small>Try this</small><p>{tip.nudge}</p></div></section>;
+              })()}
             </section>
           )}
 

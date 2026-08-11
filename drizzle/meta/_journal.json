@@ -8,6 +8,20 @@
       "when": 1786428747399,
       "tag": "0000_material_typhoid_mary",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1786435078110,
+      "tag": "0001_thankful_cassandra_nova",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1786435560688,
+      "tag": "0002_fast_valkyrie",
+      "breakpoints": true
     }
   ]
 }

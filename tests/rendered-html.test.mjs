@@ -22,19 +22,40 @@ async function render(pathname = "/", headers = { accept: "text/html" }) {
   );
 }
 
-test("server-renders the Squirrel dashboard shell", async () => {
+test("server-renders the public Squirrel welcome page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
   assert.match(html, /<title>Squirrel! Dashboard<\/title>/i);
-  assert.match(html, /Start with the next kind thing\./);
+  assert.match(html, /Your day does not have to live entirely in your head\./);
+  assert.match(html, /Sign in to Squirrel/);
+  assert.match(html, /Private by default/);
+  assert.doesNotMatch(html, /Demo Mode/);
+});
+
+test("server-renders the protected Squirrel dashboard for a signed-in user", async () => {
+  const response = await render("/dashboard", {
+    accept: "text/html",
+    "oai-authenticated-user-id": "test-user",
+    "oai-authenticated-user-email": "alex@example.com",
+  });
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /Acorns first\. Side quest later\./);
+  assert.match(html, /Because “I’ll remember” is how we got here\./);
+  assert.match(html, /Squirrel this/);
+  assert.match(html, /Do this next/);
+  assert.match(html, /I’m stuck/);
+  assert.match(html, /Acorn Pile/);
   assert.match(html, /Connect Google Calendar/);
   assert.match(html, /Coming Up/);
   assert.match(html, /Sidebox/);
-  assert.match(html, /One calm home for classes, documents, and deadlines\./);
+  assert.match(html, /Courses, assignments, and lecture files—actually findable\./);
+  assert.match(html, /ADHD &amp; RSD Tips/);
   assert.doesNotMatch(html, /react-loading-skeleton|codex-preview|Your site is taking shape/i);
+  assert.doesNotMatch(html, /Demo Mode/);
 });
 
 test("calendar status stays safely unavailable until Google credentials are configured", async () => {
@@ -58,4 +79,12 @@ test("calendar API rejects an unsigned-in request", async () => {
   });
   assert.equal(response.status, 401);
   assert.equal((await response.json()).code, "squirrel_sign_in_required");
+});
+
+test("academic and profile APIs reject unsigned-in requests", async () => {
+  for (const path of ["/api/academic", "/api/profile", "/api/acorns", "/api/academic/files/search?q=lecture"]) {
+    const response = await render(path, { accept: "application/json" });
+    assert.equal(response.status, 401);
+    assert.equal((await response.json()).code, "squirrel_sign_in_required");
+  }
 });
