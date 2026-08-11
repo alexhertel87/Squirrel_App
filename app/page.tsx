@@ -20,36 +20,59 @@ export default async function Home() {
 
       <section className="welcomeHero">
         <div className="welcomeCopy">
-          <p className="eyebrow">External brain. Internal chaos.</p>
-          <h1>Your brain has enough tabs open.</h1>
+          <p className="eyebrow">For brains with 27 pages open.</p>
+          <h1>One acorn. Not the whole forest.</h1>
           <p className="welcomeLead">
-            Squirrel! keeps the calendar, courses, tasks, files, and tiny obligations you were
-            absolutely going to remember.
+            Squirrel! is a free web app that brings your calendar, courses, medications, tasks,
+            and files together—then gives you one next move instead of another list to negotiate with.
           </p>
           <div className="welcomeActions">
             <a href={chatGPTSignInPath("/dashboard")}>Sign in to Squirrel!</a>
-            <span>Already signed in? Straight to the dashboard. No ceremonial button-clicking.</span>
+            <span>Already signed in? Straight to your dashboard. No ceremonial button-clicking.</span>
           </div>
           <p className="welcomePrivacy">Your acorns stay yours. Everyone gets their own private profile, calendar, classes, and files.</p>
         </div>
 
-        <div className="welcomePreview" aria-label="Squirrel! feature preview">
+        <div className="welcomePreview" aria-label="Squirrel! one-acorn engine preview">
           <div className="welcomePreviewHeader">
             <span>Today, allegedly</span>
-            <strong>One thing. Then the next suspiciously urgent thing.</strong>
+            <strong>Your actual next move—not the entire backlog.</strong>
+            <small>Squirrel! picks one useful acorn. Too much? Ask for something easier without rebuilding your whole day.</small>
           </div>
-          <div className="welcomePreviewGrid">
-            <article><span>Calendar</span><strong>Schedule without tab archaeology</strong><small>Your actual events, all in one place. Wild concept.</small></article>
-            <article><span>School</span><strong>Course chaos, contained</strong><small>Terms, assignments, and lecture files.</small></article>
-            <article><span>Display</span><strong>Less visual yelling</strong><small>Dark mode, higher contrast, and reduced motion.</small></article>
-          </div>
+          <article className="welcomeAcornCard">
+            <span>Do this next</span>
+            <strong>Upload lecture notes</strong>
+            <div className="welcomeAcornPills"><small>Medium energy</small><small>15 min</small><small>Brain: some</small></div>
+            <p>One acorn. The rest can wait outside.</p>
+            <div className="welcomeAcornActions"><b>Start Squirrel! Mode</b><em>Something easier</em></div>
+          </article>
         </div>
       </section>
 
+      <section className="welcomeFeatureIntro">
+        <p className="eyebrow">The useful parts</p>
+        <h2>Built for choosing, remembering, switching, and starting.</h2>
+        <p>Not just storing more things in a prettier list.</p>
+      </section>
+
       <section className="welcomeFeatures" aria-label="What Squirrel! brings together">
-        <article><span>01</span><h2>Your brain is not a filing cabinet</h2><p>Squirrel! holds the dates, files, and follow-ups so you can use your brain for literally anything else.</p></article>
-        <article><span>02</span><h2>Organization without the crashout</h2><p>Courses, assignments, and lecture files stay in one place—because we don’t have time to keep going back to the other room to remember why we went in there.</p></article>
-        <article><span>03</span><h2>Settings that remember you</h2><p>Set your profile and display preferences once. Squirrel! keeps them, because that is the entire point.</p></article>
+        <article><span>01 · Medications</span><h2>XR isn’t IR. Squirrel! knows the difference.</h2><p>Keep the medication, formulation, dose, and daily check-in together instead of flattening every prescription into “took pill.”</p></article>
+        <article><span>02 · Calendar</span><h2>Spot the double-booking before it spots you.</h2><p>Bring in your Google Calendar, see what is sneaking up, and add or adjust plans without opening six more pages.</p></article>
+        <article><span>03 · School</span><h2>Search the document—not your entire digital life.</h2><p>Organize courses by term, track assignments, and search lecture PDFs or PowerPoints by filename and contents.</p></article>
+        <article><span>04 · Display</span><h2>Less visual yelling. Same useful information.</h2><p>Dark mode, higher contrast, reduced motion, and saved preferences make the dashboard easier to come back to.</p></article>
+      </section>
+
+      <section className="welcomeSincere" aria-label="Why Squirrel! exists">
+        <p className="eyebrow">Why this exists</p>
+        <h2>Built by someone with the same brain.</h2>
+        <p>Squirrel! is shaped around the executive-function problems I actually run into—not around pretending a color-coded list will fix choosing paralysis.</p>
+      </section>
+
+      <section className="welcomeClosing">
+        <p>For the ideas worth keeping, the plans worth protecting, and the medication formulation that absolutely matters.</p>
+        <h2>You bring the genius, Squirrel! handles the rest.</h2>
+        <a href={chatGPTSignInPath("/dashboard")}>Let&apos;s get Squirrelly!</a>
+        <small>Free to use during the Squirrel! public beta.</small>
       </section>
     </main>
   );

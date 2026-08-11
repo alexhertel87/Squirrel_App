@@ -13,7 +13,7 @@
   --color-primary-hover: #185d78;
   --color-secondary: #ffd7ec;
   --color-secondary-hover: #ffc7e4;
-  --color-accent-pink: #d15aad;
+  --color-accent-pink: #b44691;
   --color-accent-blue: #36bde8;
   --color-accent-lavender: #6b5fb3;
   --control-height: 44px;
@@ -55,6 +55,7 @@ body.theme-dark {
   --color-primary-hover: #a9e9f8;
   --color-secondary: #4a2943;
   --color-secondary-hover: #603456;
+  --color-accent-pink: #f18acb;
   --color-accent-lavender: #c4baff;
   --shadow-soft: 0 10px 24px rgba(0, 0, 0, 0.28);
   background:
@@ -1003,7 +1004,8 @@ button:disabled {
 }
 
 .welcomeSignIn,
-.welcomeActions a {
+.welcomeActions a,
+.welcomeClosing a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1090,13 +1092,41 @@ button:disabled {
 }
 
 .welcomePreviewHeader strong { font-size: 1.5rem; }
+.welcomePreviewHeader small { color: var(--color-muted); font-size: 0.96rem; line-height: 1.45; }
 .welcomePreviewGrid { display: grid; gap: 10px; }
 .welcomePreviewGrid strong { font-size: 1.08rem; }
 .welcomePreviewGrid small { color: var(--color-muted); font-size: 0.94rem; line-height: 1.4; }
 
+.welcomeAcornCard {
+  display: grid;
+  gap: 12px;
+  padding: 22px;
+  border: 1px solid color-mix(in srgb, var(--color-accent-blue) 48%, var(--color-border));
+  border-radius: 18px;
+  background: radial-gradient(circle at top right, rgba(255, 215, 236, 0.62), transparent 18rem), var(--color-surface);
+}
+
+.welcomeAcornCard > span { color: var(--color-accent-lavender); font-size: 0.8rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+.welcomeAcornCard > strong { font-size: clamp(1.7rem, 3vw, 2.35rem); letter-spacing: -0.025em; line-height: 1.05; }
+.welcomeAcornCard > p { color: var(--color-muted); line-height: 1.4; }
+.welcomeAcornPills { display: flex; flex-wrap: wrap; gap: 6px; }
+.welcomeAcornPills small { padding: 5px 8px; border: 1px solid var(--color-border); border-radius: 99px; background: var(--color-surface-soft); color: var(--color-ink); font-weight: 750; }
+.welcomeAcornActions { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.welcomeAcornActions b { display: inline-flex; justify-content: center; min-height: 42px; align-items: center; padding: 2px 12px 0; border-radius: var(--control-radius); background: var(--color-primary); color: #fff; }
+.welcomeAcornActions em { color: var(--color-muted); font-size: 0.88rem; font-style: normal; text-decoration: underline; text-underline-offset: 3px; }
+
+.welcomeFeatureIntro {
+  max-width: 850px;
+  margin: 10px auto 24px;
+  text-align: center;
+}
+
+.welcomeFeatureIntro h2 { margin: 9px 0; font-size: clamp(2rem, 4vw, 3.25rem); letter-spacing: -0.035em; line-height: 1.04; }
+.welcomeFeatureIntro > p:not(.eyebrow) { color: var(--color-muted); font-size: 1.1rem; }
+
 .welcomeFeatures {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -1109,9 +1139,28 @@ button:disabled {
   box-shadow: var(--shadow-soft);
 }
 
-.welcomeFeatures article > span { color: var(--color-accent-pink); font-weight: 700; }
-.welcomeFeatures h2 { margin: 28px 0 10px; font-size: 1.55rem; }
+.welcomeFeatures article > span { color: var(--color-accent-pink); font-size: 0.82rem; font-weight: 850; letter-spacing: 0.05em; text-transform: uppercase; }
+.welcomeFeatures h2 { margin: 22px 0 10px; font-size: 1.55rem; }
 .welcomeFeatures p { color: var(--color-muted); line-height: 1.5; }
+
+.welcomeSincere,
+.welcomeClosing {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin-top: 44px;
+  padding: clamp(34px, 6vw, 70px);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  text-align: center;
+}
+
+.welcomeSincere { background: var(--color-surface-soft); }
+.welcomeSincere h2, .welcomeClosing h2 { max-width: 850px; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -0.04em; line-height: 1.04; }
+.welcomeSincere > p:not(.eyebrow) { max-width: 720px; color: var(--color-muted); font-size: 1.08rem; line-height: 1.55; }
+.welcomeClosing { background: var(--color-panel); }
+.welcomeClosing > p { max-width: 720px; color: var(--color-muted); font-size: 1.05rem; line-height: 1.5; }
+.welcomeClosing > small { color: var(--color-muted); }
 
 /* Account and profile */
 .accountMenu { position: relative; min-width: 190px; }
@@ -1456,6 +1505,9 @@ button:disabled {
     font-size: 0.68rem;
     line-height: 1.3;
   }
+
+  .welcomeAcornActions { grid-template-columns: 1fr; }
+  .welcomeAcornActions em { justify-self: start; }
 
   .brandLogo {
     width: 48px;

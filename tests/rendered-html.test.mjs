@@ -29,7 +29,11 @@ test("server-renders the public Squirrel welcome page", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>Squirrel!<\/title>/i);
-  assert.match(html, /Your brain has enough tabs open\./);
+  assert.match(html, /One acorn\. Not the whole forest\./);
+  assert.match(html, /Squirrel! is a free web app/);
+  assert.match(html, /XR isn’t IR\. Squirrel! knows the difference\./);
+  assert.match(html, /Built by someone with the same brain\./);
+  assert.match(html, /You bring the genius, Squirrel! handles the rest\./);
   assert.match(html, /Sign in to Squirrel/);
   assert.match(html, /Your acorns stay yours/);
   assert.doesNotMatch(html, /Demo Mode/);
