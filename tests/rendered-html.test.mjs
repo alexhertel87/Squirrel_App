@@ -45,7 +45,7 @@ test("server-renders the protected Squirrel dashboard for a signed-in user", asy
   const html = await response.text();
   assert.match(html, /Acorns first\. Side quest later\./);
   assert.match(html, /Because “I’ll remember” is how we got here\./);
-  assert.match(html, /For brains running 27 tabs, zero memory, and one song on repeat in a tab you’ll never find\./);
+  assert.match(html, /For brains with 27 pages open, zero memory, and one song on repeat in a tab you’ll never find\./);
   assert.match(html, /Let’s get squirrelly/);
   assert.match(html, /You bring the genius, Squirrel! handles the rest\./);
   assert.match(html, /Stash it before it escapes/);

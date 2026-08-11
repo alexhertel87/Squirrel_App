@@ -187,12 +187,19 @@ h3 {
 }
 
 .brandTagline {
+  display: grid;
+  gap: 2px;
   max-width: 410px;
   color: var(--color-muted);
   font-size: 0.72rem;
   font-weight: 750;
   letter-spacing: 0.025em;
   line-height: 1.28;
+}
+
+.brandTagline strong {
+  color: color-mix(in srgb, var(--color-accent-pink) 72%, var(--color-ink));
+  font-weight: 850;
 }
 
 .appNav {
@@ -314,23 +321,6 @@ h3 {
   font-size: 1.18rem;
   line-height: 1.45;
 }
-
-.tabStatusCallout {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 15px;
-  padding: 15px 18px;
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--color-surface-soft) 82%, transparent), var(--color-surface));
-  box-shadow: var(--shadow-soft);
-}
-.tabStatusChrome { display: flex; gap: 5px; }
-.tabStatusChrome i { width: 9px; height: 9px; border-radius: 50%; background: var(--color-accent-pink); }
-.tabStatusChrome i:nth-child(2) { background: #f0b54a; }
-.tabStatusChrome i:nth-child(3) { background: #58b99a; }
-.tabStatusCallout strong { color: color-mix(in srgb, var(--color-accent-pink) 72%, var(--color-ink)); font-size: 1.02rem; line-height: 1.35; text-align: center; }
 
 .heroPanel .heroSubtagline {
   margin: 0 0 16px;
@@ -1401,7 +1391,6 @@ button:disabled {
   .squirrelCapture { grid-template-columns: 1fr; }
   .squirrelCapture > small { grid-column: auto; }
   .sideQuestCapture { grid-template-columns: 1fr; }
-  .tabStatusCallout { grid-template-columns: 1fr; }
   .attentionHeader { align-items: stretch; flex-direction: column; }
   .attentionActions { justify-content: flex-start; }
   .attentionCounts { grid-template-columns: 1fr; }

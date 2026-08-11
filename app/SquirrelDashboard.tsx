@@ -315,7 +315,10 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
           <img src="/squirrel_logo.png" alt="" className="brandLogo" />
           <span className="brandCopy">
             <span className="brandName">Squirrel!</span>
-            <span className="brandTagline">For brains running 27 tabs, zero memory, and one song on repeat in a tab you’ll never find.</span>
+            <span className="brandTagline">
+              <span>For brains with 27 pages open, zero memory, and one song on repeat in a tab you’ll never find.</span>
+              <strong>You bring the genius, Squirrel! handles the rest.</strong>
+            </span>
           </span>
         </a>
 
@@ -355,11 +358,6 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
               <button type="button">New Medication</button>
               <button type="button">Add A New Task</button>
             </div>
-          </section>
-
-          <section className="tabStatusCallout" aria-label="Squirrel! promise">
-            <span className="tabStatusChrome" aria-hidden="true"><i /><i /><i /></span>
-            <strong>You bring the genius, Squirrel! handles the rest.</strong>
           </section>
 
           <DashboardTools />
