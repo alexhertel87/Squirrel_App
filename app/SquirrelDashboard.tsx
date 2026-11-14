@@ -267,6 +267,10 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
           </span>
         </a>
 
+        <AccountMenu user={initialUser} signOutPath={signOutPath} preferences={{ darkMode, highContrast, reducedMotion, density, textScale, colorIntensity, notificationMode, humorLevel, timerDirection }} onPreferences={applyPreferences} />
+      </header>
+
+      <div className="dashboardShell" id="dashboard">
         <nav className="appNav" aria-label="Main navigation">
           <a
             href="#get-squirrelly"
@@ -276,17 +280,13 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
               scrollToCapture();
             }}
           >
-            <span>Quick Capture</span>
+            <span>Today</span>
           </a>
           <a href="#calendar">Calendar</a>
           <a href="#school">School</a>
           <a href="#settings">Sensory</a>
         </nav>
 
-        <AccountMenu user={initialUser} signOutPath={signOutPath} preferences={{ darkMode, highContrast, reducedMotion, density, textScale, colorIntensity, notificationMode, humorLevel, timerDirection }} onPreferences={applyPreferences} />
-      </header>
-
-      <div className="dashboardShell" id="dashboard">
         <section className="dashboardContent" aria-label="Squirrel! dashboard preview">
           <section className="heroPanel">
             <div>
