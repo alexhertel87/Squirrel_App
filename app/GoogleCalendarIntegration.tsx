@@ -325,7 +325,7 @@ export function GoogleCalendarIntegration({
 
         {connected && (
           <div className="calendarActions">
-            <button type="button" onClick={openNewEvent}>Add calendar event</button>
+            <button type="button" onClick={openNewEvent}>Add Calendar Event</button>
             <button className="quietButton" type="button" onClick={() => void disconnect()} disabled={busy}>
               Disconnect
             </button>
@@ -408,7 +408,7 @@ export function GoogleCalendarIntegration({
               <section>
               <div className="agendaSectionHeading">
                 <h3>Calendar Events</h3>
-                {connected && <button type="button" onClick={openNewEvent}>+ Add event</button>}
+                {connected && <button type="button" onClick={openNewEvent}>+ Add Event</button>}
               </div>
 
               {!connected && (
@@ -426,8 +426,8 @@ export function GoogleCalendarIntegration({
               {connected && !busy && events.length === 0 && (
                 <div className="calendarEmptyState">
                   <strong>No events in the next 30 days.</strong>
-                  <p>Either peaceful or deeply suspicious. Enjoy it while it lasts.</p>
-                  <button type="button" onClick={openNewEvent}>Add an event</button>
+                  <p>No calendar events are scheduled for this day.</p>
+                  <button type="button" onClick={openNewEvent}>Add An Event</button>
                 </div>
               )}
 

@@ -11,6 +11,14 @@ type Acorn = {
   estimatedMinutes: number;
   brainLoad: string;
   source: string;
+  dueAt?: string | null;
+  location?: string | null;
+  firstStep?: string | null;
+  notes?: string | null;
+  priority?: number;
+  context?: string;
+  explanation?: string;
+  smallestStep?: string;
 };
 
 const fallbackAcorns: Acorn[] = [
@@ -20,11 +28,11 @@ const fallbackAcorns: Acorn[] = [
 ];
 
 const stuckHelp = {
-  start: { title: "Make the first move microscopic.", body: "You do not need to do the task. You only need to open the thing, find the page, or put the object in front of you.", action: "Name the two-minute first move" },
-  big: { title: "The task is wearing three tasks in a trench coat.", body: "Pick one visible outcome. Everything after that can remain Future You's suspicious problem.", action: "Choose the smallest useful piece" },
-  exhausted: { title: "Brain oatmeal protocol activated.", body: "A low-energy task is still a real task. Choose something short with almost no decisions—or switch to a keep-the-ship-afloat day.", action: "Give me something easier" },
-  avoiding: { title: "Let’s lower the emotional cover charge.", body: "Try five deliberately imperfect minutes. You are allowed to stop when the timer ends.", action: "Start an intentionally bad draft" },
-  distracted: { title: "Anyway, welcome back.", body: "Capture the side quest, reopen the current task, and restart from the last visible action. No punishment lap required.", action: "Stash it and restart" },
+  start: { title: "Choose a two-minute first step.", body: "You do not need to finish the task now. Open the file, find the page, or place the needed item in front of you.", action: "Write the first step" },
+  big: { title: "Choose one part of the task.", body: "Pick one result you can see when it is finished. Leave the remaining parts for later.", action: "Choose the smallest useful part" },
+  exhausted: { title: "Choose a shorter, easier task.", body: "Low energy changes what is realistic. Choose something brief that requires few decisions, or turn on Low-Energy Day.", action: "Show an easier task" },
+  avoiding: { title: "Try five minutes without aiming for perfect.", body: "Work for five minutes. You may stop when the timer ends, even if the result is unfinished.", action: "Start a five-minute draft" },
+  distracted: { title: "Save the distracting thought, then return.", body: "Add the thought to your inbox, reopen the current task, and continue from the last step you completed.", action: "Save the thought and return" },
 };
 
 async function result(response: Response) {
@@ -41,17 +49,32 @@ export function DashboardTools() {
   const [stuck, setStuck] = useState<keyof typeof stuckHelp | null>(null);
   const [focusAcorn, setFocusAcorn] = useState<Acorn | null>(null);
   const [pileOpen, setPileOpen] = useState(false);
-  const [minimumDay, setMinimumDay] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
+  const [smartSuggestions, setSmartSuggestions] = useState<Acorn[]>([]);
+  const [listening, setListening] = useState(false);
+  const [bodyDouble, setBodyDouble] = useState<{ id: string; shareCode: string } | null>(null);
 
   const load = useCallback(async () => {
     const response = await fetch("/api/acorns", { cache: "no-store" });
     setAcorns((await result(response)).acorns);
+    const suggested = await fetch(`/api/acorns/suggest?date=${new Date().toLocaleDateString("en-CA")}`, { cache: "no-store" });
+    if (suggested.ok) {
+      const body = await suggested.json();
+      setSmartSuggestions([body.suggestion, ...(body.alternatives || [])].filter(Boolean));
+      setSuggestionIndex(0);
+    }
   }, []);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => load().catch(() => setMessage("Your Acorn Pile will connect after storage finishes waking up.")), 0);
+    const timer = window.setTimeout(() => load().catch(() => setMessage("Your task inbox will appear when storage reconnects.")), 0);
     return () => window.clearTimeout(timer);
+  }, [load]);
+
+  useEffect(() => {
+    const refresh = () => void load().catch(() => undefined);
+    window.addEventListener("squirrel:calibration", refresh);
+    window.addEventListener("online", refresh);
+    return () => { window.removeEventListener("squirrel:calibration", refresh); window.removeEventListener("online", refresh); };
   }, [load]);
 
   useEffect(() => {
@@ -64,16 +87,49 @@ export function DashboardTools() {
     const saved = acorns.filter((item) => !["complete", "released"].includes(item.status));
     return saved.length ? saved : fallbackAcorns;
   }, [acorns]);
-  const suggestion = candidates[suggestionIndex % candidates.length] ?? fallbackAcorns[0];
+  const rankedCandidates = smartSuggestions.length ? smartSuggestions : candidates;
+  const suggestion = rankedCandidates[suggestionIndex % rankedCandidates.length] ?? fallbackAcorns[0];
 
   const captureAcorn = async (content: string, source = "capture") => {
-    const saved = await result(await fetch("/api/acorns", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ content, source }),
-    }));
-    await load();
-    return saved;
+    try {
+      const saved = await result(await fetch("/api/acorns", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ content, source }),
+      }));
+      await load();
+      return saved;
+    } catch (error) {
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        const queued = JSON.parse(localStorage.getItem("squirrel:offline-acorns") || "[]") as { content: string; source: string }[];
+        queued.push({ content, source });
+        localStorage.setItem("squirrel:offline-acorns", JSON.stringify(queued));
+        return { acorn: { ...fallbackAcorns[0], id: `offline-${Date.now()}`, content, source } };
+      }
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    if (!navigator.onLine) return;
+    const queued = JSON.parse(localStorage.getItem("squirrel:offline-acorns") || "[]") as { content: string; source: string }[];
+    if (!queued.length) return;
+    Promise.all(queued.map((item) => fetch("/api/acorns", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(item) })))
+      .then(() => { localStorage.removeItem("squirrel:offline-acorns"); setMessage(`${queued.length} offline capture${queued.length === 1 ? "" : "s"} synced.`); void load(); })
+      .catch(() => undefined);
+  }, [load]);
+
+  const voiceCapture = () => {
+    const SpeechRecognition = (window as typeof window & { webkitSpeechRecognition?: new () => { lang: string; interimResults: boolean; onresult: (event: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void; onend: () => void; onerror: () => void; start: () => void } }).webkitSpeechRecognition;
+    if (!SpeechRecognition) { setMessage("Voice capture is not available in this browser. Typing still works."); return; }
+    const recognition = new SpeechRecognition(); recognition.lang = navigator.language || "en-US"; recognition.interimResults = false; setListening(true);
+    recognition.onresult = (event) => setCapture((current) => `${current}${current ? " " : ""}${event.results[0][0].transcript}`);
+    recognition.onend = () => setListening(false); recognition.onerror = () => { setListening(false); setMessage("Voice capture did not finish. Nothing was saved without your review."); }; recognition.start();
+  };
+
+  const recordEvent = async (eventType: string, reason?: string) => {
+    if (suggestion.source === "starter") return;
+    await fetch("/api/acorns/events", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ acornId: suggestion.id, eventType, reason }) }).catch(() => undefined);
   };
 
   const submitCapture = async (event: FormEvent) => {
@@ -84,8 +140,8 @@ export function DashboardTools() {
     try {
       const saved = await captureAcorn(content);
       setCapture("");
-      setMessage(`Squirreled away as a ${saved.acorn.kind}. Organize it later—or don't.`);
-    } catch (error) { setMessage(error instanceof Error ? error.message : "That acorn escaped."); }
+      setMessage(`Saved to your task inbox as a ${saved.acorn.kind}.`);
+    } catch (error) { setMessage(error instanceof Error ? error.message : "This item could not be saved."); }
   };
 
   const saveAcorn = async (acorn: Acorn, patch: Partial<Acorn>, success?: string) => {
@@ -109,6 +165,7 @@ export function DashboardTools() {
     try { focusTarget = await saveAcorn(acorn, { status: "next" }) as Acorn; } catch { /* focus still works offline */ }
     setFocusAcorn(focusTarget);
     setSecondsLeft(25 * 60);
+    await recordEvent("started");
   };
 
   const easier = () => {
@@ -119,41 +176,41 @@ export function DashboardTools() {
   return (
     <section className="externalBrain" id="get-squirrelly" aria-label="Do this next and quick capture">
       <form className="squirrelCapture" onSubmit={submitCapture}>
-        <label><span className="eyebrow">Stash it before it escapes</span><input id="squirrelly-capture" value={capture} onChange={(event) => setCapture(event.target.value)} placeholder="Buy toothpaste, exam Friday, ask Lee about dinner…" /></label>
-        <button type="submit">Stash it</button>
-        <small><strong>Your one trusted inbox.</strong> Everything lands in the Acorn Pile—before the thought wanders off and leaves you staring into the open refrigerator for answers.</small>
+        <label><span className="eyebrow">Quick Capture</span><input id="squirrelly-capture" value={capture} onChange={(event) => setCapture(event.target.value)} placeholder="Buy toothpaste, exam Friday, ask Lee about dinner…" /></label>
+        <div className="captureActions"><button type="submit">Save To Inbox</button><button className="quietButton voiceButton" type="button" aria-pressed={listening} onClick={voiceCapture}>{listening ? "Listening…" : "Use Voice"}</button></div>
+        <small><strong>Save first and organize later.</strong> Tasks, reminders, notes, and distracting thoughts all go into the same private inbox.</small>
       </form>
       {message && <p className="brainMessage" role="status">{message}</p>}
 
       <article className="doNextCard" id="do-this-next">
         <div className="doNextCopy">
-          <div className="doNextLabel"><span className="liveDot" />Do this next</div>
+          <div className="doNextLabel"><span className="liveDot" />Recommended Next Task</div>
           <h2>{suggestion.content}</h2>
-          <div className="activationPills"><span>{suggestion.energy} energy</span><span>{suggestion.estimatedMinutes} min</span><span>Brain: {suggestion.brainLoad === "unfortunately_yes" ? "unfortunately yes" : suggestion.brainLoad}</span></div>
-          <p>{minimumDay ? "Keep-the-ship-afloat mode: this is enough to count as forward motion." : "One acorn. The rest can wait outside."}</p>
+          <div className="activationPills"><span>{suggestion.energy} energy</span><span>{suggestion.estimatedMinutes} min</span><span>Mental effort: {suggestion.brainLoad === "unfortunately_yes" ? "high" : suggestion.brainLoad}</span></div>
+          <p>{suggestion.explanation || "Focus on this task before choosing another one."}</p>
+          <div className="smallestStep"><span>First Step</span><strong>{suggestion.smallestStep || suggestion.firstStep || "Open what you need and complete one visible step."}</strong></div>
         </div>
         <div className="doNextActions">
           <div className="doNextPrimaryActions">
-            <button type="button" aria-describedby="squirrel-mode-help" onClick={() => startFocus()}>Start Squirrel! Mode</button>
-            <small id="squirrel-mode-help">25-minute focus timer + everything else hidden.</small>
-            <button className="stuckButton" type="button" onClick={() => setStuck("start")}>I’m stuck</button>
+            <button type="button" aria-describedby="squirrel-mode-help" onClick={() => startFocus()}>Start Focus Mode</button>
+            <small id="squirrel-mode-help">Starts a 25-minute timer and hides other dashboard items.</small>
+            <button className="stuckButton" type="button" onClick={() => setStuck("start")}>I’m Stuck</button>
           </div>
           <div className="doNextSecondaryActions">
-            <button className="quietButton" type="button" onClick={() => setSuggestionIndex((value) => (value + 1) % candidates.length)}>Not now</button>
-            <button className="quietButton" type="button" onClick={easier}>Something easier</button>
+            <button className="quietButton" type="button" onClick={() => { void recordEvent("rejected", "not_now"); setSuggestionIndex((value) => (value + 1) % rankedCandidates.length); }}>Not Now</button>
+            <button className="quietButton" type="button" onClick={easier}>Something Easier</button>
           </div>
         </div>
-        <label className="minimumDayToggle"><input type="checkbox" checked={minimumDay} onChange={(event) => setMinimumDay(event.target.checked)} /><span>Minimum Viable Day</span><small>The rest can be tomorrow’s nonsense.</small></label>
       </article>
 
-      <div className="acornPileHeader"><button type="button" onClick={() => setPileOpen((value) => !value)} aria-expanded={pileOpen}><span>Acorn Pile</span><strong>{acorns.filter((item) => !["complete", "released"].includes(item.status)).length} loose acorns</strong><small>{pileOpen ? "Hide the pile" : "No organizing required right now"}</small></button></div>
+      <div className="acornPileHeader"><button type="button" onClick={() => setPileOpen((value) => !value)} aria-expanded={pileOpen}><span>Task Inbox</span><strong>{acorns.filter((item) => !["complete", "released"].includes(item.status)).length} open items</strong><small>{pileOpen ? "Hide Inbox" : "View and organize saved items"}</small></button></div>
       {pileOpen && <div className="acornPile">
-        {acorns.length === 0 ? <p className="emptyResult">Suspiciously quiet in here. Use “Stash it” when a thought tries to escape.</p> : acorns.filter((item) => item.status !== "released").map((acorn) => <AcornRow key={acorn.id} acorn={acorn} onSave={saveAcorn} onFocus={startFocus} />)}
+        {acorns.length === 0 ? <p className="emptyResult">Your task inbox is empty. Use Quick Capture to add a task, reminder, or note.</p> : acorns.filter((item) => item.status !== "released").map((acorn) => <AcornRow key={acorn.id} acorn={acorn} onSave={saveAcorn} onFocus={startFocus} />)}
       </div>}
 
-      {stuck && <div className="modalBackdrop" role="presentation"><section className="stuckModal" role="dialog" aria-modal="true" aria-label="I'm stuck support"><div className="modalHeading"><div><p className="eyebrow">No shame. Just information.</p><h2>What kind of stuck?</h2></div><button className="iconButton" type="button" onClick={() => setStuck(null)}>×</button></div><div className="stuckChoices"><button type="button" onClick={() => setStuck("start")}>I don’t know where to start</button><button type="button" onClick={() => setStuck("big")}>This feels too big</button><button type="button" onClick={() => setStuck("exhausted")}>I’m exhausted</button><button type="button" onClick={() => setStuck("avoiding")}>I’m avoiding it</button><button type="button" onClick={() => setStuck("distracted")}>I got distracted</button></div><div className="stuckResponse"><span>Try this</span><h3>{stuckHelp[stuck].title}</h3><p>{stuckHelp[stuck].body}</p><strong>{stuckHelp[stuck].action}</strong></div><div className="modalActions"><button className="quietButton" type="button" onClick={() => setStuck(null)}>Close</button>{stuck === "exhausted" && <button type="button" onClick={() => { easier(); setStuck(null); }}>Find an easier acorn</button>}<button type="button" onClick={() => { setStuck(null); void startFocus(); }}>Try Squirrel! Mode</button></div></section></div>}
+      {stuck && <div className="modalBackdrop" role="presentation"><section className="stuckModal" role="dialog" aria-modal="true" aria-label="Help starting a task"><div className="modalHeading"><div><p className="eyebrow">Get Help Starting</p><h2>What is making this task difficult?</h2></div><button className="iconButton" type="button" aria-label="Close" onClick={() => setStuck(null)}>×</button></div><div className="stuckChoices"><button type="button" onClick={() => setStuck("start")}>I Don’t Know Where to Start</button><button type="button" onClick={() => setStuck("big")}>This Feels Too Big</button><button type="button" onClick={() => setStuck("exhausted")}>I Don’t Have Enough Energy</button><button type="button" onClick={() => setStuck("avoiding")}>I’m Avoiding It</button><button type="button" onClick={() => setStuck("distracted")}>I Got Distracted</button></div><div className="stuckResponse"><span>Try This</span><h3>{stuckHelp[stuck].title}</h3><p>{stuckHelp[stuck].body}</p><strong>{stuckHelp[stuck].action}</strong></div><div className="modalActions"><button className="quietButton" type="button" onClick={() => setStuck(null)}>Close</button>{stuck === "exhausted" && <button type="button" onClick={() => { easier(); setStuck(null); }}>Find an Easier Task</button>}<button type="button" onClick={() => { setStuck(null); void startFocus(); }}>Start Focus Mode</button></div></section></div>}
 
-      {focusAcorn && <FocusMode acorn={focusAcorn} secondsLeft={secondsLeft} setSecondsLeft={setSecondsLeft} onClose={() => setFocusAcorn(null)} onSideQuest={async (content) => { await captureAcorn(content, "side_quest"); setMessage("Side quest captured. Welcome back."); }} onComplete={async () => { try { await saveAcorn(focusAcorn, { status: "complete" }, "Look at you, doing the terrible little thing."); } finally { setFocusAcorn(null); } }} />}
+      {focusAcorn && <FocusMode acorn={focusAcorn} secondsLeft={secondsLeft} setSecondsLeft={setSecondsLeft} bodyDouble={bodyDouble} onStartBodyDouble={async (shareTaskDetails) => { const saved = await result(await fetch("/api/body-double", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ taskLabel: focusAcorn.content, shareTaskDetails }) })); setBodyDouble(saved.session); }} onClose={() => setFocusAcorn(null)} onSideQuest={async (content) => { await captureAcorn(content, "side_quest"); setMessage("Distracting thought saved. Continue your current task when you are ready."); }} onComplete={async () => { try { await saveAcorn(focusAcorn, { status: "complete" }, "Task marked complete."); await recordEvent("completed"); } finally { setFocusAcorn(null); } }} />}
     </section>
   );
 }
@@ -161,12 +218,13 @@ export function DashboardTools() {
 function AcornRow({ acorn, onSave, onFocus }: { acorn: Acorn; onSave: (acorn: Acorn, patch: Partial<Acorn>, success?: string) => Promise<unknown>; onFocus: (acorn: Acorn) => Promise<void> }) {
   const [draft, setDraft] = useState(acorn);
   const [editing, setEditing] = useState(false);
-  return <article className="acornRow"><div className="acornMain"><span>{acorn.kind}</span><strong>{acorn.content}</strong><small>{acorn.energy} energy · {acorn.estimatedMinutes} min · brain: {acorn.brainLoad.replace("_", " ")}</small></div><div className="acornRowActions"><button type="button" onClick={() => onFocus(acorn)}>Focus</button><button className="quietButton" type="button" onClick={() => setEditing((value) => !value)}>Edit</button><button className="releaseButton" type="button" onClick={() => onSave(acorn, { status: "released" }, "Released back into the wild. Task deletion is productivity too.")}>Nope</button></div>{editing && <form className="acornEditor" onSubmit={async (event) => { event.preventDefault(); await onSave(acorn, draft, "Acorn updated."); setEditing(false); }}><label className="field"><span>What is it?</span><input value={draft.content} onChange={(event) => setDraft({ ...draft, content: event.target.value })} /></label><label className="field"><span>Energy</span><select value={draft.energy} onChange={(event) => setDraft({ ...draft, energy: event.target.value })}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label><label className="field"><span>Time</span><select value={draft.estimatedMinutes} onChange={(event) => setDraft({ ...draft, estimatedMinutes: Number(event.target.value) })}><option value="5">5 min</option><option value="10">10 min</option><option value="15">15 min</option><option value="30">30 min</option><option value="60">60+ min</option></select></label><label className="field"><span>Brain needed</span><select value={draft.brainLoad} onChange={(event) => setDraft({ ...draft, brainLoad: event.target.value })}><option value="none">None</option><option value="some">Some</option><option value="unfortunately_yes">Unfortunately yes</option></select></label><button type="submit">Save</button></form>}</article>;
+  return <article className="acornRow"><div className="acornMain"><span>{acorn.kind}</span><strong>{acorn.content}</strong><small>{acorn.energy} energy · {acorn.estimatedMinutes} min · mental effort: {acorn.brainLoad === "unfortunately_yes" ? "high" : acorn.brainLoad}</small></div><div className="acornRowActions"><button type="button" onClick={() => onFocus(acorn)}>Focus</button><button className="quietButton" type="button" onClick={() => setEditing((value) => !value)}>Edit</button><button className="releaseButton" type="button" onClick={() => onSave(acorn, { status: "released" }, "Item removed from your task inbox.")}>Remove</button></div>{editing && <form className="acornEditor" onSubmit={async (event) => { event.preventDefault(); await onSave(acorn, draft, "Item updated."); setEditing(false); }}><label className="field"><span>Task or note</span><input value={draft.content} onChange={(event) => setDraft({ ...draft, content: event.target.value })} /></label><label className="field"><span>Energy</span><select value={draft.energy} onChange={(event) => setDraft({ ...draft, energy: event.target.value })}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label><label className="field"><span>Estimated time</span><select value={draft.estimatedMinutes} onChange={(event) => setDraft({ ...draft, estimatedMinutes: Number(event.target.value) })}><option value="5">5 min</option><option value="10">10 min</option><option value="15">15 min</option><option value="30">30 min</option><option value="60">60+ min</option></select></label><label className="field"><span>Mental effort</span><select value={draft.brainLoad} onChange={(event) => setDraft({ ...draft, brainLoad: event.target.value })}><option value="none">Low</option><option value="some">Medium</option><option value="unfortunately_yes">High</option></select></label><button type="submit">Save Changes</button></form>}</article>;
 }
 
-function FocusMode({ acorn, secondsLeft, setSecondsLeft, onClose, onSideQuest, onComplete }: { acorn: Acorn; secondsLeft: number; setSecondsLeft: (seconds: number) => void; onClose: () => void; onSideQuest: (content: string) => Promise<void>; onComplete: () => Promise<void> }) {
+function FocusMode({ acorn, secondsLeft, setSecondsLeft, bodyDouble, onStartBodyDouble, onClose, onSideQuest, onComplete }: { acorn: Acorn; secondsLeft: number; setSecondsLeft: (seconds: number) => void; bodyDouble: { id: string; shareCode: string } | null; onStartBodyDouble: (shareTaskDetails: boolean) => Promise<void>; onClose: () => void; onSideQuest: (content: string) => Promise<void>; onComplete: () => Promise<void> }) {
   const [quest, setQuest] = useState("");
   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
   const seconds = String(secondsLeft % 60).padStart(2, "0");
-  return <div className="focusBackdrop"><main className="focusMode" aria-label="Squirrel! focus mode"><header><div className="brand"><span className="focusMascot">🐿️</span><span>Squirrel! Mode</span></div><button type="button" onClick={onClose}>Exit focus</button></header><section className="focusTask"><p className="eyebrow">Only this acorn exists right now</p><h1>{acorn.content}</h1><p>Smallest next step: open the thing and make one visible move.</p><div className="focusTimer" aria-label={`${minutes} minutes and ${seconds} seconds remaining`}>{minutes}:{seconds}</div><div className="focusTimerActions"><button type="button" onClick={() => setSecondsLeft(5 * 60)}>5 min</button><button type="button" onClick={() => setSecondsLeft(15 * 60)}>15 min</button><button type="button" onClick={() => setSecondsLeft(25 * 60)}>25 min</button></div><button className="focusComplete" type="button" onClick={() => void onComplete()}>Done enough ✓</button></section><form className="sideQuestCapture" onSubmit={async (event) => { event.preventDefault(); if (!quest.trim()) return; await onSideQuest(quest.trim()); setQuest(""); }}><label><span>Oops, side quest</span><input value={quest} onChange={(event) => setQuest(event.target.value)} placeholder="Capture the distracting thought without leaving" /></label><button type="submit">Stash it</button></form></main></div>;
+  const shareUrl = bodyDouble ? `${window.location.origin}/body-double/${bodyDouble.shareCode}` : "";
+  return <div className="focusBackdrop"><main className="focusMode" aria-label="Focus mode"><header><div className="brand"><span className="focusMascot">S!</span><span>Focus Mode</span></div><button type="button" onClick={onClose}>Exit Focus</button></header><section className="focusTask"><p className="eyebrow">Current Task</p><h1>{acorn.content}</h1><p>First step: {acorn.smallestStep || acorn.firstStep || "open what you need and complete one visible step."}</p><div className="focusTimer" aria-label={`${minutes} minutes and ${seconds} seconds remaining`}>{minutes}:{seconds}</div><div className="focusTimerActions"><button type="button" onClick={() => setSecondsLeft(5 * 60)}>5 Min</button><button type="button" onClick={() => setSecondsLeft(15 * 60)}>15 Min</button><button type="button" onClick={() => setSecondsLeft(25 * 60)}>25 Min</button></div><button className="focusComplete" type="button" onClick={() => void onComplete()}>Mark Complete</button></section><section className="bodyDoubleShare"><strong>Focus With Someone</strong><p>Create a private link for someone who can work quietly at the same time. Your task name stays hidden unless you choose to share it.</p>{bodyDouble ? <div><input aria-label="Shared focus link" readOnly value={shareUrl} /><button type="button" onClick={() => navigator.clipboard.writeText(shareUrl)}>Copy Link</button></div> : <div><button type="button" onClick={() => void onStartBodyDouble(false)}>Create Private Link</button><button className="quietButton" type="button" onClick={() => void onStartBodyDouble(true)}>Include Task Name</button></div>}</section><form className="sideQuestCapture" onSubmit={async (event) => { event.preventDefault(); if (!quest.trim()) return; await onSideQuest(quest.trim()); setQuest(""); }}><label><span>Save a distracting thought</span><input value={quest} onChange={(event) => setQuest(event.target.value)} placeholder="Save the thought without leaving focus mode" /></label><button type="submit">Save To Inbox</button></form></main></div>;
 }

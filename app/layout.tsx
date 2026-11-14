@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { PwaRegistration } from "./PwaRegistration";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Squirrel!",
   description:
-    "An external brain for tasks, meds, school, calendars, files, and all the things you were definitely going to remember.",
+    "A private organizer for tasks, medications, school, calendars, files, and reminders.",
   icons: {
     icon: "/squirrel_logo.png",
     shortcut: "/squirrel_logo.png",
@@ -18,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body><PwaRegistration />{children}</body>
     </html>
   );
 }
