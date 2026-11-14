@@ -1474,6 +1474,7 @@ button:disabled {
 .durationChoices { display: flex; flex-wrap: wrap; gap: 16px; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--control-radius); }
 .durationChoices legend { padding-inline: 6px; font-weight: 800; }
 .durationChoices label { display: flex; align-items: center; gap: 7px; }
+.durationChoices small { flex-basis: 100%; color: var(--color-muted); line-height: 1.4; }
 .breathingSelection, .breathingFinished { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px; border-top: 1px solid var(--color-border); }
 .breathingSelection button, .breathingFinished button, .breathingRoutine button { min-height: 44px; padding: 2px 16px 0; border-radius: var(--control-radius); background: var(--color-primary); color: #fff; cursor: pointer; font-weight: 800; }
 .breathingRoutine { display: grid; justify-items: center; gap: 14px; padding: 16px; text-align: center; }
