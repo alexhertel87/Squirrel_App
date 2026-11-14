@@ -1,63 +1,67 @@
-# Option 2 Design QA
+# Selected Dashboard Design QA
 
 ## Comparison Target
 
-- Source visual truth: `/Users/alexhertel/.codex/generated_images/019eb840-4267-76c1-843f-1c12c4e93dce/exec-599a0302-d7ce-44f5-ba90-de65fe46faba.png`
+- Source visual truth: `/Users/alexhertel/Documents/Codex/2026-06-11/are-you-able-to-access-my/work/squirrel-sites/reference-dashboard-layout.png`
 - Desktop implementation: `/Users/alexhertel/Documents/Codex/2026-06-11/are-you-able-to-access-my/work/squirrel-sites/implementation-option-2-desktop.png`
 - iPad implementation: `/Users/alexhertel/Documents/Codex/2026-06-11/are-you-able-to-access-my/work/squirrel-sites/implementation-option-2-ipad.png`
 - iPhone implementation: `/Users/alexhertel/Documents/Codex/2026-06-11/are-you-able-to-access-my/work/squirrel-sites/implementation-option-2-iphone.png`
-- State: signed-in dashboard with fallback recommendation, empty private records, and disconnected local cloud storage.
+- State: signed-in dashboard with fallback task data and disconnected local storage bindings.
 
 ## Dimensions And Normalization
 
-- Source image: 1487 x 1058 pixels, generated for a 1440 x 1024 desktop target.
-- Desktop browser viewport: 1440 x 1024 CSS pixels; app capture: 1425 x 1013 pixels at 1x density after the browser scrollbar and viewport chrome were excluded.
-- iPad browser viewport: 834 x 1194 CSS pixels; app capture: 819 x 1173 pixels at 1x density.
-- iPhone browser viewport: 390 x 844 CSS pixels; app capture: 375 x 812 pixels at 1x density.
-- The source and desktop implementation were opened together in one comparison input. Proportions, hierarchy, typography, palette, and component placement were compared after accounting for the generated source image's extra 47 x 34 pixels.
+- Source image: 1487 x 1058 pixels.
+- Desktop verification viewport: 1487 x 1058 CSS pixels.
+- iPad verification viewport: 834 x 1194 CSS pixels.
+- iPhone verification viewport: 390 x 844 CSS pixels.
+- The source and final desktop implementation were opened together in one comparison input. The same signed-in dashboard state was used for desktop, iPad, and iPhone verification.
 
 ## Full-View Comparison
 
-- Information hierarchy matches the source: logo/header, left navigation, Quick Capture, dominant recommended task, first step, aligned task actions, and the plan-for-today controls.
-- The implementation uses the same white and cool-gray visual balance, graphite text, restrained teal primary action, and small pink status accent.
-- Large pastel panels, lavender borders, heavy shadows, and the former introductory hero panel are absent from the first dashboard view.
-- The pinned Quick View remains below navigation in the left rail. This is an intentional product constraint because the user explicitly requested a static pinned display; it is visually condensed so it does not compete with the recommended task.
+- The implementation follows the source hierarchy: compact brand header, icon-led left navigation, Quick Capture row, dominant Recommended Next Task area, first-step prompt, aligned task actions, and Plan For Today row.
+- The palette matches the source: white surfaces, cool-gray dividers, graphite text, restrained teal actions, a small pink notification accent, and the original multicolor squirrel logo.
+- Desktop content begins within two pixels of the source position. The primary horizontal dividers and section landmarks from Quick Capture through Plan For Today align within approximately five pixels.
+- Lavender panel borders, large pastel cards, heavy shadows, and the previous introductory hero are absent from the first dashboard view.
 
 ## Focused Region Comparison
 
-- Header and logo: the exact supplied squirrel asset is reused. The logo and wordmark vertical midpoints differ by 0 pixels. Gulim is retained for the wordmark; lighter Avenir/system typography is used for interface copy.
-- Navigation rail: all desktop links use the full 210-pixel rail width and 52-pixel height. Tablet links share one horizontal row; mobile links form a balanced two-by-two grid.
-- Recommended-task action row: `Not Now` and `Something Easier` have identical width, height, and vertical position on desktop, iPad, and iPhone.
-- Mobile layout: the initial implementation overflowed to 446 pixels because the two-column calibration layout survived below the phone breakpoint. The calibration section was changed to one column below 820 pixels. The post-fix iPhone document width is exactly 375 pixels with no overflow.
+- Header and logo: the supplied squirrel asset is reused without modification. The logo and wordmark vertical midpoints differ by 0 pixels at desktop, iPad, and iPhone widths.
+- Header controls: search, reminders, and account controls use consistent outline icons. Search opens the working Quick View drawer and focuses its search field.
+- Navigation: desktop uses the reference's left rail. iPad uses a four-item horizontal row. iPhone uses a balanced two-by-two grid.
+- Recommended task: the reference's two information pills, plain-language first step, teal focus action, and borderless secondary choices are preserved.
+- Plan For Today: the three visible task choices are interactive. Choosing an item immediately makes it the recommended task.
+- Typography: weights were intentionally reduced below the source after the user explicitly rejected an Arial Bold or Arial Black appearance. Most interface text is regular or medium; only hierarchy-critical text receives additional emphasis.
 
-## Required Fidelity Surfaces
+## Responsive Checks
 
-- Fonts and typography: passed. The wordmark preserves Gulim. UI copy uses a lighter humanist system stack, moderate weights, readable 15-16 pixel body text, and restrained letter spacing. No clipping or unintended truncation was observed.
-- Spacing and layout rhythm: passed. Desktop follows the source's left-rail and central-workspace proportions; tablet and phone layouts collapse predictably. Controls use aligned 44-54 pixel touch targets and consistent 8-pixel radii.
-- Colors and tokens: passed. White, graphite, pale gray, teal, and a small pink accent map to the source. The original multicolor logo remains the most colorful element.
-- Image quality and asset fidelity: passed. The original 512 x 512 transparent squirrel logo is used directly. No logo, icon, illustration, or image was replaced with CSS art, emoji, or an approximate drawing.
-- Copy and content: passed. Existing plain-language task, calendar, school, medication, privacy, breathing, and sensory-setting content remains intact. Vague labels such as `Minimum Viable Day` are not present.
+- Desktop document width equals the browser client width; no horizontal overflow is present.
+- iPad document width is 819 pixels after the browser scrollbar. Both secondary choices are fully visible, share the same 198 x 74 pixel size, and sit on the same horizontal plane.
+- iPhone document width is 375 pixels after the browser scrollbar. Both secondary choices are 161 x 56 pixels and share the same vertical position.
+- The iPhone task title wraps naturally, the capture controls stack without clipping, and all navigation items remain at least 56 pixels high.
 
-## Interaction And Browser Checks
+## Interaction And Accessibility Checks
 
-- Quick Capture accepted and cleared typed content.
-- Calendar navigation changed the location hash to `#calendar` and targeted the real calendar section.
-- The selected task, aligned action controls, account control, and pinned-display selector rendered in the expected states.
-- Desktop, iPad, and iPhone layouts were inspected in the browser.
+- Selecting `Read for class` in Plan For Today changed the active recommendation to `Read for class`.
+- The search control opened Quick View, automatically focused the search field, and closed successfully.
+- Header controls have explicit accessible names and tooltips.
+- Navigation uses semantic links; Plan For Today uses native radio controls; the capture and focus actions remain real buttons.
 - Browser console warnings/errors checked: none.
-- Production build and server-render tests are tracked separately from this visual comparison.
+- The original task, focus, voice capture, calendar, school, medication, breathing, search, privacy, and sensory functions remain available.
 
-## Comparison History
+## Intentional Differences
 
-1. Initial desktop comparison found a centered, half-width navigation rail and a cramped pinned panel. The rail was changed to stretch across its full column, interface typography was lightened, and the default pinned content was condensed.
-2. The revised desktop comparison confirmed source-like hierarchy, palette, and spacing with no P0, P1, or P2 desktop findings.
-3. Initial iPhone comparison found a P2 horizontal-overflow regression caused by the calibration grid. The phone/tablet breakpoint now forces a single-column calibration section.
-4. Post-fix iPhone evidence confirmed a 375-pixel document width, no horizontal overflow, equal secondary buttons, successful navigation, and no console errors.
+- Interface typography is lighter than the supplied screenshot because the user explicitly requested less bold lettering.
+- The working voice-capture feature appears as a microphone control inside Quick Capture rather than being removed.
+- Quick View is now a focused slide-out panel opened from Search. This preserves its search, affirmation, fact, tip, focus, reset, and checklist tools without adding a large panel that is absent from the selected reference.
+- Real saved task data replaces the fallback examples when production storage is available.
 
-## Follow-Up Polish
+## Verification
 
-- P3: The generated source includes decorative line icons in the navigation and header. The implementation keeps familiar text labels and the existing account control so no new decorative dependency or nonfunctional control is introduced.
-- P3: The live app includes `Use Voice`, `I'm Stuck`, Task Inbox, and pinned Quick View controls that the simplified source mock omits. These remain because they are working, user-requested product features.
+- Eight automated behavior and rendering tests passed.
+- TypeScript checking passed.
+- Production build passed.
+- Git whitespace and patch validation passed.
+- No P0, P1, or P2 visual issues remain.
 
 ## Final Result
 

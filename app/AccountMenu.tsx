@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { CircleUserRound } from "lucide-react";
 import type { ChatGPTUser } from "./chatgpt-auth";
 
 export type ProfilePreferences = {
@@ -112,7 +113,8 @@ export function AccountMenu({ user, signOutPath, preferences, onPreferences }: P
 
   return (
     <div className="accountMenu" ref={menuRef}>
-      <button className="accountButton" type="button" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+      <button className="accountButton" type="button" aria-label="Open account and settings" aria-expanded={open} title="Account and settings" onClick={() => setOpen((value) => !value)}>
+        <CircleUserRound className="accountProfileIcon" aria-hidden="true" />
         <span className="accountAvatar">{initials}</span>
         <span className="accountButtonText"><strong>{profile.displayName}</strong><small>Settings</small></span>
         <span aria-hidden="true">⌄</span>

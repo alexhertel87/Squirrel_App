@@ -42,7 +42,7 @@ export function DailyCalibration({ onSaved }: { onSaved?: () => void }) {
   };
 
   return <section className="calibrationBar" aria-labelledby="calibration-heading">
-    <div className="calibrationIntro"><p className="eyebrow">Plan For Today</p><h2 id="calibration-heading">How much time and energy do you have?</h2><p>Squirrel! uses these answers to recommend a task that fits your day.</p></div>
+    <div className="calibrationIntro"><p className="eyebrow">Daily Setup</p><h2 id="calibration-heading">How much time and energy do you have?</h2><p>Squirrel! uses these answers to recommend a task that fits your day.</p></div>
     <form onSubmit={save}>
       <label><span>Energy</span><select value={calibration.energy} onChange={(event) => setCalibration({ ...calibration, energy: event.target.value })}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
       <label><span>Time</span><select value={calibration.availableMinutes} onChange={(event) => setCalibration({ ...calibration, availableMinutes: Number(event.target.value) })}><option value="5">5 min</option><option value="10">10 min</option><option value="15">15 min</option><option value="30">30 min</option><option value="60">1 hour</option><option value="120">2+ hours</option></select></label>

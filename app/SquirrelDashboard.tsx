@@ -2,6 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { CSSProperties, FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { Bell, CalendarDays, GraduationCap, Headphones, Home, Search, X } from "lucide-react";
 import { GoogleCalendarIntegration } from "./GoogleCalendarIntegration";
 import { AccountMenu, ProfilePreferences } from "./AccountMenu";
 import { SchoolWorkspace } from "./SchoolWorkspace";
@@ -139,6 +140,7 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
   const [liveSearchSuggestions, setLiveSearchSuggestions] = useState<string[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [tipCategory, setTipCategory] = useState<TipCategory>("daily");
+  const [sideboxOpen, setSideboxOpen] = useState(false);
 
   const applyPreferences = useCallback((preferences: ProfilePreferences) => {
     setDarkMode(preferences.darkMode);
@@ -267,7 +269,32 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
           </span>
         </a>
 
-        <AccountMenu user={initialUser} signOutPath={signOutPath} preferences={{ darkMode, highContrast, reducedMotion, density, textScale, colorIntensity, notificationMode, humorLevel, timerDirection }} onPreferences={applyPreferences} />
+        <div className="headerActions">
+          <button
+            className="headerIconButton"
+            type="button"
+            aria-label="Search Squirrel!"
+            title="Search Squirrel!"
+            onClick={() => {
+              setDisplayMode("search");
+              setSideboxOpen(true);
+              window.setTimeout(() => document.querySelector<HTMLInputElement>('.sidebox input[type="search"]')?.focus(), 120);
+            }}
+          >
+            <Search aria-hidden="true" />
+          </button>
+          <button
+            className="headerIconButton notificationButton"
+            type="button"
+            aria-label="View reminders and deadlines"
+            title="Reminders and deadlines"
+            onClick={() => document.querySelector<HTMLElement>(".attentionDeck")?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" })}
+          >
+            <Bell aria-hidden="true" />
+            <span className="notificationDot" aria-hidden="true" />
+          </button>
+          <AccountMenu user={initialUser} signOutPath={signOutPath} preferences={{ darkMode, highContrast, reducedMotion, density, textScale, colorIntensity, notificationMode, humorLevel, timerDirection }} onPreferences={applyPreferences} />
+        </div>
       </header>
 
       <div className="dashboardShell" id="dashboard">
@@ -280,11 +307,12 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
               scrollToCapture();
             }}
           >
+            <Home aria-hidden="true" />
             <span>Today</span>
           </a>
-          <a href="#calendar">Calendar</a>
-          <a href="#school">School</a>
-          <a href="#settings">Sensory</a>
+          <a href="#calendar"><CalendarDays aria-hidden="true" /><span>Calendar</span></a>
+          <a href="#school"><GraduationCap aria-hidden="true" /><span>School</span></a>
+          <a href="#settings"><Headphones aria-hidden="true" /><span>Sensory</span></a>
         </nav>
 
         <section className="dashboardContent" aria-label="Squirrel! dashboard preview">
@@ -371,11 +399,14 @@ export function SquirrelDashboard({ initialUser, signOutPath }: { initialUser: C
           </section>
         </section>
 
-        <aside className="sidebox" aria-label="Pinned side display">
+        <aside className={`sidebox${sideboxOpen ? " sideboxOpen" : ""}`} aria-label="Quick View" aria-hidden={!sideboxOpen}>
           <div className="sideboxHeader">
-            <p className="eyebrow">Pinned Information</p>
-            <h2>Quick View</h2>
-            <p>Choose one type of information to keep visible while you use the dashboard.</p>
+            <div>
+              <p className="eyebrow">Dashboard Tools</p>
+              <h2>Quick View</h2>
+              <p>Choose one type of information to view without leaving the dashboard.</p>
+            </div>
+            <button className="drawerClose" type="button" aria-label="Close Quick View" onClick={() => setSideboxOpen(false)}><X aria-hidden="true" /></button>
           </div>
 
           <label className="field">

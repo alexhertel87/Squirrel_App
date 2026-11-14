@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { Mic } from "lucide-react";
 
 type Acorn = {
   id: string;
@@ -22,9 +23,9 @@ type Acorn = {
 };
 
 const fallbackAcorns: Acorn[] = [
-  { id: "starter-upload", content: "Upload lecture notes", kind: "task", status: "next", energy: "low", estimatedMinutes: 10, brainLoad: "some", source: "starter" },
-  { id: "starter-email", content: "Email advisor", kind: "task", status: "loose", energy: "medium", estimatedMinutes: 10, brainLoad: "some", source: "starter" },
-  { id: "starter-refill", content: "Refill medication", kind: "reminder", status: "loose", energy: "low", estimatedMinutes: 5, brainLoad: "none", source: "starter" },
+  { id: "starter-upload", content: "Upload lecture notes", kind: "task", status: "next", energy: "medium", estimatedMinutes: 30, brainLoad: "some", source: "starter", firstStep: "Open the latest lecture folder." },
+  { id: "starter-read", content: "Read for class", kind: "task", status: "loose", energy: "medium", estimatedMinutes: 30, brainLoad: "some", source: "starter", firstStep: "Open the assigned reading." },
+  { id: "starter-prep", content: "Prep tomorrow", kind: "task", status: "loose", energy: "low", estimatedMinutes: 10, brainLoad: "none", source: "starter", firstStep: "Check tomorrow's calendar." },
 ];
 
 const stuckHelp = {
@@ -89,6 +90,13 @@ export function DashboardTools() {
   }, [acorns]);
   const rankedCandidates = smartSuggestions.length ? smartSuggestions : candidates;
   const suggestion = rankedCandidates[suggestionIndex % rankedCandidates.length] ?? fallbackAcorns[0];
+  const planItems = useMemo(() => {
+    const unique = new Map<string, Acorn>();
+    [...rankedCandidates, ...fallbackAcorns].forEach((item) => {
+      if (!unique.has(item.content.toLowerCase())) unique.set(item.content.toLowerCase(), item);
+    });
+    return Array.from(unique.values()).slice(0, 3);
+  }, [rankedCandidates]);
 
   const captureAcorn = async (content: string, source = "capture") => {
     try {
@@ -177,7 +185,7 @@ export function DashboardTools() {
     <section className="externalBrain" id="get-squirrelly" aria-label="Do this next and quick capture">
       <form className="squirrelCapture" onSubmit={submitCapture}>
         <label><span className="eyebrow">Quick Capture</span><input id="squirrelly-capture" value={capture} onChange={(event) => setCapture(event.target.value)} placeholder="Buy toothpaste, exam Friday, ask Lee about dinner…" /></label>
-        <div className="captureActions"><button type="submit">Save To Inbox</button><button className="quietButton voiceButton" type="button" aria-pressed={listening} onClick={voiceCapture}>{listening ? "Listening…" : "Use Voice"}</button></div>
+        <div className="captureActions"><button type="submit">Save To Inbox</button><button className="quietButton voiceButton" type="button" aria-label={listening ? "Listening for a voice capture" : "Use voice capture"} aria-pressed={listening} title="Use voice capture" onClick={voiceCapture}><Mic aria-hidden="true" /><span>{listening ? "Listening…" : "Use Voice"}</span></button></div>
         <small><strong>Save first and organize later.</strong> Tasks, reminders, notes, and distracting thoughts all go into the same private inbox.</small>
       </form>
       {message && <p className="brainMessage" role="status">{message}</p>}
@@ -186,8 +194,8 @@ export function DashboardTools() {
         <div className="doNextCopy">
           <div className="doNextLabel"><span className="liveDot" />Recommended Next Task</div>
           <h2>{suggestion.content}</h2>
-          <div className="activationPills"><span>{suggestion.energy} energy</span><span>{suggestion.estimatedMinutes} min</span><span>Mental effort: {suggestion.brainLoad === "unfortunately_yes" ? "high" : suggestion.brainLoad}</span></div>
-          <p>{suggestion.explanation || "Focus on this task before choosing another one."}</p>
+          <div className="activationPills"><span>{suggestion.energy} energy</span><span>{suggestion.estimatedMinutes} min</span></div>
+          <p className="recommendationReason">{suggestion.explanation || "Focus on this task before choosing another one."}</p>
           <div className="smallestStep"><span>First Step</span><strong>{suggestion.smallestStep || suggestion.firstStep || "Open what you need and complete one visible step."}</strong></div>
         </div>
         <div className="doNextActions">
@@ -202,6 +210,26 @@ export function DashboardTools() {
           </div>
         </div>
       </article>
+
+      <section className="planForToday" aria-labelledby="plan-for-today-heading">
+        <h2 id="plan-for-today-heading">Plan For Today</h2>
+        <div className="planTaskGrid">
+          {planItems.map((item) => (
+            <label className="planTask" key={item.id}>
+              <input
+                checked={false}
+                name="plan-for-today"
+                onChange={() => {
+                  setSmartSuggestions([item, ...rankedCandidates.filter((candidate) => candidate.id !== item.id)]);
+                  setSuggestionIndex(0);
+                }}
+                type="radio"
+              />
+              <span>{item.content}</span>
+            </label>
+          ))}
+        </div>
+      </section>
 
       <div className="acornPileHeader"><button type="button" onClick={() => setPileOpen((value) => !value)} aria-expanded={pileOpen}><span>Task Inbox</span><strong>{acorns.filter((item) => !["complete", "released"].includes(item.status)).length} open items</strong><small>{pileOpen ? "Hide Inbox" : "View and organize saved items"}</small></button></div>
       {pileOpen && <div className="acornPile">
